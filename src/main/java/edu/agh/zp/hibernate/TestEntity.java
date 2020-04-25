@@ -3,10 +3,10 @@ package edu.agh.zp.hibernate;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "test_hibernate")
+@Entity(name = "test_hibernate")
 
 public class TestEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -14,7 +14,7 @@ public class TestEntity implements Serializable {
     @Column(name="name", length = 13)
     private String name;
 
-    @Column(name="some_number", length = 13)
+    @Column(name="some_number")
     private int some_number;
 
     @Override
