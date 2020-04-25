@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping (value={"/login"})
-public class LoginController {
+@RequestMapping (value={"/ustawy"})
+public class UstawyController {
 
 	@GetMapping (value = {""})
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "login" );
+		modelAndView.setViewName( "ustawy" );
 		return modelAndView;
 	}
 }
