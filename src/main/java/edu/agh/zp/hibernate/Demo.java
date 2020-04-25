@@ -14,9 +14,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 
-@SpringBootApplication
-@EnableJpaRepositories("edu.agh.zp.hibernate")
-public class Demo implements CommandLineRunner {
+
+public class Demo{
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -26,12 +25,12 @@ public class Demo implements CommandLineRunner {
 
     TestRepository repository;
 
-    public static void main(String[] args) {
+    public static void main(String args) {
         SpringApplication.run(Demo.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception
+
+    public void run() throws Exception
     {
         this.repository = applicationContext.getBean(TestRepository.class);
         Optional<TestEntity> test = repository.findById(2L);

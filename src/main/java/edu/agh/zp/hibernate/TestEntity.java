@@ -1,24 +1,21 @@
 package edu.agh.zp.hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "test_hibernate")
 
-public class TestEntity {
+public class TestEntity implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name="name")
+    @Column(name="name", length = 13)
     private String name;
 
     @Column(name="some_number", length = 13)
-    private String some_number;
+    private int some_number;
 
     @Override
     public String toString() {
@@ -26,4 +23,19 @@ public class TestEntity {
                 ", number=" + some_number;
     }
 
+    public TestEntity(){};
+
+    public TestEntity(String name,int num )
+    {
+        this.name = name;
+        this.some_number = num;
+    }
+
+    public int getNum(){
+        return this.some_number;
+    }
+
+    public String getName(){
+        return this.name;
+    }
 }
