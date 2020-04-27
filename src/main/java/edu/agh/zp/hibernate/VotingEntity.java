@@ -2,12 +2,13 @@ package edu.agh.zp.hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity(name = "Voting")
 
-public class VotingEntity {
+public class VotingEntity implements Serializable {
 
     @Id
     @NotNull

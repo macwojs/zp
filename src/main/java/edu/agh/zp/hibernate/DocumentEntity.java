@@ -2,11 +2,12 @@ package edu.agh.zp.hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity(name = "Document")
 
-public class DocumentEntity {
+public class DocumentEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
