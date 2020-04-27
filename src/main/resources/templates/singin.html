@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
@@ -23,11 +23,17 @@
                     <li class="nav-item" role="presentation"><a class="nav-link" href="./kalendarz">Kalendarz</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="./glosowania">Głosowania</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="./ustawy">Ustawy</a></li>
-                </ul><span class="navbar-text actions"> <a class="login" href="/singin">Zaloguj</a><a class="btn btn-light action-button" role="button" href="/singup" style="background-color: rgb(255,255,255);color: rgb(0,0,0);">Zarejestruj</a></span></div>
+                </ul><span class="navbar-text actions"> <a class="login" href="/login">Zaloguj</a><a class="btn btn-light visible action-button" role="button" href="/singup" style="background-color: rgb(255,255,255);color: rgb(0,0,0);">Zarejestruj</a></span></div>
         </div>
     </nav>
-    <div id="tresc" style="height: 80vh;">
-        <p style="font-size: 43px;text-align: center;"><br>ustawy</p>
+    <div class="login-clean">
+        <form method="post" th:action="@{/singin}" th:object="${user}>
+            <h2 class="sr-only">Login Form</h2>
+            <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
+            <div class="form-group"><input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email"><small th:errors="*{email}" class="form-text text-muted validation-singin">Help text for a form field.</small></div>
+            <div class="form-group"><input th:field="*{password}" class="form-control" type="password" name="password" placeholder="Hasło"><small  th:errors="*{password}" class="form-text text-muted validation-singin">Help text for a form field.</small></div>
+            <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Zaloguj</button></div>
+        </form>
     </div>
     <div class="footer-dark">
         <footer>
@@ -73,8 +79,8 @@
             </div>
         </footer>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
 
 </html>
