@@ -8,18 +8,22 @@ import java.io.Serializable;
 
 public class PositionEntity implements Serializable {
 
-    @Id
+   @EmbeddedId PositionID positionID;
+
+
+}
+
+@Embeddable
+class PositionID implements Serializable{
+
     @ManyToOne
     @NotNull
     @JoinColumn(name="politicianID")
     private PoliticianEntity politicianID;
 
 
-    @Id
     @ManyToOne
     @NotNull
     @JoinColumn(name="functionID")
     private FunctionEntity functionID;
-
-
 }

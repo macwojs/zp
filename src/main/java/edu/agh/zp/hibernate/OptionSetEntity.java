@@ -8,18 +8,21 @@ import java.io.Serializable;
 
 public class OptionSetEntity implements Serializable {
 
-    @Id
+    @EmbeddedId OptionSetID optionSetID;
+
+}
+
+
+@Embeddable
+class OptionSetID implements Serializable {
     @ManyToOne
     @NotNull
     @JoinColumn(name="optionID")
     private OptionEntity optionID;
 
 
-    @Id
     @ManyToOne
     @NotNull
     @JoinColumn(name="setID")
     private SetEntity setID_column;
-
-
 }
