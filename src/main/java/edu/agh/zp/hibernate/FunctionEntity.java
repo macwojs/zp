@@ -16,7 +16,27 @@ public class FunctionEntity implements Serializable {
 
     @NotNull
     @Column(name="funName")
-    private String setName_column;
+    private String funName;
+
+
+    @Override
+    public String toString(){
+        return "ID: " + functionID + "\nname: " + funName + "\n";
+    }
+
+    public FunctionEntity(){}
+
+    public FunctionEntity(String name){
+        this.funName = name;
+    }
+
+    public void SetName(String name){
+        this.funName = name;
+    }
+
+    public String GetName(){
+        return this.funName;
+    }
 
 
 }

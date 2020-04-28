@@ -18,5 +18,23 @@ public class DocumentTypeEntity implements Serializable {
     @Column(name="docTypeName")
     private String docTypeName;
 
+    @Override
+    public String toString(){
+        return "ID: " + docTypeID + "\nname: " + docTypeName + "\n";
+    }
+
+    public DocumentTypeEntity(){}
+
+    public DocumentTypeEntity(String name){
+        this.docTypeName = name;
+    }
+
+    public void SetName(String name){
+        this.docTypeName = name;
+    }
+
+    public String GetName(){
+        return this.docTypeName;
+    }
 
 }

@@ -11,12 +11,31 @@ public class DocumentStatusEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="docStatusID")
-    private long docTypeID;
+    private long docStatusID;
 
 
     @NotNull
     @Column(name="docStatusName")
-    private String docTypeName;
+    private String docStatusName;
+
+    @Override
+    public String toString(){
+        return "ID: " + docStatusID + "\nname: " + docStatusName + "\n";
+    }
+
+    public DocumentStatusEntity(){}
+
+    public DocumentStatusEntity(String name){
+        this.docStatusName = name;
+    }
+
+    public void SetName(String name){
+        this.docStatusName = name;
+    }
+
+    public String GetName(){
+        return this.docStatusName;
+    }
 
 
 }
