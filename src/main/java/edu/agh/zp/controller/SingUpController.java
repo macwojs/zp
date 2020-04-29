@@ -6,6 +6,9 @@ import edu.agh.zp.objects.User;
 import edu.agh.zp.services.CitizenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
+import edu.agh.zp.SecurityConfig;
 import org.springframework.beans.factory.*;
 
 import javax.validation.Valid;
@@ -43,7 +46,7 @@ public class SingUpController {
 			return new ModelAndView("singup");
 		}else{
 			CitizenEntity citizen = new CitizenEntity();
-			citizen.setHash(user.getPassword());
+			citizen.setHash(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 			citizen.setPesel(user.getPesel());
 			citizen.setIdNumber(user.getIdnumber());
 			CitizenRepository repo = context.getBean(CitizenRepository.class);

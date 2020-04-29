@@ -29,6 +29,7 @@
     <div class="register-photo">
         <div class="form-container">
             <form method="post" th:action="@{/singup}"  th:object="${user}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <h2 class="text-center"><strong>Utwórz konto</strong></h2>
                 <div class="form-group"> <span class="text-danger" th:errors="*{global}"></span></div>
                 <div class="form-group">
