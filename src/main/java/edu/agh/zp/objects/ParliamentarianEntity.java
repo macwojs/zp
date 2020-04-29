@@ -1,4 +1,4 @@
-package edu.agh.zp.hibernate;
+package edu.agh.zp.objects;
 
 import org.hibernate.validator.constraints.UniqueElements;
 
