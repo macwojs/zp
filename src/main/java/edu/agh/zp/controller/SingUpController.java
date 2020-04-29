@@ -17,6 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import org.springframework.beans.factory.*;
+
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,9 +38,9 @@ public class SingUpController {
 		return new ModelAndView(viewName, model);
 	}
 	@PostMapping("")
-	public ModelAndView submitRegister(@ModelAttribute("user") User user, BindingResult res){
+	public ModelAndView submitRegister( @Valid @ModelAttribute("user") User user, BindingResult res){
 		if( res.hasErrors()){
-
+			return new ModelAndView("singup");
 		}else{
 			CitizenEntity citizen = new CitizenEntity();
 			citizen.setHash(user.getPassword());
