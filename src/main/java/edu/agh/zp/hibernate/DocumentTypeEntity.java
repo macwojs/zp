@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class DocumentTypeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DocumentType_docTypeID_seq")
+    @SequenceGenerator(name = "DocumentType_docTypeID_seq", sequenceName = "DocumentType_docTypeID_seq", allocationSize = 1)
     @Column(name="docTypeID")
     private long docTypeID;
 
@@ -18,5 +19,23 @@ public class DocumentTypeEntity implements Serializable {
     @Column(name="docTypeName")
     private String docTypeName;
 
+    @Override
+    public String toString(){
+        return "ID: " + docTypeID + "\nname: " + docTypeName + "\n";
+    }
+
+    public DocumentTypeEntity(){}
+
+    public DocumentTypeEntity(String name){
+        this.docTypeName = name;
+    }
+
+    public void SetName(String name){
+        this.docTypeName = name;
+    }
+
+    public String GetName(){
+        return this.docTypeName;
+    }
 
 }
