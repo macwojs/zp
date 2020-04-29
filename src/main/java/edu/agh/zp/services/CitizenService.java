@@ -26,6 +26,7 @@ public class CitizenService {
         return cR.findByCitizenID(id);
     }
 
+
     public CitizenEntity update( CitizenEntity citizen ){
         return cR.save(citizen);
     }

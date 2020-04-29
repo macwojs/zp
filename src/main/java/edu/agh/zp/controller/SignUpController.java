@@ -24,15 +24,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping (value={"/singup"})
-public class SingUpController {
+@RequestMapping (value={"/signup"})
+public class SignUpController {
 	@Autowired
 	private ApplicationContext context;
 	private CitizenService cS;
 
 	@GetMapping (value = {""})
 	public ModelAndView index() {
-		String viewName = "singup";
+		String viewName = "signup";
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("user", new User());
 
