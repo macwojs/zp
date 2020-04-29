@@ -28,14 +28,34 @@
     </nav>
     <div class="register-photo">
         <div class="form-container">
-            <form method="post" th:action="@{/singup}" th:object="${user}>
-                <h2 class="text-center"><strong>Utwóż konto</strong></h2>
-                <div class="form-group"><input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email" required=""><small th:errors="*{email}" class="form-text text-muted validation-singup">Help text for a form field.</small></div>
-                <div class="form-group"><input th:field="*{password}" class="form-control" type="password" name="password" placeholder="Hasło" required=""><small th:errors="*{password}" class="form-text text-muted validation-singup">Help text for a form field.</small></div>
-                <div class="form-group"><input th:field="*{password_repear}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required=""><small  th:errors="*{password_repeat}" class="form-text text-muted validation-singup">Help text for a form field.</small></div>
-                <div class="form-group"><input th:field="*{name}" class="form-control" type="email" name="name" placeholder="Imię" required=""><small th:errors="*{name}" class="form-text text-muted validation-singup">Help text for a form field.</small></div>
-                <div class="form-group"><input th:field="*{surname}" class="form-control" type="email" name="surname" placeholder="Nazwisko" required=""><small th:errors="*{surname}" class="form-text text-muted validation-singup">Help text for a form field.</small></div>
-                <div class="form-group"><input th:field="*{pesel}" class="form-control" type="email" name="pesel" placeholder="PESEL" required="" inputmode="numeric"><small th:errors="*{pesel}" class="form-text text-muted validation-singup">Help text for a form field.</small></div>
+            <form method="post" th:action="@{/singup}"  th:object="${user}">
+                <h2 class="text-center"><strong>Utwórz konto</strong></h2>
+                <div class="form-group">
+                    <input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email" required="">
+                    <span class="text-danger" th:errors="*{email}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{password}" class="form-control" type="password" name="password" placeholder="Hasło" required="">
+                    <span class="text-danger" th:errors="*{password}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{repeat_password}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required="">
+                    <span class="text-danger" th:errors="*{repeat_password}">
+                   	<span class="text-danger" th:errors="*{global}"> </span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{name}" class="form-control" type="text" name="name" placeholder="Imię" required="">
+                    <span class="text-danger" th:errors="*{name}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{surname}" class="form-control" type="text" name="surname" placeholder="Nazwisko" required="">
+                    <span class="text-danger" th:errors="*{surname}"></div>
+                <div class="form-group">
+                    <input th:field="*{pesel}" class="form-control" type="number" name="pesel" placeholder="PESEL" inputmode="numeric">
+                    <span class="text-danger" th:errors="*{pesel}"> </span></div>
+                <div class="form-group">
+                    <input th:field="*{idnumber}" class="form-control" type="text" name="surname" placeholder="Seria i numer dowodu osobistego" required="">
+                    <span class="text-danger" th:errors="*{idnumber}"></div>
                 <div class="form-group">
                     <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox">Zgadzam się z polityką prywatności.</label></div>
                 </div>
