@@ -1,6 +1,4 @@
-package edu.agh.zp.hibernate;
-
-import org.hibernate.validator.constraints.UniqueElements;
+package edu.agh.zp.objects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

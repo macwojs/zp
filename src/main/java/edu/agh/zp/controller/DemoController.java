@@ -1,6 +1,6 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.hibernate.TestEntity;
+import edu.agh.zp.objects.TestEntity;
 import edu.agh.zp.hibernate.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 
 public class DemoController {
+
 
     @Autowired
     private TestRepository testRepository;
