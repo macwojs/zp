@@ -20,16 +20,13 @@ public class CitizenEntity implements Serializable {
     private long citizenID;
 
     @NotNull
-    //@UniqueElements
     @Column(name="\"userKey\"")
     private String hash;
 
     @NotNull
-//    @UniqueElements
     @Column(name="pesel",length = 11)
     private String pesel;
 
-//    @UniqueElements
     @Column(name="\"idNumber\"", length = 9)
     private String idNumber;
 

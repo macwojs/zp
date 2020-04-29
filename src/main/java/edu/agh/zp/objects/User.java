@@ -1,5 +1,7 @@
 package edu.agh.zp.objects;
 
+import org.springframework.data.annotation.Transient;
+
 import java.util.Objects;
 
 public class User {
@@ -9,6 +11,7 @@ public class User {
     private String pesel;
     private String idnumber;
     private String password;
+    @Transient // keyword to not push field to the database
     private String repeat_password;
 
     public User(){}
