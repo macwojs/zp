@@ -1,80 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section})">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>zp</title>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="/css/Footer-Dark.css">
-    <link rel="stylesheet" href="/css/Login-Form-Clean.css">
-    <link rel="stylesheet" href="/css/Navigation-with-Button.css">
-    <link rel="stylesheet" href="/css/Registration-Form-with-Photo.css">
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>Home</title>
 </head>
 
 <body>
-    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button" style="background-color: rgb(212,33,61);height: 10vh;">
-        <div class="container"><a class="navbar-brand" href="./" style="background-image: url(&quot;/img/godlo.png&quot;);background-size: contain;background-repeat: no-repeat;width: 10vh;height: 10vh;"></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="./kalendarz">Kalendarz</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="./glosowania">Głosowania</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="./ustawy">Ustawy</a></li>
-                </ul><span class="navbar-text actions"> <a class="login" href="/signin">Zaloguj</a><a class="btn btn-light action-button" role="button" href="/signup" style="background-color: rgb(255,255,255);color: rgb(0,0,0);">Zarejestruj</a></span></div>
-        </div>
-    </nav>
-    <div id="tresc" style="height: 80vh;">
+    <section id="tresc" style="height: 80vh;">
         <p style="font-size: 43px;text-align: center;"><br>Welcome to the Zarzadzanie Panstwem!<br><br></p>
-    </div>
-    <div class="footer-dark">
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 item">
-                        <h3>Kontakt</h3>
-                        <ul>
-                            <li><a href="#">prezydent@polski.pl</a></li>
-                            <li><a href="#">premier@polski.pl</a></li>
-                            <li><a href="#">admin@strony.pl</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-6 col-md-3 item">
-                        <h3>Symbole narodowe</h3>
-                        <ul>
-                            <li><a href="https://pl.wikipedia.org/wiki/Flaga_Polski">Flaga</a></li>
-                            <li><a href="https://pl.wikipedia.org/wiki/God%C5%82o_Polski">Godło</a></li>
-                            <li><a href="https://pl.wikipedia.org/wiki/Hymn_Polski">Hymn</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 item text">
-                        <h3>Projekty</h3>
-                        <ul class="ll">
-                            <li><a>Vat--</a></li>
-                            <li><a>Akcyza--</a></li>
-                            <li><a>PIT--</a></li>
-                        </ul>
-                        <ul class="ll">
-                            <li><a>ZUS--</a></li>
-                            <li><a>KRUS--</a></li>
-                            <li><a>OFE--</a></li>
-                        </ul>
-                        <ul class="ll">
-                            <li><a>Pensje++</a></li>
-                            <li><a>Emerytury++</a></li>
-                            <li><a>Renty++</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <p class="copyright" style="padding: 0px;padding-top: 13px;">Strony dostępne w domenie mogą zawierać adresy skrzynek&nbsp; mailowych. Użytkownik korzystający z odnośnika będącego adresem e-mail zgadza się na przetwarzanie jego danych (adres e-mail oraz dobrowolnie&nbsp; podanych danych w wiadomości)
-                    w celu przesłania odpowiedzi na przesłane&nbsp; pytania. Szczegóły przetwarzania danych przez każdą z jednostek znajdują się w ich politykach przetwarzania danych osobowych.<br><br></p>
-            </div>
-        </footer>
-    </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    </section>
 </body>
 
 </html>
