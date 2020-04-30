@@ -1,8 +1,13 @@
 package edu.agh.zp.objects;
 
+import edu.agh.zp.validator.ID;
+import edu.agh.zp.validator.Pesel;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 @Entity(name = "\"Citizen\"")
@@ -17,29 +22,43 @@ public class CitizenEntity implements Serializable {
     private long citizenID;
 
     @NotNull
+    @NotBlank (message = "Musisz podać hasło.")
+    @Size (min = 8, message = "Hasło musi posiagać minimum 8 znaków")
     @Column(name="\"password\"")
     private String password;
 
     @NotNull
-    @Email
+    @NotBlank(message = "Musisz podać email.")
+    @Email (message = "Wprowadź poprawny adres email.")
     @Column(name="email")
     private String email;
 
     @NotNull
+    @NotBlank (message = "Musisz podać imię.")
     @Column(name="name")
     private String name;
 
+    @NotNull
+    @NotBlank (message = "Musisz podać nazwisko.")
     @Column(name="\"surname\"")
     private String surname;
 
     @NotNull
+    @NotBlank (message = "Musisz podać pesel.")
+    @Pesel
+    @Size(min = 11, max =11, message = "Pesel musi posiadać 11 cyfr.")
     @Column(name="pesel",length = 11)
     private String pesel;
 
+    @NotBlank (message = "Musisz podać numer d owodu.")
+    @ID
+    @Size (min = 9, max =9, message = "Wprowadz numer dowodu w formacie ABC123456.")
     @Column(name="\"idNumber\"", length = 9)
     private String idNumber;
 
+    @NotNull
     @Transient
+    @NotBlank (message = "Musisz powtórzyć hasło.")
     private String repeatPassword;
 
     public String getRepeatPassword() {
