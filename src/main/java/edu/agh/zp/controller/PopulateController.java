@@ -2,6 +2,7 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.hibernate.*;
+import edu.agh.zp.objects.DocumentTypeEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

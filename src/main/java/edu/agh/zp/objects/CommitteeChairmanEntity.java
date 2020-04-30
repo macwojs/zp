@@ -1,4 +1,4 @@
-package edu.agh.zp.hibernate;
+package edu.agh.zp.objects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

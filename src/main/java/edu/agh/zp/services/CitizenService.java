@@ -1,9 +1,7 @@
 package edu.agh.zp.services;
 
-import edu.agh.zp.hibernate.CitizenEntity;
+import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.hibernate.CitizenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 
