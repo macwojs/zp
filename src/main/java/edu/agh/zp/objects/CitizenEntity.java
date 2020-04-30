@@ -1,6 +1,7 @@
 package edu.agh.zp.objects;
 
 import edu.agh.zp.validator.ID;
+import edu.agh.zp.validator.Password;
 import edu.agh.zp.validator.Pesel;
 
 import javax.persistence.*;
@@ -10,8 +11,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
-@Entity(name = "\"Citizen\"")
 
+@Entity(name = "\"Citizen\"")
+@Password
 public class CitizenEntity implements Serializable {
 
 

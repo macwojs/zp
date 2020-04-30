@@ -46,7 +46,7 @@ public class SignUpController {
 	@PostMapping("")
 	public ModelAndView submitRegister( @Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res){
 		if( res.hasErrors()){
-			//return new ModelAndView("signup");
+			return new ModelAndView("signup");
 		}else{
 
 			citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()) );

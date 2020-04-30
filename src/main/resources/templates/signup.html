@@ -10,6 +10,7 @@
             <form method="post" th:action="@{/signup}"  th:object="${user}">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <h2 class="text-center"><strong>Utwórz konto</strong></h2>
+                <div class="form-group"><span class="text-danger" th:errors="*{global}"> </span></div>
                 <div class="form-group">
                     <input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email" required="">
                     <span class="text-danger" th:errors="*{email}"></span>
@@ -20,8 +21,7 @@
                 </div>
                 <div class="form-group">
                     <input th:field="*{repeatPassword}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required="">
-                    <span class="text-danger" th:errors="*{repeatPassword}">
-                   	<span class="text-danger" th:errors="*{repeatPassword}"> </span>
+                    <span class="text-danger" th:errors="*{repeatPassword}"> </span>
                 </div>
                 <div class="form-group">
                     <input th:field="*{name}" class="form-control" type="text" name="name" placeholder="Imię" required="">
