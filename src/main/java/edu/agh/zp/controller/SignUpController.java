@@ -32,23 +32,24 @@ public class SignUpController {
 	private ApplicationContext context;
 	private CitizenService cS;
 
+
+
 	@GetMapping (value = {""})
 	public ModelAndView index() {
 		String viewName = "signup";
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("user", new User());
+		model.put("user", new CitizenEntity());
 
 		return new ModelAndView(viewName, model);
 	}
+
 	@PostMapping("")
-	public ModelAndView submitRegister( @Valid @ModelAttribute("user") User user, BindingResult res){
+	public ModelAndView submitRegister( @Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res){
 		if( res.hasErrors()){
-			return new ModelAndView("singup");
+			//return new ModelAndView("signup");
 		}else{
-			CitizenEntity citizen = new CitizenEntity();
-			citizen.setHash(user.getPassword());
-			citizen.setPesel(user.getPesel());
-			citizen.setIdNumber(user.getIdnumber());
+
+			citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()) );
 			CitizenRepository repo = context.getBean(CitizenRepository.class);
 			cS =  new CitizenService(context.getBean(CitizenRepository.class));
 			repo.save(citizen);

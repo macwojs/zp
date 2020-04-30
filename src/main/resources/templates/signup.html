@@ -7,7 +7,7 @@
 <section>
     <div class="register-photo">
         <div class="form-container">
-            <form method="post" th:action="@{/singup}"  th:object="${user}">
+            <form method="post" th:action="@{/signup}"  th:object="${user}">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <h2 class="text-center"><strong>Utwórz konto</strong></h2>
                 <div class="form-group">
@@ -19,9 +19,9 @@
                     <span class="text-danger" th:errors="*{password}"></span>
                 </div>
                 <div class="form-group">
-                    <input th:field="*{repeat_password}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required="">
-                    <span class="text-danger" th:errors="*{repeat_password}">
-                   	<span class="text-danger" th:errors="*{global}"> </span>
+                    <input th:field="*{repeatPassword}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required="">
+                    <span class="text-danger" th:errors="*{repeatPassword}">
+                   	<span class="text-danger" th:errors="*{repeatPassword}"> </span>
                 </div>
                 <div class="form-group">
                     <input th:field="*{name}" class="form-control" type="text" name="name" placeholder="Imię" required="">
@@ -36,13 +36,13 @@
                     <span class="text-danger" th:errors="*{pesel}"> </span>
                 </div>
                 <div class="form-group">
-                    <input th:field="*{idnumber}" class="form-control" type="text" name="surname" placeholder="Seria i numer dowodu osobistego" required="">
-                    <span class="text-danger" th:errors="*{idnumber}"></span>
+                    <input th:field="*{idNumber}" class="form-control" type="text" name="surname" placeholder="Seria i numer dowodu osobistego" required="">
+                    <span class="text-danger" th:errors="*{idNumber}"></span>
                 </div>
                 <div class="form-group">
                     <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox">Zgadzam się z polityką prywatności.</label></div>
                 </div>
-                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Zarejestruj</button></div><a class="already" href="/login">Masz konto? Zarejestruj się tutaj.</a></form>
+                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Zarejestruj</button></div><a class="already" href="/signin">Masz konto? Zarejestruj się tutaj.</a></form>
         </div>
     </div>
 </section>
