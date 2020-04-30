@@ -1,6 +1,6 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.hibernate.CitizenEntity;
+import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.hibernate.CitizenRepository;
 import edu.agh.zp.objects.User;
 import edu.agh.zp.services.CitizenService;
