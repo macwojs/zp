@@ -7,6 +7,8 @@ public class IDValidator implements ConstraintValidator< ID, String > {
 	@Override
 	public boolean isValid( String s, ConstraintValidatorContext constraintValidatorContext ) {
 
+		if(s.length()<9)
+			return false;
 		int d1 = getNumber( s.charAt( 0 ) );
 		int d2 = getNumber( s.charAt( 1 ) );
 		int d3 = getNumber( s.charAt( 2 ) );

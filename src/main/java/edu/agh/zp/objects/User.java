@@ -26,7 +26,7 @@ public class User {
 
     @NotBlank (message = "Musisz podać pesel.")
     @Pesel
-    @Size (min = 11, max =11, message = "Pesel musi mieć 11 cyfr.")
+    @Size (min = 11, max =11, message = "Pesel musi posiadać 11 cyfr.")
     private String pesel;
 
     @NotBlank (message = "Musisz podać numer dowodu.")

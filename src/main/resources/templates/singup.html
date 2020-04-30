@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>zp</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="/css/Footer-Dark.css">
+    <link rel="stylesheet" href="/css/Login-Form-Clean.css">
+    <link rel="stylesheet" href="/css/Navigation-with-Button.css">
+    <link rel="stylesheet" href="/css/Registration-Form-with-Photo.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button" style="background-color: rgb(212,33,61);height: 10vh;">
+        <div class="container"><a class="navbar-brand" href="./" style="background-image: url(&quot;/img/godlo.png&quot;);background-size: contain;background-repeat: no-repeat;width: 10vh;height: 10vh;"></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div
+                class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav mr-auto">
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="./kalendarz">Kalendarz</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="./glosowania">Głosowania</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="./ustawy">Ustawy</a></li>
+                </ul><span class="navbar-text actions"> <a class="login" href="/singin">Zaloguj</a><a class="btn btn-light visible action-button" role="button" href="/singup" style="background-color: rgb(255,255,255);color: rgb(0,0,0);">Zarejestruj</a></span></div>
+        </div>
+    </nav>
+    <div class="register-photo">
+        <div class="form-container">
+            <form method="post" th:action="@{/singup}"  th:object="${user}">
+                <h2 class="text-center"><strong>Utwórz konto</strong></h2>
+                <div class="form-group"> <span class="text-danger" th:errors="*{global}"></span></div>
+                <div class="form-group">
+                    <input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email" required="">
+                    <span class="text-danger" th:errors="*{email}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{password}" class="form-control" type="password" name="password" placeholder="Hasło" required="">
+                    <span class="text-danger" th:errors="*{password}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{repeat_password}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required="">
+                    <span class="text-danger" th:errors="*{repeat_password}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{name}" class="form-control" type="text" name="name" placeholder="Imię" required="">
+                    <span class="text-danger" th:errors="*{name}">
+                </div>
+                <div class="form-group">
+                    <input th:field="*{surname}" class="form-control" type="text" name="surname" placeholder="Nazwisko" required="">
+                    <span class="text-danger" th:errors="*{surname}"></div>
+                <div class="form-group">
+                    <input th:field="*{pesel}" class="form-control" type="number" name="pesel" placeholder="PESEL" inputmode="numeric">
+                    <span class="text-danger" th:errors="*{pesel}"> </span></div>
+                <div class="form-group">
+                    <input th:field="*{idnumber}" class="form-control" type="text" name="surname" placeholder="Seria i numer dowodu osobistego" required="">
+                    <span class="text-danger" th:errors="*{idnumber}"></div>
+                <div class="form-group">
+                    <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox" required="">Zgadzam się z polityką prywatności.</label></div>
+                </div>
+                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Zarejestruj</button></div><a class="already" href="/login">Masz konto? Zarejestruj się tutaj.</a></form>
+        </div>
+    </div>
+    <div class="footer-dark">
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Kontakt</h3>
+                        <ul>
+                            <li><a href="#">prezydent@polski.pl</a></li>
+                            <li><a href="#">premier@polski.pl</a></li>
+                            <li><a href="#">admin@strony.pl</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Symbole narodowe</h3>
+                        <ul>
+                            <li><a href="https://pl.wikipedia.org/wiki/Flaga_Polski">Flaga</a></li>
+                            <li><a href="https://pl.wikipedia.org/wiki/God%C5%82o_Polski">Godło</a></li>
+                            <li><a href="https://pl.wikipedia.org/wiki/Hymn_Polski">Hymn</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 item text">
+                        <h3>Projekty</h3>
+                        <ul class="ll">
+                            <li><a>Vat--</a></li>
+                            <li><a>Akcyza--</a></li>
+                            <li><a>PIT--</a></li>
+                        </ul>
+                        <ul class="ll">
+                            <li><a>ZUS--</a></li>
+                            <li><a>KRUS--</a></li>
+                            <li><a>OFE--</a></li>
+                        </ul>
+                        <ul class="ll">
+                            <li><a>Pensje++</a></li>
+                            <li><a>Emerytury++</a></li>
+                            <li><a>Renty++</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="copyright" style="padding: 0px;padding-top: 13px;">Strony dostępne w domenie mogą zawierać adresy skrzynek&nbsp; mailowych. Użytkownik korzystający z odnośnika będącego adresem e-mail zgadza się na przetwarzanie jego danych (adres e-mail oraz dobrowolnie&nbsp; podanych danych w wiadomości)
+                    w celu przesłania odpowiedzi na przesłane&nbsp; pytania. Szczegóły przetwarzania danych przez każdą z jednostek znajdują się w ich politykach przetwarzania danych osobowych.<br><br></p>
+            </div>
+        </footer>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
