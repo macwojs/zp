@@ -1,5 +1,7 @@
 package edu.agh.zp.objects;
 
+import org.springframework.data.annotation.Transient;
+
 import edu.agh.zp.validator.ID;
 import edu.agh.zp.validator.Password;
 import edu.agh.zp.validator.Pesel;
@@ -24,7 +26,7 @@ public class User {
 
     @NotBlank (message = "Musisz podać pesel.")
     @Pesel
-    @Size (min = 11, max =11, message = "Pesel musi mieć 11 cyfr.")
+    @Size (min = 11, max =11, message = "Pesel musi posiadać 11 cyfr.")
     private String pesel;
 
     @NotBlank (message = "Musisz podać numer dowodu.")
@@ -36,6 +38,7 @@ public class User {
     @Size (min = 8, message = "Hasło musi posiagać minimum 8 znaków")
     private String password;
 
+    @Transient // keyword to not push field to the database
     @NotBlank (message = "Musisz powtórzyć hasło.")
     private String repeat_password;
 

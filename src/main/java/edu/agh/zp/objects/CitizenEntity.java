@@ -1,10 +1,10 @@
 package edu.agh.zp.objects;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
-
 @Entity(name = "\"Citizen\"")
 
 public class CitizenEntity implements Serializable {
@@ -17,18 +17,62 @@ public class CitizenEntity implements Serializable {
     private long citizenID;
 
     @NotNull
-    //@UniqueElements
-    @Column(name="\"userKey\"")
-    private String hash;
+    @Column(name="\"password\"")
+    private String password;
 
     @NotNull
-//    @UniqueElements
+    @Email
+    @Column(name="email")
+    private String email;
+
+    @NotNull
+    @Column(name="name")
+    private String name;
+
+    @Column(name="\"surname\"")
+    private String surname;
+
+    @NotNull
     @Column(name="pesel",length = 11)
     private String pesel;
 
-//    @UniqueElements
     @Column(name="\"idNumber\"", length = 9)
     private String idNumber;
+
+    @Transient
+    private String repeatPassword;
+
+    public String getRepeatPassword() {
+        return repeatPassword;
+    }
+
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 
     public CitizenEntity() {
 
@@ -38,8 +82,8 @@ public class CitizenEntity implements Serializable {
         return citizenID;
     }
 
-    public String getHash() {
-        return hash;
+    public String getPassword() {
+        return password;
     }
 
     public String getPesel() {
@@ -55,16 +99,16 @@ public class CitizenEntity implements Serializable {
         if (this == o) return true;
         if (!(o instanceof CitizenEntity)) return false;
         CitizenEntity that = (CitizenEntity) o;
-        return getHash().equals(that.getHash());
+        return getPassword().equals(that.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getHash());
+        return Objects.hash(getPassword());
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    public void setPassword(String hash) {
+        this.password = hash;
     }
 
     public void setPesel(String pesel) {
