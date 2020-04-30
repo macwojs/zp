@@ -32,6 +32,8 @@ public class SignUpController {
 	private ApplicationContext context;
 	private CitizenService cS;
 
+
+
 	@GetMapping (value = {""})
 	public ModelAndView index() {
 		String viewName = "signup";
@@ -40,6 +42,7 @@ public class SignUpController {
 
 		return new ModelAndView(viewName, model);
 	}
+
 	@PostMapping("")
 	public ModelAndView submitRegister( @Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res){
 		if( res.hasErrors()){
