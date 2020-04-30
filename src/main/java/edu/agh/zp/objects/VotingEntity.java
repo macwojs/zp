@@ -13,7 +13,7 @@ public class VotingEntity implements Serializable {
 
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "votingID")
     private long votingID;
 

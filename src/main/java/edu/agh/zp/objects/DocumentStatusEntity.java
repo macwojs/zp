@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class DocumentStatusEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="docStatusID")
     private long docStatusID;
 

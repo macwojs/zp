@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public class VoteEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     @Column(name = "VoteID")
     private long CitizenID;

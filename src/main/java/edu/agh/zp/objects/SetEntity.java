@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class SetEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="setID")
     private long setID_column;
 

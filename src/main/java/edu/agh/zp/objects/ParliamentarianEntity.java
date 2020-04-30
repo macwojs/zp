@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class ParliamentarianEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     @Column(name = "parliamentarianID")
     private long parliamentarianID;

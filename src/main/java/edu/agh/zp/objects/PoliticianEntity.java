@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class PoliticianEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     @Column(name = "PoliticianID")
     private long PoliticianID;
