@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import edu.agh.zp.SecurityConfig;
+
 import org.springframework.beans.factory.*;
 
 import javax.validation.Valid;
@@ -36,19 +36,17 @@ public class SignUpController {
 	public ModelAndView index() {
 		String viewName = "signup";
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("user", new User());
+		model.put("user", new CitizenEntity());
 
 		return new ModelAndView(viewName, model);
 	}
 	@PostMapping("")
-	public ModelAndView submitRegister( @Valid @ModelAttribute("user") User user, BindingResult res){
+	public ModelAndView submitRegister( @Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res){
 		if( res.hasErrors()){
-			return new ModelAndView("singup");
+			//return new ModelAndView("signup");
 		}else{
-			CitizenEntity citizen = new CitizenEntity();
-			citizen.setHash(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-			citizen.setPesel(user.getPesel());
-			citizen.setIdNumber(user.getIdnumber());
+
+			citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()) );
 			CitizenRepository repo = context.getBean(CitizenRepository.class);
 			cS =  new CitizenService(context.getBean(CitizenRepository.class));
 			repo.save(citizen);
