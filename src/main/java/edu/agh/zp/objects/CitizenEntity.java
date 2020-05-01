@@ -14,7 +14,7 @@ import java.util.Objects;
 
 
 @Entity(name = "Citizen")
-//@Password
+@Password(groups = CitizenEntity.class)
 public class CitizenEntity implements Serializable {
 
 
