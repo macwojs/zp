@@ -1,4 +1,4 @@
-package edu.agh.zp.hibernate;
+package edu.agh.zp.repositories;
 
 import edu.agh.zp.objects.SetEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
