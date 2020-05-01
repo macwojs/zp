@@ -1,18 +1,22 @@
 // Controller should be used for creating basic constant records in data base, just after initialization/flush,
 package edu.agh.zp.controller;
 
+import com.github.javafaker.Faker;
 import edu.agh.zp.hibernate.*;
+import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.DocumentTypeEntity;
 import edu.agh.zp.objects.FunctionEntity;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.Random;
 
 @RestController
 public class PopulateController {
@@ -26,7 +30,17 @@ public class PopulateController {
     @Autowired
     private FunctionRepository FunctionSession;
 
+    @Autowired
+    private CitizenRepository CitizenSession;
 
+    @Autowired
+    private PoliticianRepository PoliticianSession;
+
+    @Autowired
+    private ParliamentarianRepository ParliamentarianSession;
+
+    @Autowired
+    private DocumentRepository DocumentSession;
 
     @GetMapping("/populate_basic")
 
@@ -56,6 +70,32 @@ public class PopulateController {
         return "Customers are created";
     }
 
+    @GetMapping("/populate/{num}")
+    public String Create(@PathVariable int num ) {
+        if (DocumentTypeSession.count() ==0 || DocumentStatusRepository.count() ==0 || FunctionSession.count() == 0)
+        {
+            truncate();
+            basicCreate();
+        }
+        Faker faker = new Faker(new Locale("pl"));
+        ArrayList<CitizenEntity> CitizenList = new ArrayList<CitizenEntity>();
+        Random rand = new Random();
+        long Pesel = 11111111111L;
+        for (int i=0; i<num;i++)
+        {
+            String name = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            CitizenList.add(new CitizenEntity(
+                    RandomString.make(15),
+                    name + "."+ lastName + "@example.com",
+                    name,
+                    lastName,
+                    Long.toString(Pesel)));
+            Pesel++;
+        }
+        CitizenSession.saveAll(CitizenList);
+        return "Not yet implemented" + num;
+    }
 
     @GetMapping("/truncate_basic")
     public String truncate(){
@@ -64,6 +104,15 @@ public class PopulateController {
         FunctionSession.deleteAll();
         return "Truncated";
     }
+
+    @GetMapping("/truncate_real")
+    public String truncate_force(){
+        DocumentTypeSession.deleteAll();
+        DocumentStatusRepository.deleteAll();
+        FunctionSession.deleteAll();
+        return "Truncated";
+    }
+
 
 
 

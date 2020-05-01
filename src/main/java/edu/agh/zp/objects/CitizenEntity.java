@@ -11,8 +11,8 @@ public class CitizenEntity implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Citizen_citizenID_seq")
-    @SequenceGenerator(name = "Citizen_citizenID_seq", sequenceName = "Citizen_citizenID_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Citizen_citizenID_seq")
+    @SequenceGenerator(name = "Citizen_citizenID_seq", sequenceName = "\"Citizen_citizenID_seq\"", allocationSize = 1)
     @NotNull
     @Column(name = "\"citizenID\"")
     private long citizenID;
@@ -42,6 +42,16 @@ public class CitizenEntity implements Serializable {
 
     @Transient
     private String repeatPassword;
+
+    public CitizenEntity() {}
+
+    public CitizenEntity(String password, String email, String name, String surname, String pesel) {
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.pesel = pesel;
+    }
 
     public String getRepeatPassword() {
         return repeatPassword;
@@ -75,9 +85,6 @@ public class CitizenEntity implements Serializable {
         this.surname = surname;
     }
 
-    public CitizenEntity() {
-
-    }
 
     public long getCitizenID() {
         return citizenID;
@@ -120,5 +127,17 @@ public class CitizenEntity implements Serializable {
         this.idNumber = idNumber;
     }
 
-
+    @Override
+    public String toString() {
+        return "CitizenEntity{" +
+                "citizenID=" + citizenID +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", pesel='" + pesel + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", repeatPassword='" + repeatPassword + '\'' +
+                '}';
+    }
 }
