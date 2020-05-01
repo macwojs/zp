@@ -1,7 +1,6 @@
 package edu.agh.zp.validator;
 
 import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.objects.User;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
