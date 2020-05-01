@@ -5,20 +5,20 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
-@Entity(name = "\"Citizen\"")
+@Entity(name = "Citizen")
 
 public class CitizenEntity implements Serializable {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Citizen_citizenID_seq")
-    @SequenceGenerator(name = "Citizen_citizenID_seq", sequenceName = "\"Citizen_citizenID_seq\"", allocationSize = 1)
+    @SequenceGenerator(name = "Citizen_citizenID_seq", sequenceName = "Citizen_citizenID_seq", allocationSize = 1)
     @NotNull
-    @Column(name = "\"citizenID\"")
+    @Column(name = "citizenID")
     private long citizenID;
 
     @NotNull
-    @Column(name="\"password\"")
+    @Column(name="password")
     private String password;
 
     @NotNull
@@ -30,14 +30,14 @@ public class CitizenEntity implements Serializable {
     @Column(name="name")
     private String name;
 
-    @Column(name="\"surname\"")
+    @Column(name="surname")
     private String surname;
 
     @NotNull
     @Column(name="pesel",length = 11)
     private String pesel;
 
-    @Column(name="\"idNumber\"", length = 9)
+    @Column(name="idNumber", length = 9)
     private String idNumber;
 
     @Transient

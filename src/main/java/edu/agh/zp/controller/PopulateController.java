@@ -3,10 +3,7 @@ package edu.agh.zp.controller;
 
 import com.github.javafaker.Faker;
 import edu.agh.zp.hibernate.*;
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.objects.DocumentStatusEntity;
-import edu.agh.zp.objects.DocumentTypeEntity;
-import edu.agh.zp.objects.FunctionEntity;
+import edu.agh.zp.objects.*;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +36,7 @@ public class PopulateController {
     @Autowired
     private ParliamentarianRepository ParliamentarianSession;
 
-    @Autowired
-    private DocumentRepository DocumentSession;
+
 
     @GetMapping("/populate_basic")
 
@@ -77,24 +73,51 @@ public class PopulateController {
             truncate();
             basicCreate();
         }
+        ArrayList<String> group = new ArrayList<String>(Arrays.asList("AAA", "BBB", "CCC", "DDD"));
         Faker faker = new Faker(new Locale("pl"));
+//        ArrayList<FunctionEntity> fun = new ArrayList<FunctionEntity>(Arrays.asList(
+//                FunctionSession.findByFunName("poseł").get(0),
+//                FunctionSession.findByFunName("senator").get(0)));
         ArrayList<CitizenEntity> CitizenList = new ArrayList<CitizenEntity>();
+        ArrayList<PoliticianEntity> PoliticianList = new ArrayList<PoliticianEntity>();
+        ArrayList<ParliamentarianEntity> ParliamentarianList = new ArrayList<ParliamentarianEntity>();
         Random rand = new Random();
         long Pesel = 11111111111L;
         for (int i=0; i<num;i++)
         {
             String name = faker.name().firstName();
             String lastName = faker.name().lastName();
-            CitizenList.add(new CitizenEntity(
+            CitizenEntity citizen = new CitizenEntity(
                     RandomString.make(15),
-                    name + "."+ lastName + "@example.com",
+                    name + "."+ lastName + (rand.nextInt(100) + 1) + "@example.com",
                     name,
                     lastName,
-                    Long.toString(Pesel)));
+                    Long.toString(Pesel));
+            CitizenList.add(citizen);
             Pesel++;
+            if (i % 5 < 3)
+            {
+                PoliticianEntity politician = new PoliticianEntity(citizen);
+                PoliticianList.add(politician);
+                if (i % 5 < 2)
+                {
+                    String fun;
+                    if (rand.nextInt(2) == 0) fun = "Senator";
+                    else fun = "Poseł";
+                    ParliamentarianList.add(new ParliamentarianEntity(
+                            RandomString.make(10),
+                            group.get(rand.nextInt(group.size())),
+                            fun,
+                            politician
+                    ));
+                }
+                //function adding
+            }
         }
         CitizenSession.saveAll(CitizenList);
-        return "Not yet implemented" + num;
+        PoliticianSession.saveAll(PoliticianList);
+        ParliamentarianSession.saveAll(ParliamentarianList);
+        return "Populated " + num;
     }
 
     @GetMapping("/truncate_basic")
