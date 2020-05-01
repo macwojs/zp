@@ -8,20 +8,14 @@
 <body>
 <section id="tresc" >
     <div class="contact-clean">
-        <form method="post">
+        <form method="POST">
             <h2 class="text-center">Dodawanie dokumentu</h2>
             <div class="form-group">
-                <select class="form-control" name="doctypeid">
-                    <option value="1" selected="">Postanowienie</option>
-                    <option value="2">Obwieszczenie</option>
-                    <option value="3">Uchwała</option>
-                    <option value="4">Oświadczenie</option>
-                    <option value="5">Wyrok Trybunału Konstytucyjnego</option>
-                    <option value="6">Umowa międzynarodowa</option>
-                    <option value="7">Rezolucja</option>
-                    <option value="8">Protokół</option>
-                    <option value="9" selected="">Ustawa</option>
-                    <option value="10">Rozporządzenie</option>
+                <select class="form-control" name="type" th:field="*{types}">
+                    <option value="">Wybierz typ dokumentu</option>
+                    <option th:each="type: ${types}"
+                            th:value="${type.docTypeID}"
+                            th:text="${type.docTypeName}"></option>
                 </select>
             </div>
             <div class="form-group"><input class="form-control" type="text" name="docname" placeholder="Nazwa dokumentu"></div>

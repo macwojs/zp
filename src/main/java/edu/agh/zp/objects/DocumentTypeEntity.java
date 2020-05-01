@@ -1,5 +1,8 @@
 package edu.agh.zp.objects;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -30,12 +33,19 @@ public class DocumentTypeEntity implements Serializable {
         this.docTypeName = name;
     }
 
-    public void SetName(String name){
-        this.docTypeName = name;
+    public void setDocTypeID( long docTypeID ) {
+        this.docTypeID = docTypeID;
     }
 
-    public String GetName(){
+    public long getDocTypeID( ) {
+        return this.docTypeID;
+    }
+
+    public void setDocTypeName( String docTypeName ) {
+        this.docTypeName = docTypeName;
+    }
+
+    public String getDocTypeName( ) {
         return this.docTypeName;
     }
-
 }
