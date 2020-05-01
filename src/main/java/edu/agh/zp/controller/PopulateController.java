@@ -11,6 +11,7 @@ import edu.agh.zp.objects.FunctionEntity;
 import edu.agh.zp.objects.*;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -99,7 +100,7 @@ public class PopulateController {
             String name = faker.name().firstName();
             String lastName = faker.name().lastName();
             //String pass = RandomString.make(15);
-            String pass = "12345678"; //Fajnie znać hasłą do tych kont
+            String pass = BCrypt.hashpw("12345678", BCrypt.gensalt()); //Fajnie znać hasłą do tych kont, i fajnie je zahaszować
             CitizenEntity citizen = new CitizenEntity(
                     pass,
                     pass,
