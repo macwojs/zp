@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 
+import static java.lang.StrictMath.abs;
+
 @RestController
 public class PopulateController {
 
@@ -81,7 +83,6 @@ public class PopulateController {
         ArrayList<PoliticianEntity> PoliticianList = new ArrayList<PoliticianEntity>();
         ArrayList<ParliamentarianEntity> ParliamentarianList = new ArrayList<ParliamentarianEntity>();
         Random rand = new Random();
-        long Pesel = 11111111111L;
         for (int i = 0; i < num; i++) {
             String name = faker.name().firstName();
             String lastName = faker.name().lastName();
@@ -92,10 +93,9 @@ public class PopulateController {
                     name + "." + lastName + (rand.nextInt(100) + 1) + "@example.com",
                     name,
                     lastName,
-                    Long.toString(Pesel),
+                    GeneratePesel(),
                     genID());
             CitizenList.add(citizen);
-            Pesel++;
             if (i % 5 < 3) {
                 PoliticianEntity politician = new PoliticianEntity(citizen);
                 PoliticianList.add(politician);
@@ -135,7 +135,7 @@ public class PopulateController {
         return "Truncated";
     }
 
-    public String genID() {
+    private String genID() {
         Random rand = new Random();
         String res1 = "", res2 = "";
         for (int i = 0; i < 3; i++) {
@@ -143,15 +143,15 @@ public class PopulateController {
         }
         res2 = Integer.toString(rand.nextInt(100000));
         while (res2.length() < 5) res2 = "0" + res2;
-        int last = CalculateControl(res1,res2);
+        int last = CalculateControl_ID(res1,res2);
         return res1 + last + res2;
     }
 
-    public int GetValue(char c) {
+    private int GetValue(char c) {
         return (int) c - 55;
     }
 
-    public int CalculateControl(String alpha, String digit)
+    private int CalculateControl_ID(String alpha, String digit)
     {
         int control = 7*GetValue(alpha.charAt(0))+3*GetValue(alpha.charAt(1))+GetValue(alpha.charAt(2))
                 + 7 * (digit.charAt(0)-48)+ 3 * (digit.charAt(1)-48)+  (digit.charAt(2)-48)
@@ -159,6 +159,26 @@ public class PopulateController {
 
         return control%10;
     }
+
+    private String GeneratePesel()
+    {
+        Random rand = new Random();
+        String result = Long.toString(abs(rand.nextLong()/100000000000L));
+        while (result.length() < 10) result = "0" + result;
+        result+=CalculateControl_ID(result);
+        return result;
+    }
+
+    private char CalculateControl_ID(String val)
+    {
+        int temp = 9*(val.charAt(0)-48) + 7*(val.charAt(1)-48) + 3*(val.charAt(2)-48) +
+                (val.charAt(3)-48) + 9*(val.charAt(4)-48) + 7*(val.charAt(5)-48) +
+                3*(val.charAt(6)-48) + (val.charAt(7)-48) + 9*(val.charAt(8)-48) +
+                7*(val.charAt(9)-48);
+        String ret = Integer.toString(temp);
+        return ret.charAt(ret.length()-1);
+    }
+
 }
 
 
