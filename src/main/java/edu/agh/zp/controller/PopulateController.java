@@ -46,18 +46,30 @@ public class PopulateController {
     @GetMapping("/populate_basic")
 
     public String basicCreate() {
-        DocumentTypeSession.saveAll(Arrays.asList(new DocumentTypeEntity("Ustawa")
-                , new DocumentTypeEntity("Rozporządzenie")
-                , new DocumentTypeEntity("coś_innego")
-                , new DocumentTypeEntity("wymyśl_coś")));
+        DocumentTypeSession.saveAll(Arrays.asList(
+                new DocumentTypeEntity("Ustawa")
+                , new DocumentTypeEntity("Postanowienie")
+                , new DocumentTypeEntity("Obwieszczenie")
+                , new DocumentTypeEntity("Uchwała")
+                , new DocumentTypeEntity("Oświadczenie")
+                , new DocumentTypeEntity("Wyrok Trybunały Konstytucyjnego")
+                , new DocumentTypeEntity("Umowa międzynarodowa")
+                , new DocumentTypeEntity("Rezolucja")
+                , new DocumentTypeEntity("Protokół")
+                , new DocumentTypeEntity("Ustawa")
+                , new DocumentTypeEntity("Rozporządzenie")));
 
         DocumentStatusRepository.saveAll(Arrays.asList(
-                new DocumentStatusEntity("Odrzucona"),
-                new DocumentStatusEntity("Aktywna"),
-                new DocumentStatusEntity("Wygasła"),
-                new DocumentStatusEntity("Oczekująca - prezydent"),
-                new DocumentStatusEntity("Oczekująca - sejm"),
-                new DocumentStatusEntity("Oczekująca - senat")));
+                new DocumentStatusEntity("Zgłoszona")
+                , new DocumentStatusEntity("Odrzucona")
+                , new DocumentStatusEntity("Wygasła")
+                , new DocumentStatusEntity("Uchwalona")
+                , new DocumentStatusEntity("Obowiązująca")
+                , new DocumentStatusEntity("Oczekująca - prezydent")
+                , new DocumentStatusEntity("Oczekująca - skierowana do Trybunału ")
+                , new DocumentStatusEntity("Oczekująca - sejm")
+                , new DocumentStatusEntity("Oczekująca - sejm, powtórnie")
+                , new DocumentStatusEntity("Oczekująca - senat")));
 
         FunctionSession.saveAll(Arrays.asList(
                 new FunctionEntity("poseł"),
@@ -86,7 +98,8 @@ public class PopulateController {
         for (int i = 0; i < num; i++) {
             String name = faker.name().firstName();
             String lastName = faker.name().lastName();
-            String pass = RandomString.make(15);
+            //String pass = RandomString.make(15);
+            String pass = "12345678"; //Fajnie znać hasłą do tych kont
             CitizenEntity citizen = new CitizenEntity(
                     pass,
                     pass,
