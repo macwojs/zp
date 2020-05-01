@@ -29,7 +29,7 @@ public class User {
     @Size (min = 11, max =11, message = "Pesel musi posiadać 11 cyfr.")
     private String pesel;
 
-    @NotBlank (message = "Musisz podać numer dowodu.")
+    @NotBlank (message = "Musisz podać numer d owodu.")
     @ID
     @Size (min = 9, max =9, message = "Wprowadz numer dowodu w formacie ABC123456.")
     private String idnumber;

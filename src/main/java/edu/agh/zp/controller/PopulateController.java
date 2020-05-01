@@ -1,10 +1,12 @@
 // Controller should be used for creating basic constant records in data base, just after initialization/flush,
 package edu.agh.zp.controller;
 
+
 import com.github.javafaker.Faker;
-import edu.agh.zp.hibernate.*;
 import edu.agh.zp.objects.*;
 import net.bytebuddy.utility.RandomString;
+import edu.agh.zp.repositories.*;
+import edu.agh.zp.objects.DocumentTypeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -136,37 +138,5 @@ public class PopulateController {
         return "Truncated";
     }
 
-
-
-
-//    @GetMapping("/findall")
-//
-//    public List<TestEntity> findAll(){
-//
-//        List<TestEntity> tests = testRepository.findAll();
-//
-//        List<TestEntity> test_list = new ArrayList<>();
-//
-//        for (TestEntity test : tests) {
-//
-//            test_list.add(new TestEntity(test.getName(),test.getNum()));
-//
-//        }
-//
-//        return test_list;
-//
-//    }
-//
-//    @RequestMapping("/search/{id}")
-//
-//    public String search(@PathVariable long id){
-//
-//        String Test = "";
-//
-//        Test = testRepository.findById(id).toString();
-//
-//        return Test;
-//
-//    }
 }
 

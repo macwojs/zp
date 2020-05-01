@@ -1,11 +1,8 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.hibernate.CitizenRepository;
 import edu.agh.zp.objects.User;
 import edu.agh.zp.services.CitizenService;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import edu.agh.zp.services.CitizenService;
-import javax.activation.DataHandler;
+
 import java.util.HashMap;
 import java.util.Map;
 
