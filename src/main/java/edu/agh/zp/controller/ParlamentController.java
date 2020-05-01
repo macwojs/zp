@@ -23,4 +23,11 @@ public class ParlamentController {
 		modelAndView.setViewName( "ustawy" );
 		return modelAndView;
 	}
+
+	@GetMapping(value = {"/documentForm"})
+	public ModelAndView documentForm() {
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "documentForm" );
+		return modelAndView;
+	}
 }

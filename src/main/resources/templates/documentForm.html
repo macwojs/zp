@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section})">
+
+<head>
+    <title>Home</title>
+</head>
+
+<body>
+<section id="tresc" >
+    <div class="contact-clean">
+        <form method="post">
+            <h2 class="text-center">Dodawanie dokumentu</h2>
+            <div class="form-group">
+                <select class="form-control" name="doctypeid">
+                    <option value="1" selected="">Postanowienie</option>
+                    <option value="2">Obwieszczenie</option>
+                    <option value="3">Uchwała</option>
+                    <option value="4">Oświadczenie</option>
+                    <option value="5">Wyrok Trybunału Konstytucyjnego</option>
+                    <option value="6">Umowa międzynarodowa</option>
+                    <option value="7">Rezolucja</option>
+                    <option value="8">Protokół</option>
+                    <option value="9" selected="">Ustawa</option>
+                    <option value="10">Rozporządzenie</option>
+                </select>
+            </div>
+            <div class="form-group"><input class="form-control" type="text" name="docname" placeholder="Nazwa dokumentu"></div>
+            <div class="form-group"><textarea class="form-control" name="docdescription" placeholder="Opis" rows="14"></textarea></div>
+            <div class="form-group">
+                <select class="form-control" name="doctypeid">
+                    <option value="1" selected="">Złożono</option>
+                    <option value="2">Głosowanie w sejmie</option>
+                    <option value="3">Głosowanie w senacie</option>
+                    <option value="4">Powtórne głosowanie w sejmie</option>
+                    <option value="5">U prezydenta</option>
+                    <option value="6">Skierowano do Trybunału Konstytucyjnego</option>
+                    <option value="7">Uchwalono</option>
+                    <option value="8">Ogłoszone</option>
+                </select>
+            </div>
+            <div class="form-group"><input class="bg-white border rounded border-white shadow-none" type="file" name="pdffile"></div>
+            <div class="form-group"><button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj</button></div>
+        </form>
+    </div>
+</section>
+</body>
+
+</html>
