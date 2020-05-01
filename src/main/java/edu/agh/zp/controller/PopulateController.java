@@ -1,7 +1,7 @@
 // Controller should be used for creating basic constant records in data base, just after initialization/flush,
 package edu.agh.zp.controller;
 
-import edu.agh.zp.hibernate.*;
+import edu.agh.zp.repositories.*;
 import edu.agh.zp.objects.DocumentTypeEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

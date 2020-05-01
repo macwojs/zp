@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "\"Citizen\"")
-@Password
+//@Password
 public class CitizenEntity implements Serializable {
 
 

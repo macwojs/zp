@@ -1,10 +1,11 @@
 package edu.agh.zp.services;
 
 import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.hibernate.CitizenRepository;
+import edu.agh.zp.repositories.CitizenRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-
+@Service
 public class CitizenService {
     private CitizenRepository cR;
 
@@ -28,4 +29,4 @@ public class CitizenService {
     public CitizenEntity update( CitizenEntity citizen ){
         return cR.save(citizen);
     }
-}
+ }
