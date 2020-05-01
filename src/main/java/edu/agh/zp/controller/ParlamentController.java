@@ -1,7 +1,9 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.DocumentEntity;
+import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.DocumentTypeEntity;
+import edu.agh.zp.repositories.DocumentStatusRepository;
 import edu.agh.zp.repositories.DocumentTypeRepository;
 import edu.agh.zp.services.CitizenService;
 import org.springframework.stereotype.Controller;
@@ -15,16 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping (value={"/parlament"})
+@RequestMapping ( value = { "/parlament" } )
 public class ParlamentController {
 
 	private DocumentTypeRepository documentTypeRepository;
+	private DocumentStatusRepository documentStatusRepository;
 
-	public ParlamentController( DocumentTypeRepository documentTypeRepository){
+	public ParlamentController(
+			DocumentTypeRepository documentTypeRepository,
+			DocumentStatusRepository documentStatusRepository ) {
 		this.documentTypeRepository = documentTypeRepository;
+		this.documentStatusRepository = documentStatusRepository;
 	}
 
-	@GetMapping (value = {""})
+	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "parlament" );
@@ -32,31 +38,22 @@ public class ParlamentController {
 	}
 
 
-	@GetMapping(value = {"/ustawy"})
+	@GetMapping ( value = { "/ustawy" } )
 	public ModelAndView ustawy() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "ustawy" );
 		return modelAndView;
 	}
 
-	@GetMapping(value = {"/documentForm"})
-	public String documentForm( Model model) {
+	@GetMapping ( value = { "/documentForm" } )
+	public ModelAndView documentForm( ModelAndView model ) {
+		List< DocumentTypeEntity > types = documentTypeRepository.findAll( );
+		model.addObject( "types", types );
 
-		DocumentEntity documentForm = new DocumentEntity();
-		model.addAttribute( "documentForm", documentForm );
+		List< DocumentStatusEntity > statuses = documentStatusRepository.findAll( );
+		model.addObject( "statuses", statuses );
 
-		//List< DocumentTypeEntity > documentTypeEntitie = new ArrayList<>();
-		//model.addAttribute("type", documentTypeEntitie);
-
-		List<DocumentTypeEntity> types = documentTypeRepository.findAll();
-		//model.addAttribute("type", documentTypeEntities);
-		model.addAttribute( "types", types );
-
-		//model.addAttribute( "name", "documentForm" );
-
-		//ModelAndView modelAndView = new ModelAndView( );
-		//modelAndView.setViewName( "documentForm" );
-
-		return "documentForm";
+		model.setViewName( "documentForm" );
+		return model;
 	}
 }

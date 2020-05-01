@@ -21,15 +21,11 @@
             <div class="form-group"><input class="form-control" type="text" name="docname" placeholder="Nazwa dokumentu"></div>
             <div class="form-group"><textarea class="form-control" name="docdescription" placeholder="Opis" rows="14"></textarea></div>
             <div class="form-group">
-                <select class="form-control" name="doctypeid">
-                    <option value="1" selected="">Złożono</option>
-                    <option value="2">Głosowanie w sejmie</option>
-                    <option value="3">Głosowanie w senacie</option>
-                    <option value="4">Powtórne głosowanie w sejmie</option>
-                    <option value="5">U prezydenta</option>
-                    <option value="6">Skierowano do Trybunału Konstytucyjnego</option>
-                    <option value="7">Uchwalono</option>
-                    <option value="8">Ogłoszone</option>
+                <select class="form-control" name="type" th:field="*{statuses}">
+                    <option value="">Wybierz typ dokumentu</option>
+                    <option th:each="status: ${statuses}"
+                            th:value="${status.docStatusID}"
+                            th:text="${status.docStatusName}"></option>
                 </select>
             </div>
             <div class="form-group"><input class="bg-white border rounded border-white shadow-none" type="file" name="pdffile"></div>

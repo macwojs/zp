@@ -30,13 +30,20 @@ public class DocumentStatusEntity implements Serializable {
         this.docStatusName = name;
     }
 
-    public void SetName(String name){
-        this.docStatusName = name;
+
+    public void setDocStatusID( long docStatusID ) {
+        this.docStatusID = docStatusID;
     }
 
-    public String GetName(){
+    public long getDocStatusID(  ) {
+        return this.docStatusID;
+    }
+
+    public void setDocStatusName( String docStatusName ) {
+        this.docStatusName = docStatusName;
+    }
+
+    public String getDocStatusName(  ) {
         return this.docStatusName;
     }
-
-
 }
