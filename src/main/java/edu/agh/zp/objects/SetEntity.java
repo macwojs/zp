@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class SetEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Set_setID_seq")
+    @SequenceGenerator(name = "Set_setID_seq", sequenceName = "Set_setID_seq", allocationSize = 1)
     @Column(name="setID")
     private long setID_column;
 

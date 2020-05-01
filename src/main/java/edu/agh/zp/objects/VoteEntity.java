@@ -10,7 +10,8 @@ import java.sql.Timestamp;
 public class VoteEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Vote_VoteID_seq")
+    @SequenceGenerator(name = "Vote_VoteID_seq", sequenceName = "Vote_VoteID_seq", allocationSize = 1)
     @NotNull
     @Column(name = "VoteID")
     private long CitizenID;

@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class PoliticianEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Politician_PoliticianID_seq")
+    @SequenceGenerator(name = "Politician_PoliticianID_seq", sequenceName = "Politician_PoliticianID_seq", allocationSize = 1)
     @NotNull
     @Column(name = "PoliticianID")
     private long PoliticianID;

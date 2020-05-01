@@ -11,7 +11,8 @@ import java.io.Serializable;
 public class ParliamentarianEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Parliamentarian_parliamentarianID_seq")
+    @SequenceGenerator(name = "Parliamentarian_parliamentarianID_seq", sequenceName = "Parliamentarian_parliamentarianID_seq", allocationSize = 1)
     @NotNull
     @Column(name = "parliamentarianID")
     private long parliamentarianID;

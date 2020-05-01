@@ -2,7 +2,9 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.hibernate.*;
+import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.DocumentTypeEntity;
+import edu.agh.zp.objects.FunctionEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -25,28 +27,42 @@ public class PopulateController {
     private FunctionRepository FunctionSession;
 
 
-    @GetMapping("/populate_create")
 
-    public String bulkcreate(){
-        DocumentTypeSession.saveAll(Arrays.asList(new DocumentTypeEntity("Act")
-                , new DocumentTypeEntity("decree")
-                , new DocumentTypeEntity("No_idea_what")
-                , new DocumentTypeEntity("Something_else")));
+    @GetMapping("/populate_basic")
+
+    public String basicCreate(){
+        DocumentTypeSession.saveAll(Arrays.asList(new DocumentTypeEntity("Ustawa")
+                , new DocumentTypeEntity("Rozporządzenie")
+                , new DocumentTypeEntity("coś_innego")
+                , new DocumentTypeEntity("wymyśl_coś")));
+
+        DocumentStatusRepository.saveAll(Arrays.asList(
+                new DocumentStatusEntity("Odrzucona"),
+                new DocumentStatusEntity("Aktywna"),
+                new DocumentStatusEntity("Wygasła"),
+                new DocumentStatusEntity("Oczekująca - prezydent"),
+                new DocumentStatusEntity("Oczekująca - sejm"),
+                new DocumentStatusEntity("Oczekująca - senat")));
+
+        FunctionSession.saveAll(Arrays.asList(
+                new FunctionEntity("poseł"),
+                new FunctionEntity("senator"),
+                new FunctionEntity("prezydent"),
+                new FunctionEntity("marszałek"),
+                new FunctionEntity("premier"),
+                new FunctionEntity("minister"),
+                new FunctionEntity("członek komisji")));
 
         return "Customers are created";
     }
 
 
-    @GetMapping("/truncate")
+    @GetMapping("/truncate_basic")
     public String truncate(){
-        Configuration cfg = new Configuration();
-        cfg.configure("application.properties");
-        SessionFactory factory = cfg.buildSessionFactory();
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.createSQLQuery("truncate table DocumentType, DocumentStatus, Function").executeUpdate();
-        session.getTransaction().commit();
-        return "Not yet implemented";
+        DocumentTypeSession.deleteAll();
+        DocumentStatusRepository.deleteAll();
+        FunctionSession.deleteAll();
+        return "Truncated";
     }
 
 
@@ -81,3 +97,4 @@ public class PopulateController {
 //
 //    }
 }
+

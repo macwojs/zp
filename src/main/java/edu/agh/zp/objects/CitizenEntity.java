@@ -11,7 +11,8 @@ public class CitizenEntity implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Citizen_citizenID_seq")
+    @SequenceGenerator(name = "Citizen_citizenID_seq", sequenceName = "Citizen_citizenID_seq", allocationSize = 1)
     @NotNull
     @Column(name = "\"citizenID\"")
     private long citizenID;

@@ -13,7 +13,8 @@ public class VotingEntity implements Serializable {
 
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Voting_votingID_seq")
+    @SequenceGenerator(name = "Voting_votingID_seq", sequenceName = "Voting_votingID_seq", allocationSize = 1)
     @Column(name = "votingID")
     private long votingID;
 

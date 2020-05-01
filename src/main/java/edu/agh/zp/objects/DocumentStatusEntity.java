@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class DocumentStatusEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DocumentStatus_docStatusID_seq")
+    @SequenceGenerator(name = "DocumentStatus_docStatusID_seq", sequenceName = "DocumentStatus_docStatusID_seq", allocationSize = 1)
     @Column(name="docStatusID")
     private long docStatusID;
 
