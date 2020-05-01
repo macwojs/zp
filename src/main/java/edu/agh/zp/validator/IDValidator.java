@@ -2,6 +2,7 @@ package edu.agh.zp.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Random;
 
 public class IDValidator implements ConstraintValidator< ID, String > {
 	@Override
@@ -82,5 +83,6 @@ public class IDValidator implements ConstraintValidator< ID, String > {
 				return 0;
 		}
 	}
+
 }
 

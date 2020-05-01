@@ -69,12 +69,14 @@ public class CitizenEntity implements Serializable {
 
     public CitizenEntity() {}
 
-    public CitizenEntity(String password, String email, String name, String surname, String pesel) {
+    public CitizenEntity(String password, String rp, String email, String name, String surname, String pesel, String idNumber) {
         this.password = password;
         this.email = email;
         this.name = name;
         this.surname = surname;
         this.pesel = pesel;
+        this.idNumber = idNumber;
+        this.repeatPassword = rp;
     }
 
     public String getRepeatPassword() {
