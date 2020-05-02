@@ -1,4 +1,4 @@
-package edu.agh.zp;
+package edu.agh.zp.configuration;
 
 
 import edu.agh.zp.objects.CitizenEntity;
@@ -30,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf();
         http.httpBasic().disable();
-        http.authorizeRequests().antMatchers("/glosowania").hasAnyRole()
+        // TODO...Change the authorization
+        http.authorizeRequests().antMatchers("/parlament").hasAnyRole()
                 .and()
                 .formLogin()
                 .loginPage("/signin")

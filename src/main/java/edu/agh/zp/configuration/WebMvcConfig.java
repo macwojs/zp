@@ -1,4 +1,4 @@
-package edu.agh.zp;
+package edu.agh.zp.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
