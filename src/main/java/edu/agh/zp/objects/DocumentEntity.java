@@ -10,7 +10,8 @@ import java.sql.Date;
 public class DocumentEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Document_docID_seq")
+    @SequenceGenerator(name = "Document_docID_seq", sequenceName = "Document_docID_seq", allocationSize = 1)
     @Column(name = "docID")
     private long docID;
 

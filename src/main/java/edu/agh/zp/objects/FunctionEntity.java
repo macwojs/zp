@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class FunctionEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Function_functionID_seq")
+    @SequenceGenerator(name = "Function_functionID_seq", sequenceName = "Function_functionID_seq", allocationSize = 1)
     @Column(name="functionID")
     private long functionID;
 

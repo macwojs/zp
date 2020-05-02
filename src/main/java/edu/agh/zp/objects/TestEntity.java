@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class TestEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name="name", length = 13)

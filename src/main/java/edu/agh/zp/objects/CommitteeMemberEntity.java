@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class CommitteeMemberEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CommitteeMember_memberID_seq")
+    @SequenceGenerator(name = "CommitteeMember_memberID_seq", sequenceName = "CommitteeMember_memberID_seq", allocationSize = 1)
     @Column(name="memberID")
     private long memberID;
 

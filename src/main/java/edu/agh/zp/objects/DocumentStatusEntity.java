@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class DocumentStatusEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DocumentStatus_docStatusID_seq")
+    @SequenceGenerator(name = "DocumentStatus_docStatusID_seq", sequenceName = "DocumentStatus_docStatusID_seq", allocationSize = 1)
     @Column(name="docStatusID")
     private long docStatusID;
 
@@ -29,13 +30,20 @@ public class DocumentStatusEntity implements Serializable {
         this.docStatusName = name;
     }
 
-    public void SetName(String name){
-        this.docStatusName = name;
+
+    public void setDocStatusID( long docStatusID ) {
+        this.docStatusID = docStatusID;
     }
 
-    public String GetName(){
+    public long getDocStatusID(  ) {
+        return this.docStatusID;
+    }
+
+    public void setDocStatusName( String docStatusName ) {
+        this.docStatusName = docStatusName;
+    }
+
+    public String getDocStatusName(  ) {
         return this.docStatusName;
     }
-
-
 }

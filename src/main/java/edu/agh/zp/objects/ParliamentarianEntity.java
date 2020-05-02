@@ -11,14 +11,14 @@ import java.io.Serializable;
 public class ParliamentarianEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Parliamentarian_parliamentarianID_seq")
+    @SequenceGenerator(name = "Parliamentarian_parliamentarianID_seq", sequenceName = "Parliamentarian_parliamentarianID_seq", allocationSize = 1)
     @NotNull
     @Column(name = "parliamentarianID")
     private long parliamentarianID;
 
     @NotNull
-    @UniqueElements
-    @Column(name="idCardNumber")
+    @Column(name="idCardNumber", unique = true)
     private String idCardNumber;
 
     @NotNull
@@ -33,6 +33,32 @@ public class ParliamentarianEntity implements Serializable {
     @NotNull
     @JoinColumn(name="politicianID")
     private PoliticianEntity politicianID;
+
+    public ParliamentarianEntity() {
+    }
+
+    public ParliamentarianEntity(String Card, String group, String chamber, PoliticianEntity politician) {
+    this.idCardNumber = Card;
+    this.politicalGroup = group;
+    this.chamberOfDeputies = chamber;
+    this.politicianID = politician;
+    }
+
+    public long getParliamentarianID() {
+        return parliamentarianID;
+    }
+
+    public void setIdCardNumber(String idCardNumber) {
+        this.idCardNumber = idCardNumber;
+    }
+
+    public void setPoliticalGroup(String politicalGroup) {
+        this.politicalGroup = politicalGroup;
+    }
+
+    public void setChamberOfDeputies(String chamberOfDeputies) {
+        this.chamberOfDeputies = chamberOfDeputies;
+    }
 
 
 }

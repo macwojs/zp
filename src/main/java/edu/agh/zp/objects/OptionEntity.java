@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class OptionEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Option_optionID_seq")
+    @SequenceGenerator(name = "Option_optionID_seq", sequenceName = "Option_optionID_seq", allocationSize = 1)
     @Column(name="optionID")
     private long optionID;
 

@@ -12,21 +12,24 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity(name = "\"Citizen\"")
-//@Password
+
+@Entity(name = "Citizen")
+@Password(groups = CitizenEntity.class)
 public class CitizenEntity implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Citizen_citizenID_seq")
+    @SequenceGenerator(name = "Citizen_citizenID_seq", sequenceName = "Citizen_citizenID_seq", allocationSize = 1)
     @NotNull
-    @Column(name = "\"citizenID\"")
+    @Column(name = "citizenID")
     private long citizenID;
 
     @NotNull
     @NotBlank (message = "Musisz podać hasło.")
     @Size (min = 8, message = "Hasło musi posiagać minimum 8 znaków")
-    @Column(name="\"password\"")
+    @Column(name="password")
+
     private String password;
 
     @NotNull
@@ -42,7 +45,7 @@ public class CitizenEntity implements Serializable {
 
     @NotNull
     @NotBlank (message = "Musisz podać nazwisko.")
-    @Column(name="\"surname\"")
+    @Column(name="surname")
     private String surname;
 
     @NotNull
@@ -52,16 +55,29 @@ public class CitizenEntity implements Serializable {
     @Column(name="pesel",length = 11)
     private String pesel;
 
+
     @NotBlank (message = "Musisz podać numer d owodu.")
     @ID
     @Size (min = 9, max =9, message = "Wprowadz numer dowodu w formacie ABC123456.")
-    @Column(name="\"idNumber\"", length = 9)
+    @Column(name="idNumber", length = 9)
     private String idNumber;
 
     @NotNull
     @Transient
     @NotBlank (message = "Musisz powtórzyć hasło.")
     private String repeatPassword;
+
+    public CitizenEntity() {}
+
+    public CitizenEntity(String password, String rp, String email, String name, String surname, String pesel, String idNumber) {
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.pesel = pesel;
+        this.idNumber = idNumber;
+        this.repeatPassword = rp;
+    }
 
     public String getRepeatPassword() {
         return repeatPassword;
@@ -95,9 +111,6 @@ public class CitizenEntity implements Serializable {
         this.surname = surname;
     }
 
-    public CitizenEntity() {
-
-    }
 
     public long getCitizenID() {
         return citizenID;
@@ -140,5 +153,17 @@ public class CitizenEntity implements Serializable {
         this.idNumber = idNumber;
     }
 
-
+    @Override
+    public String toString() {
+        return "CitizenEntity{" +
+                "citizenID=" + citizenID +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", pesel='" + pesel + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", repeatPassword='" + repeatPassword + '\'' +
+                '}';
+    }
 }
