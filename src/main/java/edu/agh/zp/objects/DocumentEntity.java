@@ -15,11 +15,11 @@ public class DocumentEntity implements Serializable {
     @Column(name = "docID")
     private long docID;
 
-    @NotNull
+    @NotNull(message = "Wprowadź nazwę dokumentu.")
     @Column(name="docName")
     private String docName;
 
-    @NotNull
+    @NotNull(message = "Wprowadź opis dokumentu.")
     @Column(name="docDescription")
     private String docDescription;
 
@@ -33,13 +33,90 @@ public class DocumentEntity implements Serializable {
     private Date validityTo;
 
     @ManyToOne
-    @NotNull
+    @NotNull(message = "Musisz wybrać typ dokumentu.")
     @JoinColumn(name="docTypeID")
     private DocumentTypeEntity docTypeID;
 
     @ManyToOne
+    @NotNull(message = "Musisz wybrać status dokumentu.")
     @JoinColumn(name="docStatusID")
     private DocumentStatusEntity docStatusID;
 
+    public DocumentEntity() {
+    }
 
+    public DocumentEntity( long docID, @NotNull String docName, @NotNull String docDescription, String pdfFilePath, Date validityFrom, Date validityTo, @NotNull DocumentTypeEntity docTypeID, @NotNull DocumentStatusEntity docStatusID ) {
+        this.docID = docID;
+        this.docName = docName;
+        this.docDescription = docDescription;
+        this.pdfFilePath = pdfFilePath;
+        this.validityFrom = validityFrom;
+        this.validityTo = validityTo;
+        this.docTypeID = docTypeID;
+        this.docStatusID = docStatusID;
+    }
+
+    public long getDocID() {
+        return docID;
+    }
+
+    public void setDocID( long docID ) {
+        this.docID = docID;
+    }
+
+    public String getDocName() {
+        return docName;
+    }
+
+    public void setDocName( String docName ) {
+        this.docName = docName;
+    }
+
+    public String getDocDescription() {
+        return docDescription;
+    }
+
+    public void setDocDescription( String docDescription ) {
+        this.docDescription = docDescription;
+    }
+
+    public String getPdfFilePath() {
+        return pdfFilePath;
+    }
+
+    public void setPdfFilePath( String pdfFilePath ) {
+        this.pdfFilePath = pdfFilePath;
+    }
+
+    public Date getValidityFrom() {
+        return validityFrom;
+    }
+
+    public void setValidityFrom( Date validityFrom ) {
+        this.validityFrom = validityFrom;
+    }
+
+    public Date getValidityTo() {
+        return validityTo;
+    }
+
+    public void setValidityTo( Date validityTo ) {
+        this.validityTo = validityTo;
+    }
+
+    public DocumentTypeEntity getDocTypeID() {
+        return docTypeID;
+    }
+
+    public void setDocTypeID( DocumentTypeEntity docTypeID ) {
+        this.docTypeID = docTypeID;
+    }
+
+    public DocumentStatusEntity getDocStatusID() {
+        return docStatusID;
+    }
+
+    public void setDocStatusID( DocumentStatusEntity docStatusID ) {
+        this.docStatusID = docStatusID;
+    }
 }

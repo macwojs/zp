@@ -57,7 +57,6 @@ public class PopulateController {
                 , new DocumentTypeEntity("Umowa międzynarodowa")
                 , new DocumentTypeEntity("Rezolucja")
                 , new DocumentTypeEntity("Protokół")
-                , new DocumentTypeEntity("Ustawa")
                 , new DocumentTypeEntity("Rozporządzenie")));
 
         DocumentStatusRepository.saveAll(Arrays.asList(
