@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="layout(title, content)">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title th:replace="${title}">zp</title>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/fonts/ionicons.min.css">
-    <link rel="stylesheet" href="/css/Footer-Dark.css">
-    <link rel="stylesheet" href="/css/Login-Form-Clean.css">
-    <link rel="stylesheet" href="/css/Navigation-with-Button.css">
-    <link rel="stylesheet" href="/css/Registration-Form-with-Photo.css">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/fonts/ionicons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/Footer-Dark.css}">
+    <link rel="stylesheet" th:href="@{/css/Login-Form-Clean.css}">
+    <link rel="stylesheet" th:href="@{/css/Navigation-with-Button.css}">
+    <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
     <div th:insert="header.html" ></div>
     <div  th:replace="${content}" id="tresc" style="height: 80vh;"></div>
     <div th:insert="footer.html" class="footer-dark"></div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
 </body>
 
 </html>
