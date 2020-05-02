@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
+
 @Service
 public class CitizenService {
 
@@ -28,6 +30,7 @@ public class CitizenService {
         return cR.findByCitizenID(id);
     }
 
+    public Optional<CitizenEntity> findByEmail(String email){ return cR.findByEmail(email);}
 
     public CitizenEntity update( CitizenEntity citizen ){
         return cR.save(citizen);
