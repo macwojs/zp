@@ -40,7 +40,7 @@ public class SignUpController {
 			return new ModelAndView("signup");
 		}else{
 			Optional<CitizenEntity> exists = cS.findByEmail(citizen.getEmail());
-			if(exists!=null){
+			if(exists.isPresent()){
 				model.addAttribute("userError","A user with this email already exist");
 				return new ModelAndView("signup");
 			}else {

@@ -36,7 +36,7 @@ public class SignInController {
 	@PostMapping("")
 	public ModelAndView submitLogin(@ModelAttribute("user") CitizenEntity citizen, Model model, HttpSession session){
 		Optional<CitizenEntity> c = cS.findByEmail(citizen.getEmail());
-		if(c==null){
+		if(c.isPresent()){
 			System.out.println("zly mail     " );
 			model.addAttribute("userError","A user with this email don't already exist");
 			return new ModelAndView("signin");
