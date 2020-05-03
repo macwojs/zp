@@ -31,11 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf();
         http.httpBasic().disable();
         // TODO...Change the authorization
-        http.authorizeRequests().antMatchers("/parlament").hasAnyRole()
-                .and()
-                .formLogin()
-                .loginPage("/signin")
-                .loginProcessingUrl("signin.html");
+//        http.authorizeRequests().antMatchers("/parlament").hasAnyRole()
+//                .and()
+//                .formLogin()
+//                .loginPage("/signin")
+//                .loginProcessingUrl("signin.html");
 
         http.authorizeRequests().antMatchers( "/static/**","/resources/**", "/js/**", "/css/**", "/img/**").permitAll();
     }
