@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,11 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf();
         http.httpBasic().disable();
         // TODO...Change the authorization
-        http.authorizeRequests().antMatchers("/parlament").hasAnyRole()
+        http.authorizeRequests().antMatchers("/parlament").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/signin")
-                .loginProcessingUrl("signin.html");
+                .loginProcessingUrl("signin.html")
+                .defaultSuccessUrl("/");
 
         http.authorizeRequests().antMatchers( "/static/**","/resources/**", "/js/**", "/css/**", "/img/**").permitAll();
     }
@@ -49,6 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
 }
