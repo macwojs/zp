@@ -8,6 +8,8 @@ import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.DocumentStatusRepository;
 import edu.agh.zp.repositories.DocumentTypeRepository;
 import edu.agh.zp.services.CitizenService;
+import edu.agh.zp.services.StorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,21 +34,18 @@ import java.util.List;
 @RequestMapping ( value = { "/parlament" } )
 public class ParlamentController {
 
-	private static String UPLOADED_FOLDER = "/home/maciek/Temp/";
-	//private static String UPLOADED_FOLDER = "/static/uploaded/";
+	@Autowired
+	private StorageService storageService;
 
+	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
+
+	@Autowired
 	private DocumentStatusRepository documentStatusRepository;
+
+	@Autowired
 	private DocumentRepository documentRepository;
 
-	public ParlamentController(
-			DocumentTypeRepository documentTypeRepository,
-			DocumentStatusRepository documentStatusRepository,
-			DocumentRepository documentRepository) {
-		this.documentTypeRepository = documentTypeRepository;
-		this.documentStatusRepository = documentStatusRepository;
-		this.documentRepository = documentRepository;
-	}
 
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
@@ -77,38 +76,21 @@ public class ParlamentController {
 		return model;
 	}
 
-	@PostMapping ( value = { "/documentForm" })
-	public ModelAndView submitRegister(
-			@RequestParam("file") MultipartFile file,
-			RedirectAttributes redirectAttributes,
-			@Valid @ModelAttribute("document") DocumentEntity document,
-			BindingResult res){
-		if( res.hasErrors()){
-			return new ModelAndView("documentForm");
+	@PostMapping ( value = { "/documentForm" }, consumes = { "multipart/form-data" } )
+	public ModelAndView documentFormSubmit( @RequestParam ( "file" ) MultipartFile file, RedirectAttributes redirectAttributes, @Valid @ModelAttribute ( "document" ) DocumentEntity document, BindingResult res ) {
+		if ( res.hasErrors( ) ) {
+			return new ModelAndView( "documentForm" );
 		}
 
-		if(file.isEmpty()){
-			return new ModelAndView("documentForm");
+		if ( !file.isEmpty( ) ) {
+			String path = storageService.uploadFile( file );
+			document.setPdfFilePath( path );
 		}
 
 		documentRepository.save( document );
 
-		try {
-
-			// Get the file and save it somewhere
-			byte[] bytes = file.getBytes();
-			Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-			Files.write(path, bytes);
-
-			redirectAttributes.addFlashAttribute("message",
-					"You successfully uploaded '" + file.getOriginalFilename() + "'");
-
-		} catch ( IOException e) {
-			e.printStackTrace();
-		}
-
-		RedirectView redirect = new RedirectView();
-		redirect.setUrl("/parlament");
-		return new ModelAndView(redirect);
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl( "/parlament" );
+		return new ModelAndView( redirect );
 	}
 }

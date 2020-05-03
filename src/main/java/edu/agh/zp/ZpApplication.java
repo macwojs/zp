@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories( basePackageClasses = CitizenRepository.class)
+//@EnableJpaRepositories( basePackageClasses = CitizenRepository.class)
+@EnableJpaRepositories( basePackageClasses = edu.agh.zp.repositories.CitizenRepository.class)
 public class ZpApplication {
 
 
