@@ -14,10 +14,6 @@ public class CitizenService {
     @Autowired
     private CitizenRepository cR;
 
-    public CitizenService(CitizenRepository cR){
-        this.cR = cR;
-    }
-
     public CitizenEntity create(CitizenEntity citizen){
         return cR.save(citizen);
     }
