@@ -1,9 +1,12 @@
 package edu.agh.zp.objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 
@@ -23,17 +26,20 @@ public class VotingEntity implements Serializable {
     @Column(name = "votingID")
     private long votingID;
 
+    @DateTimeFormat (pattern = "dd.mm.yyyy")
     @Column(name="votingDate")
     private Date votingDate;
 
     @Column(name="votingType")
     private TypeOfVoting votingType;
 
+    @DateTimeFormat(pattern = "hh:mm")
     @Column(name="openVoting")
-    private Timestamp openVoting;
+    private Time openVoting;
 
+    @DateTimeFormat(pattern = "hh:mm")
     @Column(name="closeVoting")
-    private Timestamp closeVoting;
+    private Time closeVoting;
 
 
     @Column(name="votingDescription")
@@ -74,19 +80,19 @@ public class VotingEntity implements Serializable {
         this.votingType = votingType;
     }
 
-    public Timestamp getOpenVoting() {
+    public Time getOpenVoting() {
         return openVoting;
     }
 
-    public void setOpenVoting( Timestamp openVoting ) {
+    public void setOpenVoting( Time openVoting ) {
         this.openVoting = openVoting;
     }
 
-    public Timestamp getCloseVoting() {
+    public Time getCloseVoting() {
         return closeVoting;
     }
 
-    public void setCloseVoting( Timestamp closeVoting ) {
+    public void setCloseVoting( Time closeVoting ) {
         this.closeVoting = closeVoting;
     }
 
