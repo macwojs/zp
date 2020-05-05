@@ -7,6 +7,7 @@ import edu.agh.zp.objects.DocumentTypeEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.DocumentStatusRepository;
 import edu.agh.zp.repositories.DocumentTypeRepository;
+import edu.agh.zp.repositories.VotingRepository;
 import edu.agh.zp.services.CitizenService;
 import edu.agh.zp.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class ParlamentController {
 
 	@Autowired
 	private DocumentRepository documentRepository;
+
+	@Autowired
+	private VotingRepository votingRepository;
 
 
 	@GetMapping ( value = { "" } )
@@ -89,6 +93,8 @@ public class ParlamentController {
 
 	@GetMapping ( value = { "/sejm/voteAdd" } )
 	public ModelAndView sejmVoteAdd( ModelAndView model ) {
+		List< DocumentEntity > documents = documentRepository.findByDocForParlVoting();
+		model.addObject( "documents", documents );
 
 		model.setViewName( "parliamentVotingAdd" );
 		return model;
