@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf();
         http.httpBasic().disable();
         // TODO...Change the authorization
-        http.authorizeRequests().antMatchers("/parlament").authenticated()
+        http.authorizeRequests().antMatchers("/parlament/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/signin")
