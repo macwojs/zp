@@ -7,9 +7,14 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 
+
 @Entity(name = "Voting")
 
 public class VotingEntity implements Serializable {
+
+    public enum TypeOfVoting{
+        PREZYDENT, SEJM, SENAT, REFERENDUM, PARLAMENT
+    }
 
     @Id
     @NotNull
@@ -21,6 +26,8 @@ public class VotingEntity implements Serializable {
     @Column(name="votingDate")
     private Date votingDate;
 
+    @Column(name="votingType")
+    private TypeOfVoting votingType;
 
     @Column(name="openVoting")
     private Timestamp openVoting;
@@ -43,17 +50,6 @@ public class VotingEntity implements Serializable {
 
     public VotingEntity(){}
 
-    public VotingEntity(Date date, Timestamp open, Timestamp close,SetEntity setID_column,DocumentEntity documentID){}
-
-    public void SetTime(Date date, Timestamp open, Timestamp close){
-        this.openVoting = open;
-        this.closeVoting = close;
-        this.votingDate = date;
-    }
-
-    public Timestamp GetEnd(){ return closeVoting;}
-
-    public Timestamp GetStart(){ return openVoting;}
 
     public void OnSave(){}
 
