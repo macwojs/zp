@@ -16,6 +16,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.sql.Date;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,27 +98,36 @@ public class ParlamentController {
 	@GetMapping ( value = { "/sejm/voteAdd" } )
 	public ModelAndView sejmVoteAdd( ModelAndView model ) {
 		List< DocumentEntity > documents = documentRepository.findByDocTypeID();
-		model.addObject( "documents", documents );
-
-		model.addObject( "voting", new VotingEntity( ) );
-
+		Optional< SetEntity > set = setRepository.findById((long)1);
+		if(set.isPresent()) {
+			model.addObject("documents", documents);
+			model.addObject("voting", new VotingEntity());
+		}
 		model.setViewName( "parliamentVotingAdd" );
 		return model;
 	}
 
 	@PostMapping ( value = { "/sejm/voteAdd" } )
-	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res ) {
+	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res ) throws ParseException {
 		if ( res.hasErrors( ) ) {
+			for( Object i : res.getAllErrors()){
+				System.out.print("\n"+i.toString()+"\n");
+			}
 			return new ModelAndView( "parliamentVotingAdd" );
 		}
-
 		Optional< SetEntity > set = setRepository.findById( (long)1 );
-		voting.setSetID_column(set.get());
+		if(set.isPresent()) {
+			voting.setSetID_column(set.get());
+			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 
-		voting.setVotingType( VotingEntity.TypeOfVoting.SEJM );
+			Time timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
+			Time timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
+			voting.setCloseVoting(timeValueClose);
+			voting.setOpenVoting(timeValueOpen);
 
-		votingRepository.save( voting );
-
+			voting.setVotingType(VotingEntity.TypeOfVoting.SEJM);
+			votingRepository.save(voting);
+		}
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl( "/parlament" );
 		return new ModelAndView( redirect );

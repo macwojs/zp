@@ -32,9 +32,11 @@ public class VotingEntity implements Serializable {
     @Column(name="votingType")
     private TypeOfVoting votingType;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @Column(name="openVoting")
     private Time openVoting;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @Column(name="closeVoting")
     private Time closeVoting;
 
@@ -42,7 +44,7 @@ public class VotingEntity implements Serializable {
     private String votingDescription;
 
     @ManyToOne
-    @NotNull
+//    @NotNull
     @JoinColumn(name="setID")
     private SetEntity setID_column;
 
@@ -50,8 +52,38 @@ public class VotingEntity implements Serializable {
     @JoinColumn(name="documentID")
     private DocumentEntity documentID;
 
+    public String getOpen() {
+        return open;
+    }
+
+    public void setOpen(String open) {
+        this.open = open;
+    }
+
+    public String getClose() {
+        return close;
+    }
+
+    public void setClose(String close) {
+        this.close = close;
+    }
+
+    @Transient
+    private String open;
+
+    @Transient
+    private String close;
+
     public VotingEntity(){}
 
+    public VotingEntity( Date date, Time open, Time close, SetEntity setID, DocumentEntity document){
+        this.votingDate = date;
+        this.openVoting = open;
+        this.closeVoting = close;
+        this.setID_column = setID;
+        this.documentID = document;
+
+    }
     public long getVotingID() {
         return votingID;
     }

@@ -7,7 +7,7 @@
 <body>
 <section id="tresc" style="height: 80vh;">
     <div class="contact-clean">
-        <form method="post" th:action="@{/parlament/documentForm}" th:object="${voting}">
+        <form method="post" th:action="@{/parlament/sejm/voteAdd}" th:object="${voting}">
             <h2 class="text-center">Dodaj głosowanie</h2>
             <div class="form-group">
                 <select th:field="*{documentID}" class="form-control" name="document">
@@ -21,11 +21,11 @@
                 <small class="form-text text-muted">Data głosowania</small>
             </div>
             <div class="form-group">
-                <input th:field="*{openVoting}" class="form-control" type="time">
+                <input th:field="*{open}" class="form-control" type="time" step="1">
                 <small class="form-text text-muted">Czas rozpoczęcia głosowania</small>
             </div>
             <div class="form-group">
-                <input th:field="*{closeVoting}" class="form-control" type="time">
+                <input th:field="*{close}" class="form-control" type="time" step="1">
                 <small class="form-text text-muted">Czas zakończenia głosowania</small>
             </div>
             <div class="form-group">
