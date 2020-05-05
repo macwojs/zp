@@ -1,12 +1,7 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.objects.DocumentEntity;
-import edu.agh.zp.objects.DocumentStatusEntity;
-import edu.agh.zp.objects.DocumentTypeEntity;
-import edu.agh.zp.repositories.DocumentRepository;
-import edu.agh.zp.repositories.DocumentStatusRepository;
-import edu.agh.zp.repositories.DocumentTypeRepository;
+import edu.agh.zp.objects.*;
+import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.CitizenService;
 import edu.agh.zp.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping ( value = { "/parlament" } )
@@ -31,6 +27,9 @@ public class ParlamentController {
 	private StorageService storageService;
 
 	@Autowired
+	private SetRepository setRepository;
+
+	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
 
 	@Autowired
@@ -38,6 +37,9 @@ public class ParlamentController {
 
 	@Autowired
 	private DocumentRepository documentRepository;
+
+	@Autowired
+	private VotingRepository votingRepository;
 
 
 	@GetMapping ( value = { "" } )
@@ -89,8 +91,30 @@ public class ParlamentController {
 
 	@GetMapping ( value = { "/sejm/voteAdd" } )
 	public ModelAndView sejmVoteAdd( ModelAndView model ) {
+		List< DocumentEntity > documents = documentRepository.findByDocTypeID();
+		model.addObject( "documents", documents );
+
+		model.addObject( "voting", new VotingEntity( ) );
 
 		model.setViewName( "parliamentVotingAdd" );
 		return model;
+	}
+
+	@PostMapping ( value = { "/sejm/voteAdd" } )
+	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res ) {
+		if ( res.hasErrors( ) ) {
+			return new ModelAndView( "parliamentVotingAdd" );
+		}
+
+		Optional< SetEntity > set = setRepository.findById( (long)1 );
+		voting.setSetID_column(set.get());
+
+		voting.setVotingType( VotingEntity.TypeOfVoting.SEJM );
+
+		votingRepository.save( voting );
+
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl( "/parlament" );
+		return new ModelAndView( redirect );
 	}
 }
