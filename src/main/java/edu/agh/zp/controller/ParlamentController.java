@@ -93,4 +93,11 @@ public class ParlamentController {
 		redirect.setUrl( "/parlament" );
 		return new ModelAndView( redirect );
 	}
+
+	@GetMapping ( value = { "/sejm/voteAdd" } )
+	public ModelAndView sejmVoteAdd( ModelAndView model ) {
+
+		model.setViewName( "parliamentVotingAdd" );
+		return model;
+	}
 }
