@@ -50,9 +50,61 @@ public class VotingEntity implements Serializable {
 
     public VotingEntity(){}
 
+    public long getVotingID() {
+        return votingID;
+    }
 
-    public void OnSave(){}
+    public void setVotingID( long votingID ) {
+        this.votingID = votingID;
+    }
 
+    public Date getVotingDate() {
+        return votingDate;
+    }
+
+    public void setVotingDate( Date votingDate ) {
+        this.votingDate = votingDate;
+    }
+
+    public Timestamp getOpenVoting() {
+        return openVoting;
+    }
+
+    public void setOpenVoting( Timestamp openVoting ) {
+        this.openVoting = openVoting;
+    }
+
+    public Timestamp getCloseVoting() {
+        return closeVoting;
+    }
+
+    public void setCloseVoting( Timestamp closeVoting ) {
+        this.closeVoting = closeVoting;
+    }
+
+    public String getVotingDescription() {
+        return votingDescription;
+    }
+
+    public void setVotingDescription( String votingDescription ) {
+        this.votingDescription = votingDescription;
+    }
+
+    public SetEntity getSetID_column() {
+        return setID_column;
+    }
+
+    public void setSetID_column( SetEntity setID_column ) {
+        this.setID_column = setID_column;
+    }
+
+    public DocumentEntity getDocumentID() {
+        return documentID;
+    }
+
+    public void setDocumentID( DocumentEntity documentID ) {
+        this.documentID = documentID;
+    }
 }
 
 //TODO...
