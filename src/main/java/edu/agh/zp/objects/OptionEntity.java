@@ -19,5 +19,23 @@ public class OptionEntity implements Serializable {
     @Column(name="optionDescription")
     private String optionDescription;
 
+    public OptionEntity() {
+    }
 
+    public OptionEntity( @NotNull String optionDescription) {
+        this.optionDescription = optionDescription;
+    }
+
+
+    public long getOptionID() {
+        return optionID;
+    }
+
+    public String getOptionDescription() {
+        return optionDescription;
+    }
+
+    public void setOptionDescription(String optionDescription) {
+        this.optionDescription = optionDescription;
+    }
 }

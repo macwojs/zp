@@ -43,9 +43,16 @@ public class PopulateController {
     @Autowired
     private ParliamentarianRepository ParliamentarianSession;
 
+    @Autowired
+    OptionSetRepository OptionSetSession;
+
+    @Autowired
+    OptionRepository OptionSession;
+
+    @Autowired
+    SetRepository SetSession;
 
     @GetMapping("/populate_basic")
-
     public String basicCreate() {
         DocumentTypeSession.saveAll(Arrays.asList(
                 new DocumentTypeEntity("Ustawa")
@@ -80,6 +87,14 @@ public class PopulateController {
                 new FunctionEntity("minister"),
                 new FunctionEntity("członek komisji")));
 
+        ArrayList<OptionEntity> OptionList = new ArrayList<OptionEntity>(Arrays.asList(new OptionEntity("Za"), new OptionEntity("przeciw"), new OptionEntity("wstrzymał się")));
+        SetEntity set = new SetEntity("głosowanie parlamentarne");
+        OptionSession.saveAll(OptionList);
+        SetSession.save(set);
+        for (int i = 0; i<3;i++)
+        {
+            OptionSetSession.save(new OptionSetEntity(OptionList.get(i),set));
+        }
         return "Customers are created";
     }
 

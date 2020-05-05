@@ -20,4 +20,23 @@ public class SetEntity implements Serializable {
     private String setName_column;
 
 
+    public SetEntity(@NotNull String setName_column) {
+        this.setName_column = setName_column;
+    }
+
+    public SetEntity() {
+        this.setName_column = setName_column;
+    }
+
+    public long getSetID_column() {
+        return setID_column;
+    }
+
+    public String getSetName_column() {
+        return setName_column;
+    }
+
+    public void setSetName_column(String setName_column) {
+        this.setName_column = setName_column;
+    }
 }
