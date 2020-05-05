@@ -66,6 +66,14 @@ public class VotingEntity implements Serializable {
         this.votingDate = votingDate;
     }
 
+    public TypeOfVoting getVotingType() {
+        return votingType;
+    }
+
+    public void setVotingType( TypeOfVoting votingType ) {
+        this.votingType = votingType;
+    }
+
     public Timestamp getOpenVoting() {
         return openVoting;
     }
