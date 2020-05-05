@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="base :: layout(~{::title}, ~{::section})">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"  th:replace="base :: layout(~{::title}, ~{::section})">
 
 <head>
     <title>Home</title>
@@ -12,9 +11,6 @@
     <section id="tresc" style="height: 80vh;">
         <p style="font-size: 43px;text-align: center;"><br>Welcome to the Zarzadzanie Panstwem!<br><br></p>
 
-        <div sec:authorize="isAuthenticated()">
-            Text visible only to authenticated users.
-        </div>
     </section>
 </body>
 
