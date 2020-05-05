@@ -26,21 +26,17 @@ public class VotingEntity implements Serializable {
     @Column(name = "votingID")
     private long votingID;
 
-    @DateTimeFormat (pattern = "dd.mm.yyyy")
     @Column(name="votingDate")
     private Date votingDate;
 
     @Column(name="votingType")
     private TypeOfVoting votingType;
 
-    @DateTimeFormat(pattern = "hh:mm")
     @Column(name="openVoting")
     private Time openVoting;
 
-    @DateTimeFormat(pattern = "hh:mm")
     @Column(name="closeVoting")
     private Time closeVoting;
-
 
     @Column(name="votingDescription")
     private String votingDescription;
