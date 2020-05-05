@@ -7,9 +7,14 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 
+
 @Entity(name = "Voting")
 
 public class VotingEntity implements Serializable {
+
+    public enum TypeOfVoting{
+        PREZYDENT, SEJM, SENAT, REFERENDUM, PARLAMENT
+    }
 
     @Id
     @NotNull
@@ -21,6 +26,8 @@ public class VotingEntity implements Serializable {
     @Column(name="votingDate")
     private Date votingDate;
 
+    @Column(name="votingType")
+    private TypeOfVoting votingType;
 
     @Column(name="openVoting")
     private Timestamp openVoting;
@@ -43,20 +50,69 @@ public class VotingEntity implements Serializable {
 
     public VotingEntity(){}
 
-    public VotingEntity(Date date, Timestamp open, Timestamp close,SetEntity setID_column,DocumentEntity documentID){}
-
-    public void SetTime(Date date, Timestamp open, Timestamp close){
-        this.openVoting = open;
-        this.closeVoting = close;
-        this.votingDate = date;
+    public long getVotingID() {
+        return votingID;
     }
 
-    public Timestamp GetEnd(){ return closeVoting;}
+    public void setVotingID( long votingID ) {
+        this.votingID = votingID;
+    }
 
-    public Timestamp GetStart(){ return openVoting;}
+    public Date getVotingDate() {
+        return votingDate;
+    }
 
-    public void OnSave(){}
+    public void setVotingDate( Date votingDate ) {
+        this.votingDate = votingDate;
+    }
 
+    public TypeOfVoting getVotingType() {
+        return votingType;
+    }
+
+    public void setVotingType( TypeOfVoting votingType ) {
+        this.votingType = votingType;
+    }
+
+    public Timestamp getOpenVoting() {
+        return openVoting;
+    }
+
+    public void setOpenVoting( Timestamp openVoting ) {
+        this.openVoting = openVoting;
+    }
+
+    public Timestamp getCloseVoting() {
+        return closeVoting;
+    }
+
+    public void setCloseVoting( Timestamp closeVoting ) {
+        this.closeVoting = closeVoting;
+    }
+
+    public String getVotingDescription() {
+        return votingDescription;
+    }
+
+    public void setVotingDescription( String votingDescription ) {
+        this.votingDescription = votingDescription;
+    }
+
+    public SetEntity getSetID_column() {
+        return setID_column;
+    }
+
+    public void setSetID_column( SetEntity setID_column ) {
+        this.setID_column = setID_column;
+    }
+
+    public DocumentEntity getDocumentID() {
+        return documentID;
+    }
+
+    public void setDocumentID( DocumentEntity documentID ) {
+        this.documentID = documentID;
+    }
 }
 
 //TODO...

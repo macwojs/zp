@@ -2,7 +2,6 @@ package edu.agh.zp;
 
 
 import edu.agh.zp.objects.CitizenEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
