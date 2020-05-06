@@ -113,7 +113,13 @@ public class ParlamentController {
 			for( Object i : res.getAllErrors()){
 				System.out.print("\n"+i.toString()+"\n");
 			}
-			return new ModelAndView( "parliamentVotingAdd" );
+
+			//Musi być ponownie dodane, bo inaczej nie wypełnia listy
+			ModelAndView model = new ModelAndView(  );
+			List< DocumentEntity > documents = documentRepository.findByDocTypeID();
+			model.addObject("documents", documents);
+			model.setViewName( "parliamentVotingAdd" );
+			return model;
 		}
 		Optional< SetEntity > set = setRepository.findById( (long)1 );
 		if(set.isPresent()) {

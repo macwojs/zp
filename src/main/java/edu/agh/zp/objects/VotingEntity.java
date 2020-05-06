@@ -1,5 +1,8 @@
 package edu.agh.zp.objects;
 
+import edu.agh.zp.validator.DateAfterNow;
+import edu.agh.zp.validator.TimeAfterNow;
+import edu.agh.zp.validator.TimeOrder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -12,7 +15,8 @@ import java.sql.Timestamp;
 
 
 @Entity(name = "Voting")
-
+@TimeOrder
+//@TimeAfterNow
 public class VotingEntity implements Serializable {
 
     public enum TypeOfVoting{
@@ -26,6 +30,7 @@ public class VotingEntity implements Serializable {
     @Column(name = "votingID")
     private long votingID;
 
+    @DateAfterNow
     @Column(name="votingDate")
     private Date votingDate;
 
