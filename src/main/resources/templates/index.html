@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"  th:replace="base :: layout(~{::title}, ~{::section})">
 
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
-    <title>Home</title>
+    <title>zp</title>
+    <div th:remove="tag" class="extraHead"></div>
 </head>
+
 
 <body>
     <section id="tresc" style="height: 80vh;">

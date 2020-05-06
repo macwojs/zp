@@ -1,9 +1,12 @@
 package edu.agh.zp.objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 
@@ -29,18 +32,19 @@ public class VotingEntity implements Serializable {
     @Column(name="votingType")
     private TypeOfVoting votingType;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @Column(name="openVoting")
-    private Timestamp openVoting;
+    private Time openVoting;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @Column(name="closeVoting")
-    private Timestamp closeVoting;
-
+    private Time closeVoting;
 
     @Column(name="votingDescription")
     private String votingDescription;
 
     @ManyToOne
-    @NotNull
+//    @NotNull
     @JoinColumn(name="setID")
     private SetEntity setID_column;
 
@@ -48,8 +52,38 @@ public class VotingEntity implements Serializable {
     @JoinColumn(name="documentID")
     private DocumentEntity documentID;
 
+    public String getOpen() {
+        return open;
+    }
+
+    public void setOpen(String open) {
+        this.open = open;
+    }
+
+    public String getClose() {
+        return close;
+    }
+
+    public void setClose(String close) {
+        this.close = close;
+    }
+
+    @Transient
+    private String open;
+
+    @Transient
+    private String close;
+
     public VotingEntity(){}
 
+    public VotingEntity( Date date, Time open, Time close, SetEntity setID, DocumentEntity document){
+        this.votingDate = date;
+        this.openVoting = open;
+        this.closeVoting = close;
+        this.setID_column = setID;
+        this.documentID = document;
+
+    }
     public long getVotingID() {
         return votingID;
     }
@@ -74,19 +108,19 @@ public class VotingEntity implements Serializable {
         this.votingType = votingType;
     }
 
-    public Timestamp getOpenVoting() {
+    public Time getOpenVoting() {
         return openVoting;
     }
 
-    public void setOpenVoting( Timestamp openVoting ) {
+    public void setOpenVoting( Time openVoting ) {
         this.openVoting = openVoting;
     }
 
-    public Timestamp getCloseVoting() {
+    public Time getCloseVoting() {
         return closeVoting;
     }
 
-    public void setCloseVoting( Timestamp closeVoting ) {
+    public void setCloseVoting( Time closeVoting ) {
         this.closeVoting = closeVoting;
     }
 

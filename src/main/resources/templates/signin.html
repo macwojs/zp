@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section})">
-
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
-    <title>zp</title>
+    <title>ZP - Zaloguj się</title>
+    <div th:remove="tag" class="extraHead"></div>
 </head>
+
 
 <body>
     <section>

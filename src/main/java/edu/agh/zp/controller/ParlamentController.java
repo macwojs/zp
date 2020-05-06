@@ -1,12 +1,7 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.objects.DocumentEntity;
-import edu.agh.zp.objects.DocumentStatusEntity;
-import edu.agh.zp.objects.DocumentTypeEntity;
-import edu.agh.zp.repositories.DocumentRepository;
-import edu.agh.zp.repositories.DocumentStatusRepository;
-import edu.agh.zp.repositories.DocumentTypeRepository;
+import edu.agh.zp.objects.*;
+import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.CitizenService;
 import edu.agh.zp.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +16,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.sql.Date;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping ( value = { "/parlament" } )
@@ -31,6 +33,9 @@ public class ParlamentController {
 	private StorageService storageService;
 
 	@Autowired
+	private SetRepository setRepository;
+
+	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
 
 	@Autowired
@@ -38,6 +43,9 @@ public class ParlamentController {
 
 	@Autowired
 	private DocumentRepository documentRepository;
+
+	@Autowired
+	private VotingRepository votingRepository;
 
 
 	@GetMapping ( value = { "" } )
@@ -89,8 +97,39 @@ public class ParlamentController {
 
 	@GetMapping ( value = { "/sejm/voteAdd" } )
 	public ModelAndView sejmVoteAdd( ModelAndView model ) {
-
+		List< DocumentEntity > documents = documentRepository.findByDocTypeID();
+		Optional< SetEntity > set = setRepository.findById((long)1);
+		if(set.isPresent()) {
+			model.addObject("documents", documents);
+			model.addObject("voting", new VotingEntity());
+		}
 		model.setViewName( "parliamentVotingAdd" );
 		return model;
+	}
+
+	@PostMapping ( value = { "/sejm/voteAdd" } )
+	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res ) throws ParseException {
+		if ( res.hasErrors( ) ) {
+			for( Object i : res.getAllErrors()){
+				System.out.print("\n"+i.toString()+"\n");
+			}
+			return new ModelAndView( "parliamentVotingAdd" );
+		}
+		Optional< SetEntity > set = setRepository.findById( (long)1 );
+		if(set.isPresent()) {
+			voting.setSetID_column(set.get());
+			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+
+			Time timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
+			Time timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
+			voting.setCloseVoting(timeValueClose);
+			voting.setOpenVoting(timeValueOpen);
+
+			voting.setVotingType(VotingEntity.TypeOfVoting.SEJM);
+			votingRepository.save(voting);
+		}
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl( "/parlament" );
+		return new ModelAndView( redirect );
 	}
 }
