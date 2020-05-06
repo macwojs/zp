@@ -56,7 +56,7 @@ public class CitizenEntity implements Serializable {
     private String pesel;
 
 
-    @NotBlank (message = "Musisz podać numer d owodu.")
+    @NotBlank (message = "Musisz podać numer dowodu.")
     @ID
     @Size (min = 9, max =9, message = "Wprowadz numer dowodu w formacie ABC123456.")
     @Column(name="idNumber", length = 9)

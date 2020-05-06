@@ -35,24 +35,27 @@ public class SignUpController {
 	}
 
 	@PostMapping("")
-	public ModelAndView submitRegister(@Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res, Model model){
+	public ModelAndView submitRegister(@Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res){
 		if( res.hasErrors()){
 			return new ModelAndView("signup");
 		}else{
 			Optional<CitizenEntity> exists = cS.findByEmail(citizen.getEmail());
 			if(exists.isPresent()){
-				model.addAttribute("userError","A user with this email already exist");
-				return new ModelAndView("signup");
+				ModelAndView mv = new ModelAndView("signup");
+				mv.addObject("error", "Obywetel z tym adresem e-mail już istnieje.");
+				return mv;
 			}
 			exists = cS.findByPesel(citizen.getPesel());
 			if(exists.isPresent()){
-				model.addAttribute("userError","A user with this pesel already exist");
-				return new ModelAndView("signup");
+				ModelAndView mv = new ModelAndView("signup");
+				mv.addObject("error", "Obywetel z tym numerem PESEL już istnieje.");
+				return mv;
 			}
 			exists = cS.findByIdNumer(citizen.getIdNumber());
 			if(exists.isPresent()){
-				model.addAttribute("userError","A user with this IdNumber already exist");
-				return new ModelAndView("signup");
+				ModelAndView mv = new ModelAndView("signup");
+				mv.addObject("error", "Obywetel z tym numerem dowodu osobistego już istnieje.");
+				return mv;
 			} else {
 				citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()));
 				cS.create(citizen);
