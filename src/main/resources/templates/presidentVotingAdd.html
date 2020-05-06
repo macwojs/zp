@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section})">
+<head>
+    <title>ZP - Parlament</title>
+    <script type="text/javascript" th:src="@{/js/Lines.js}"></script>
+</head>
+
+<body>
+<section id="tresc" style="height: 80vh;">
+    <div class="contact-clean">
+        <form method="post" id = "form">
+            <h2 class="text-center">Dodaj wybory</h2>
+            <h3 class="text-center"> Nazwiska i imiona kandydatów</h3>
+            <div id="toAdd" >
+                <div class="form-group" id="Candidate1"><input class="form-control" name="optionName1"/><a href="#" onclick="deleteElem(1)"><img th:src="@{/img/close.png}" height="14" width="14" ></a></div>
+            </div>
+            <div class="form-group"  ><p><a href="#" onclick="addElem()"> <img th:src="@{/img/plus.png}" height="14" width="14" ></a></p></div>
+            <div class="form-group -sm-flex align-items-sm-start"><input class="form-control" type="date"><input class="form-control" type="time"></div>
+            <div class="form-group"><button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj&nbsp;</button></div>
+        </form>
+    </div>
+    <div class="small">Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</section>
+</body>
+</html>
