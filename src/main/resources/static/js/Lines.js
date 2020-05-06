@@ -14,7 +14,7 @@ function addElem(){
     const para = CandidateNum
     a.onclick=function() {deleteElem(para)};
     const img = document.createElement("img");
-    img.src="../static/img/close.png"
+    img.src="/img/close.png"
     img.height=14;
     img.width=14;
     a.appendChild(img);
