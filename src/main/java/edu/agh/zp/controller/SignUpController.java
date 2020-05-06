@@ -43,7 +43,17 @@ public class SignUpController {
 			if(exists.isPresent()){
 				model.addAttribute("userError","A user with this email already exist");
 				return new ModelAndView("signup");
-			}else {
+			}
+			exists = cS.findByPesel(citizen.getPesel());
+			if(exists.isPresent()){
+				model.addAttribute("userError","A user with this pesel already exist");
+				return new ModelAndView("signup");
+			}
+			exists = cS.findByIdNumer(citizen.getIdNumber());
+			if(exists.isPresent()){
+				model.addAttribute("userError","A user with this IdNumber already exist");
+				return new ModelAndView("signup");
+			} else {
 				citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()));
 				cS.create(citizen);
 			}

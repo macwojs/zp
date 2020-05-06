@@ -31,4 +31,8 @@ public class CitizenService {
     public CitizenEntity update( CitizenEntity citizen ){
         return cR.save(citizen);
     }
- }
+
+    public Optional<CitizenEntity> findByPesel(String pesel) { return cR.findByPesel(pesel);}
+
+    public Optional<CitizenEntity> findByIdNumer(String idNumber) { return cR.findByIdNumber(idNumber);}
+}
