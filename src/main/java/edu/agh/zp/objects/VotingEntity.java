@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 
 @Entity(name = "Voting")
 @TimeOrder
-//@TimeAfterNow
+@TimeAfterNow
 public class VotingEntity implements Serializable {
 
     public enum TypeOfVoting{

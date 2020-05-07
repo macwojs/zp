@@ -9,25 +9,27 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class TimeAfterNowValidator implements ConstraintValidator<TimeAfterNow, VotingEntity > {
 	@Override
 	public boolean isValid( VotingEntity voting, ConstraintValidatorContext constraintValidatorContext ) {
-		Date now = new Date();
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-		Date provided = voting.getVotingDate();
-
-		Time providedTime;
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime provided = null;
 		try {
-			providedTime = new Time(formatter.parse(voting.getClose()).getTime());
+			provided = LocalDateTime.parse( voting.getVotingDate() + "T" + new Time(formatter.parse(voting.getClose()).getTime()));
 		} catch ( ParseException e ) {
 			e.printStackTrace( );
 			return false;
 		}
-		Date dateWithTime = new Date(provided.getYear(), provided.getMonth(), provided.getDay(), providedTime.getHours(), providedTime.getMonth(), providedTime.getSeconds() );
+		return provided.isAfter( now );
+	}
 
-		return dateWithTime.after( now );
+	public LocalDateTime dateAndTimeToLocalDateTime( Date date, Time time) {
+		String myDate = date + "T" + time;
+		return LocalDateTime.parse(myDate);
 	}
 }
 
