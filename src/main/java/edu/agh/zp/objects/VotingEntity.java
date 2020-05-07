@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public class VotingEntity implements Serializable {
 
     public enum TypeOfVoting{
-        PREZYDENT, SEJM, SENAT, REFERENDUM, PARLAMENT
+        PREZYDENT, SEJM, SENAT, REFERENDUM
     }
 
     @Id

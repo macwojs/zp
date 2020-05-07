@@ -66,8 +66,8 @@ public class GlosowaniaController {
 		LocalDate time = LocalDate.parse(data); //TODO time verify
 		votingSession.save(new VotingEntity(
 				java.sql.Date.valueOf(time),
-				java.sql.Time.valueOf(LocalTime.parse("06:00")),
-				java.sql.Time.valueOf(LocalTime.parse("21:00")),
+				java.sql.Time.valueOf(LocalTime.parse("06:00:00")),
+				java.sql.Time.valueOf(LocalTime.parse("21:00:00")),
 				set,
 				null,
 				VotingEntity.TypeOfVoting.PREZYDENT,
