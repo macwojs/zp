@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>glosowanie</title>
+    <div th:remove="tag" class="extraHead"></div>
+</head>
+
+<a th:text="${id}"></a>
+
+</html>

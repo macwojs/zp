@@ -6,6 +6,7 @@ import edu.agh.zp.repositories.VotingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,14 +22,14 @@ class Event{
 	public LocalDateTime start;
 	public LocalDateTime end;
 	public String title;
-	public String link;
+	public String url;
 
-	public Event(long id, LocalDateTime start, LocalDateTime end, String title, String link) {
+	public Event(long id, LocalDateTime start, LocalDateTime end, String title, String url) {
 		this.id = id;
 		this.start = start;
 		this.end = end;
 		this.title = "głosowanie " + title;
-		this.link = link;
+		this.url = url;
 	}
 }
 
@@ -60,7 +61,7 @@ public class KalendarzController {
 					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getOpenVoting()),
 					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getCloseVoting()),
 					i.getDocumentID().getDocName() != null ? i.getDocumentID().getDocName() :
-							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "abc"));
+							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "/kalendarz/wydarzenie/"+i.getVotingID()));
 		}
 		return events;
 	}
@@ -68,6 +69,15 @@ public class KalendarzController {
 	public LocalDateTime dateAndTimeToLocalDateTime(Date date, Time time) {
 		String myDate = date + "T" + time;
 		return LocalDateTime.parse(myDate);
+	}
+
+	@GetMapping("/kalendarz/wydarzenie/{num}")
+	public ModelAndView index(@PathVariable Long num) {
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "wydarzenie" );
+		modelAndView.addObject("id", num);
+		System.out.println("\n\n\n"+num+"\n\n\n");
+		return modelAndView;
 	}
 }
 
