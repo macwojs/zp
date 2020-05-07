@@ -76,13 +76,14 @@ public class VotingEntity implements Serializable {
 
     public VotingEntity(){}
 
-    public VotingEntity( Date date, Time open, Time close, SetEntity setID, DocumentEntity document){
+    public VotingEntity( Date date, Time open, Time close, SetEntity setID, DocumentEntity document,TypeOfVoting type, String VotingDesc){
         this.votingDate = date;
         this.openVoting = open;
         this.closeVoting = close;
         this.setID_column = setID;
         this.documentID = document;
-
+        this.votingType = type;
+        this.votingDescription = VotingDesc;
     }
     public long getVotingID() {
         return votingID;
