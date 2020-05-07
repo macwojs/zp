@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface CitizenRepository extends JpaRepository<CitizenEntity, Long> {
     CitizenEntity findByCitizenID(Long CitizenID);
-    CitizenEntity findByPesel(String pesel);
+    Optional<CitizenEntity> findByPesel(String pesel);
     Optional<CitizenEntity> findByEmail(String email);
+    Optional<CitizenEntity> findByIdNumber(String idNumber);
+
 }
