@@ -9,7 +9,13 @@
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/kalendarz">Kalendarz</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania">Głosowania</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/parlament">Parlament</a></li>
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="/parlament">Parlament</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/parlament/sejm">Sejm</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/senat">Senat</a>
+                    </div>
+                </li>
             </ul>
                 <span class="navbar-text actions">
                     <a class="login" href="/signin" sec:authorize="isAnonymous()">Zaloguj</a>

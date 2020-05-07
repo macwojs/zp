@@ -95,47 +95,4 @@ public class ParlamentController {
 		return new ModelAndView( redirect );
 	}
 
-	@GetMapping ( value = { "/sejm/voteAdd" } )
-	public ModelAndView sejmVoteAdd( ModelAndView model ) {
-		List< DocumentEntity > documents = documentRepository.findByDocTypeID();
-		Optional< SetEntity > set = setRepository.findById((long)1);
-		if(set.isPresent()) {
-			model.addObject("documents", documents);
-			model.addObject("voting", new VotingEntity());
-		}
-		model.setViewName( "parliamentVotingAdd" );
-		return model;
-	}
-
-	@PostMapping ( value = { "/sejm/voteAdd" } )
-	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res ) throws ParseException {
-		if ( res.hasErrors( ) ) {
-			for( Object i : res.getAllErrors()){
-				System.out.print("\n"+i.toString()+"\n");
-			}
-
-			//Musi być ponownie dodane, bo inaczej nie wypełnia listy
-			ModelAndView model = new ModelAndView(  );
-			List< DocumentEntity > documents = documentRepository.findByDocTypeID();
-			model.addObject("documents", documents);
-			model.setViewName( "parliamentVotingAdd" );
-			return model;
-		}
-		Optional< SetEntity > set = setRepository.findById( (long)1 );
-		if(set.isPresent()) {
-			voting.setSetID_column(set.get());
-			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-
-			Time timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
-			Time timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
-			voting.setCloseVoting(timeValueClose);
-			voting.setOpenVoting(timeValueOpen);
-
-			voting.setVotingType(VotingEntity.TypeOfVoting.SEJM);
-			votingRepository.save(voting);
-		}
-		RedirectView redirect = new RedirectView( );
-		redirect.setUrl( "/parlament" );
-		return new ModelAndView( redirect );
-	}
 }
