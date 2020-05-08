@@ -71,7 +71,7 @@ public class KalendarzController {
 		return LocalDateTime.parse(myDate);
 	}
 
-	@GetMapping("/kalendarz/wydarzenie/{num}")
+	@GetMapping("/wydarzenie/{num}")
 	public ModelAndView index(@PathVariable Long num) {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "wydarzenie" );
