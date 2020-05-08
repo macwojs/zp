@@ -76,5 +76,15 @@ public class KalendarzController {
 		String myDate = date + "T" + time;
 		return LocalDateTime.parse(myDate);
 	}
+
+	@GetMapping("/wydarzenie/{num}")
+	public ModelAndView index(@PathVariable Long num) {
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "wydarzenie" );
+		VotingEntity voting = vr.findByVotingID(num);
+		modelAndView.addObject("voting", voting);
+		//System.out.println("\n\n\n"+num+"\n\n\n");
+		return modelAndView;
+	}
 }
 
