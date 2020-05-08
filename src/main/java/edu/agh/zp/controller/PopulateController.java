@@ -95,6 +95,14 @@ public class PopulateController {
         {
             OptionSetSession.save(new OptionSetEntity(OptionList.get(i),set));
         }
+        OptionList = new ArrayList<OptionEntity>(Arrays.asList(new OptionEntity("TAK"), new OptionEntity("NIE")));
+        set = new SetEntity("referendum");
+        OptionSession.saveAll(OptionList);
+        SetSession.save(set);
+        for (int i = 0; i<2;i++)
+        {
+            OptionSetSession.save(new OptionSetEntity(OptionList.get(i),set));
+        }
         return "Customers are created";
     }
 
