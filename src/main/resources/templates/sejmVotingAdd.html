@@ -23,16 +23,16 @@
                 <span class="text-danger" th:errors="*{documentID}"></span>
             </div>
             <div class="form-group">
-                <input th:field="*{votingDate}" class="form-control" type="date">
+                <input th:field="*{votingDate}" class="form-control" type="date" required="required">
                 <small class="form-text text-muted">Data głosowania</small>
                 <span class="text-danger" th:errors="*{votingDate}"></span>
             </div>
-            <div hidden class="form-group">
+            <div class="form-group">
                 <input th:field="*{open}" class="form-control" type="time" step="1">
                 <small class="form-text text-muted">Czas rozpoczęcia głosowania</small>
                 <span class="text-danger" th:errors="*{open}"></span>
             </div>
-            <div hidden class="form-group">
+            <div class="form-group">
                 <input th:field="*{close}" class="form-control" type="time" step="1">
                 <small class="form-text text-muted">Czas zakończenia głosowania</small>
                 <span class="text-danger" th:errors="*{close}"></span>
