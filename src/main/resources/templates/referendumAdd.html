@@ -9,26 +9,22 @@
 <body>
 <section id="tresc">
     <div class="contact-clean">
-        <form method="post" th:action="@{/glosowania/referendum/planAdd}" th:object="${voting}">
+        <form method="post" th:action="@{/glosowania/referendum/planAdd}" >
             <h2 class="text-center">Dodaj głosowanie w sejmie</h2>
             <div class="form-group">
-                <span class="text-danger" th:errors="*{global}"></span>
+                <div class="form-group" th:if="${ErrorList!=null}">
+                    <div th:each="err : ${ErrorList}">
+                        <span class="text-danger" th:text="${err}"></span>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <textarea th:field="*{votingDescription}" class="form-control" required="required" rows="14"></textarea>
+                    <textarea class="form-control" required="required" rows="14" name="desc"></textarea>
                     <small class="form-text text-muted">Pytanie referendalne</small>
-                    <span class="text-danger" th:errors="*{votingDescription}"></span>
                 </div>
 
             <div class="form-group">
-                <input th:field="*{votingDate}" class="form-control" type="date" required = "required">
+                <input class="form-control" type="date" name="date" required = "required">
                 <small class="form-text text-muted">Data referendum</small>
-                <span class="text-danger" th:errors="*{votingDate}"></span>
-            </div>
-            <div hidden  class="form-group">
-                <input  th:value="*{open}" class="form-control"  placeholder="06:00:00">
-            </div>
-            <div hidden class="form-group">
-                <input  th:field="*{close}" class="form-control"  placeholder="21:00:00">
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj&nbsp;</button>

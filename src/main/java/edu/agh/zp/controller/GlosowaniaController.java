@@ -89,35 +89,35 @@ public class GlosowaniaController {
     @GetMapping(value = {"/referendum/plan"})
     public ModelAndView referendumForm() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("voting", new VotingEntity());
+        modelAndView.addObject("ErrorList", null);
         modelAndView.setViewName("referendumAdd");
         return modelAndView;
     }
 
     @PostMapping(value = {"/referendum/planAdd"})
-    public ModelAndView referendumSubmit(@Valid @ModelAttribute( "voting" ) VotingEntity voting, BindingResult res ) throws ParseException {
-        if (res.hasErrors()) {
-            for (Object i : res.getAllErrors()) {
-                System.out.print("\n" + i.toString() + "\n");
-            }
-            ModelAndView model = new ModelAndView();
-            model.setViewName("referendumAdd");
-            return model;
+    public ModelAndView referendumSubmit(@RequestParam Map<String, String> reqParameters) throws ParseException {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("glosowania");
+        String data = reqParameters.remove("date");
+        LocalDate time = timeVerify(data, 7);
+        String desc = reqParameters.remove("desc");
+        if (time == null || desc.isEmpty()) {
+            ArrayList<String>  errors = new ArrayList<String>();
+            if (time==null) errors.add("Wydarzenie musi być zaplanowane z 7 dniowym wyprzedzeniem\n");
+            if (desc.isEmpty()) errors.add("Należy wpisać treść pytania\n");
+            modelAndView.setViewName("referendumAdd");
+            modelAndView.addObject("ErrorList", errors);
+            return modelAndView;
         }
-        Optional<SetEntity> set = setSession.findById((long) 2);
-        if (set.isPresent()) {
-            voting.setSetID_column(set.get());
-            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-            Time timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
-            Time timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
-            voting.setCloseVoting(timeValueClose);
-            voting.setOpenVoting(timeValueOpen);
-            voting.setVotingType(VotingEntity.TypeOfVoting.REFERENDUM);
-            votingSession.save(voting);
-        }
-        RedirectView redirect = new RedirectView();
-        redirect.setUrl("/parlament/sejm");
-        return new ModelAndView(redirect);
+        votingSession.save(new VotingEntity(
+                java.sql.Date.valueOf(time),
+                java.sql.Time.valueOf(LocalTime.parse("06:00:00")),
+                java.sql.Time.valueOf(LocalTime.parse("21:00:00")),
+                setSession.findById(2L).get(),
+                null,
+                VotingEntity.TypeOfVoting.REFERENDUM,
+                desc));
+        return modelAndView;
     }
 
 

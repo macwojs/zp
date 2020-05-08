@@ -15,7 +15,7 @@ import java.util.Date;
 public class TimeAfterNowValidator implements ConstraintValidator<TimeAfterNow, VotingEntity > {
 	@Override
 	public boolean isValid( VotingEntity voting, ConstraintValidatorContext constraintValidatorContext ) {
-		if (voting.getVotingType()== VotingEntity.TypeOfVoting.PREZYDENT) return true;
+		if (voting.getVotingType()== VotingEntity.TypeOfVoting.PREZYDENT || voting.getVotingType()== VotingEntity.TypeOfVoting.REFERENDUM) return true;
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime provided = null;
