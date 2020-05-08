@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 public class TimeOrderValidator implements ConstraintValidator<TimeOrder, VotingEntity > {
 	@Override
 	public boolean isValid( VotingEntity voting, ConstraintValidatorContext constraintValidatorContext ) {
-		if (voting.getVotingType() == VotingEntity.TypeOfVoting.PREZYDENT) return true;
+		if (voting.getVotingType() == VotingEntity.TypeOfVoting.PREZYDENT ||voting.getVotingType() == VotingEntity.TypeOfVoting.REFERENDUM) return true;
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 
 		Time timeValueOpen;

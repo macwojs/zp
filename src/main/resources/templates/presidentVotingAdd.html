@@ -11,14 +11,33 @@
 <body>
 <section id="tresc" >
     <div  class="contact-clean">
-        <form method="post" th:action="@{/glosowania/prezydenckie/planAdd}">
+        <form method="post" th:action="@{/glosowania/prezydenckie/planAdd}" >
             <h2 class="text-center">Dodaj wybory</h2>
+            <div class="form-group" th:if="${ErrorList!=null}">
+                <div th:each="err : ${ErrorList}">
+                <span class="text-danger" th:text="${err}"></span>
+                </div>
+            </div>
             <h3 class="text-center"> Nazwiska i imiona kandydatów</h3>
             <div id="toAdd" >
-                <div class="form-group" id="Candidate1"><input class="form-control" name="optionName1"/><a href="#" onclick="deleteElem(1)"><img th:src="@{/img/close.png}" height="14" width="14" ></a></div>
+                <div class="form-group" id="Candidate1">
+                    <input class="form-control" name="optionName1" required="required"/>
+                    <a href="#" onclick="deleteElem(1)">
+                        <img th:src="@{/img/close.png}" height="14" width="14" >
+                    </a>
+                </div>
             </div>
-            <div class="form-group"><p><a href="#" onclick="addElem()"> <img th:src="@{/img/plus.png}" height="14" width="14" ></a></p></div>
-            <div class="form-group -sm-flex align-items-sm-start"><input class="form-control" type="date" name="date"></div>
+            <div class="form-group">
+                <p>
+                    <a href="#" onclick="addElem()">
+                        <img th:src="@{/img/plus.png}" height="14" width="14" >
+                    </a>
+                </p>
+            </div>
+            <div class="form-group -sm-flex align-items-sm-start" >
+                <input class="form-control" type="date" name="date" required="required">
+                </span>
+            </div>
             <div class="form-group"><button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj&nbsp;</button></div>
         </form>
     </div>
