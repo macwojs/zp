@@ -8,6 +8,7 @@ function addElem(){
     const input = document.createElement('input');
     input.className='form-control'
     input.name = 'optionName' + CandidateNum;
+    input.required = true;
     Div.appendChild(input);
     const a = document.createElement("a");
     a.href='#';
