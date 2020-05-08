@@ -1,26 +1,28 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.OptionEntity;
-import edu.agh.zp.objects.OptionSetEntity;
-import edu.agh.zp.objects.SetEntity;
-import edu.agh.zp.objects.VotingEntity;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.OptionRepository;
 import edu.agh.zp.repositories.OptionSetRepository;
 import edu.agh.zp.repositories.SetRepository;
 import edu.agh.zp.repositories.VotingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.validation.Valid;
+import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = {"/glosowania"})
@@ -84,20 +86,42 @@ public class GlosowaniaController {
         return modelAndView;
     }
 
-	@GetMapping(value = {"/referendum/plan"})
-	public ModelAndView referendumForm() {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("voting", new VotingEntity());
-		modelAndView.setViewName("referendumAdd");
-		return modelAndView;
-	}
+    @GetMapping(value = {"/referendum/plan"})
+    public ModelAndView referendumForm() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("voting", new VotingEntity());
+        modelAndView.setViewName("referendumAdd");
+        return modelAndView;
+    }
 
-//	@PostMapping(value = {"/referendum/planAdd"})
-//	public ModelAndView referendumSubmit(@RequestParam Map<String, String> reqParameters) throws ParseException{
-//
-//	}
+    @PostMapping(value = {"/referendum/planAdd"})
+    public ModelAndView referendumSubmit(@Valid @ModelAttribute( "voting" ) VotingEntity voting, BindingResult res ) throws ParseException {
+        if (res.hasErrors()) {
+            for (Object i : res.getAllErrors()) {
+                System.out.print("\n" + i.toString() + "\n");
+            }
+            ModelAndView model = new ModelAndView();
+            model.setViewName("referendumAdd");
+            return model;
+        }
+        Optional<SetEntity> set = setSession.findById((long) 2);
+        if (set.isPresent()) {
+            voting.setSetID_column(set.get());
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            Time timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
+            Time timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
+            voting.setCloseVoting(timeValueClose);
+            voting.setOpenVoting(timeValueOpen);
+            voting.setVotingType(VotingEntity.TypeOfVoting.REFERENDUM);
+            votingSession.save(voting);
+        }
+        RedirectView redirect = new RedirectView();
+        redirect.setUrl("/parlament/sejm");
+        return new ModelAndView(redirect);
+    }
 
-	public LocalDate timeVerify(String time, int delay) {
+
+    public LocalDate timeVerify(String time, int delay) {
         if (time.isEmpty()) return null;
         LocalDate now = java.time.LocalDate.now();
         now = now.plusDays(delay);

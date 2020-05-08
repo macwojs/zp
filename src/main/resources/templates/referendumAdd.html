@@ -20,18 +20,19 @@
                 </div>
 
             <div class="form-group">
-                <input th:field="*{votingDate}" class="form-control" type="date">
+                <input th:field="*{votingDate}" class="form-control" type="date" required = "required">
                 <small class="form-text text-muted">Data referendum</small>
                 <span class="text-danger" th:errors="*{votingDate}"></span>
             </div>
-            <div hidden class="form-group">
-                <input  th:field="*{open}" class="form-control" type="time" step="1" value="06:00:00">
+            <div  class="form-group">
+                <input  th:value="*{open}" class="form-control"  placeholder="06:00:00">
             </div>
-            <div hidden class="form-group">
-                <input  th:field="*{close}" class="form-control" type="time" step="1" value="21:00:00">
+            <div  class="form-group">
+                <input  th:field="*{close}" class="form-control"  placeholder="21:00:00">
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj&nbsp;</button>
+            </div>
             </div>
         </form>
     </div>
