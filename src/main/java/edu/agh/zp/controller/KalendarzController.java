@@ -4,6 +4,7 @@ import com.github.javafaker.DateAndTime;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.VotingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,9 +81,12 @@ public class KalendarzController {
 
 	@GetMapping("/wydarzenie/{num}")
 	public ModelAndView index(@PathVariable Long num) {
+		VotingEntity voting = vr.findByVotingID(num);
+		if(voting==null) {
+			return new ModelAndView(String.valueOf(HttpStatus.NOT_FOUND));
+		}
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "wydarzenie" );
-		VotingEntity voting = vr.findByVotingID(num);
 		modelAndView.addObject("voting", voting);
 		//System.out.println("\n\n\n"+num+"\n\n\n");
 		return modelAndView;
