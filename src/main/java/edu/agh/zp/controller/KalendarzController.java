@@ -68,7 +68,7 @@ public class KalendarzController {
 			events.add(new Event(i.getVotingID(),
 					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getOpenVoting()),
 					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getCloseVoting()),
-					i.getDocumentID().getDocName() != null ? i.getDocumentID().getDocName() :
+					i.getDocumentID() != null ? i.getDocumentID().getDocName() :
 							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "/kalendarz/wydarzenie/"+i.getVotingID()));
 		}
 		return events;
