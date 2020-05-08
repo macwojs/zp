@@ -75,8 +75,9 @@ public class KalendarzController {
 	public ModelAndView index(@PathVariable Long num) {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "wydarzenie" );
-		modelAndView.addObject("id", num);
-		System.out.println("\n\n\n"+num+"\n\n\n");
+		VotingEntity voting = vr.findByVotingID(num);
+		modelAndView.addObject("voting", voting);
+		//System.out.println("\n\n\n"+num+"\n\n\n");
 		return modelAndView;
 	}
 }
