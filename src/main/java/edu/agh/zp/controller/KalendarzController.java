@@ -23,12 +23,13 @@ class Event{
 	public String title;
 	public String link;
 
-	public Event(long id, LocalDateTime start, LocalDateTime end, String title,  String link) {
+	public Event(long id, LocalDateTime start, LocalDateTime end, String title, String url) {
 		this.id = id;
 		this.start = start;
 		this.end = end;
 		this.title = title;
 		this.link = link;
+		this.url = url;
 	}
 }
 
@@ -60,7 +61,7 @@ public class KalendarzController {
 					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getOpenVoting()),
 					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getCloseVoting()),
 					i.getDocumentID().getDocName() != null ? i.getDocumentID().getDocName() :
-							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "1"));
+							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "/kalendarz/wydarzenie/"+i.getVotingID()));
 		}
 		return events;
 	}

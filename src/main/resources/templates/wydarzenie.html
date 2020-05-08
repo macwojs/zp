@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <div th:remove="tag" class="extraHead"></div>
+</head>
+
+
+<body>
+<section id="tresc" style="height: 80vh;">
+    <a th:text="${id}"></a>
+
+</section>
+</body>
+
+</html>
