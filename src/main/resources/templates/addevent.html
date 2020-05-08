@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <div th:remove="tag" class="extraHead"></div>
+</head>
+
+
+<body>
+<section id="tresc">
+    <div class="register-photo">
+        <div class="form-container">
+            <p>Dodaj Głosowanie</p>
+            <a class="nav-link" href="/glosowania/prezydenckie/plan">Dodaj datę wyborów prezydenckich</a>
+            <a class="nav-link" href="/parlament/sejm/voteAdd">Dodawnie głosowania w sejmie</a>
+            <a class="nav-link" href="/parlament/senat/voteAdd">Dodawnie głosowania w senacie</a>
+            <a class="nav-link" href="./">Referendum</a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

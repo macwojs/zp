@@ -21,14 +21,13 @@ class Event{
 	public LocalDateTime start;
 	public LocalDateTime end;
 	public String title;
-	public String link;
+	public String url;
 
 	public Event(long id, LocalDateTime start, LocalDateTime end, String title, String url) {
 		this.id = id;
 		this.start = start;
 		this.end = end;
 		this.title = title;
-		this.link = link;
 		this.url = url;
 	}
 }
@@ -46,6 +45,13 @@ public class KalendarzController {
 		modelAndView.addObject("voting", parseVotingsToEvents());
 
 		return modelAndView;
+	}
+
+	@GetMapping (value = {"addevent"})
+	public String addEvent() {
+//		ModelAndView modelAndView = new ModelAndView( );
+//		modelAndView.setViewName( "kalendarz" );
+		return "addevent";
 	}
 
 	@RequestMapping(value="/allevents", method= RequestMethod.GET)
