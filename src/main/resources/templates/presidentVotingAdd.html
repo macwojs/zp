@@ -12,7 +12,7 @@
 <section id="tresc" >
     <div  class="contact-clean">
         <form method="post" th:action="@{/glosowania/prezydenckie/planAdd}" >
-            <h2 class="text-center">Dodaj wybory</h2>
+            <h2 class="text-center">Dodawanie wyborów prezydenckich</h2>
             <div class="form-group" th:if="${ErrorList!=null}">
                 <div th:each="err : ${ErrorList}">
                 <span class="text-danger" th:text="${err}"></span>
