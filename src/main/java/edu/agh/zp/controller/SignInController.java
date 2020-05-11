@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletException;
@@ -35,11 +36,16 @@ public class SignInController {
 
 	// custom login
 	@GetMapping (value = {"/signin"})
-	public ModelAndView index() {
+	public ModelAndView index( RedirectAttributes attributes, HttpServletRequest request) {
 
 		String viewName = "signin" ;
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("user", new CitizenEntity());
+
+		String referrer = request.getHeader("Referer");
+		if(referrer!=null){
+			model.put("url_prior_login", referrer);
+		}
 
 		return new ModelAndView(viewName, model);
 	}

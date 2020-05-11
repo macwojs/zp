@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>votingForm</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" href="@{/css/Bootstrap-4-Custom-Radio.css}">
+        <link rel="stylesheet" href="@{/css/Login-Form-Clean.css}">
+        <link rel="stylesheet" href="@{/fonts/typicons.min.css}">
+    </div>
+</head>
+
+<body>
+    <section id="tresc">
+        <div class="login-clean">
+            <form id="voting-form" method="post" style="max-width: 520px;">
+                <h1 class="text-center" style="margin-bottom: 24px;">Głosowanie</h1>
+                <div class="container" style="margin-bottom: 15px;margin-top: 15px;">
+                    <div class="form-row">
+                        <div class="col align-self-center">
+                            <p class="text-center" style="font-size: 24px;margin-bottom: 0px;">Głosowany dokument</p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12 align-self-center">
+                            <p class="text-center" style="font-size: 20px;margin-bottom: 0px;">Nazwa dokumentu z bazy</p>
+                            <p class="text-center" style="margin-bottom: 8px;">Opis do ustawy wprowadzany z bazy</p><a class="text-center d-lg-flex justify-content-lg-center" href="#">Link do dokumentu</a></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <fieldset class="text-center">
+                            <legend class="text-center">Wybierz głos</legend>
+                            <div class="custom-control custom-radio custom-control-inline"><input type="radio" id="customRadioInline1" class="custom-control-input" name="votingRadio" value="1"><label class="custom-control-label" for="customRadioInline1">Za</label></div>
+                            <div class="custom-control custom-radio custom-control-inline"><input type="radio" id="customRadioInline3" class="custom-control-input" name="votingRadio" value="-1"><label class="custom-control-label" for="customRadioInline3">Wstrzymaj się</label></div>
+                            <div class="custom-control custom-radio custom-control-inline"><input type="radio" id="customRadioInline2" class="custom-control-input" name="votingRadio" value="0"><label class="custom-control-label" for="customRadioInline2">Przeciw</label></div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Wyślij głos</button></div>
+                <div></div>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
