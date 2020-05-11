@@ -3,7 +3,9 @@
 <html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::.contact-clean}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
-    <div th:remove="tag" class="extraHead"></div>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+    </div>
 </head>
 <body>
     <div class="contact-clean" th:object="${voting}">

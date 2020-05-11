@@ -2,7 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>ZP - Zaloguj się</title>
-    <div th:remove="tag" class="extraHead"></div>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Login-Form-Clean.css}">
+    </div>
 </head>
 
 
