@@ -14,6 +14,7 @@
         <div class="login-clean">
             <form id="voting-form" method="post" style="max-width: 520px;">
                 <h1 class="text-center" style="margin-bottom: 24px;">Głosowanie</h1>
+                <hr style="background-color: #D4213D;margin: 32px;margin-right: 64px;margin-left: 64px;margin-top: 8px;">
                 <div class="container" style="margin-bottom: 15px;margin-top: 15px;">
                     <div class="form-row">
                         <div class="col align-self-center">
@@ -21,22 +22,46 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="col-12 align-self-center">
+                        <div class="col-10 align-self-center">
                             <p class="text-center" style="font-size: 20px;margin-bottom: 0px;">Nazwa dokumentu z bazy</p>
-                            <p class="text-center" style="margin-bottom: 8px;">Opis do ustawy wprowadzany z bazy</p><a class="text-center d-lg-flex justify-content-lg-center" href="#">Link do dokumentu</a></div>
+                            <p class="text-center" style="margin-bottom: 8px;">Opis do ustawy wprowadzany z bazy</p>
+                        </div>
+                        <div class="col-2 text-center align-self-center">
+                            <a href="#">
+                                <img src="/img/doc_icon.svg" style="height: 50px;">
+                            </a>
+                        </div>
                     </div>
                 </div>
+                <hr style="background-color: #D4213D;margin: 32px;margin-right: 64px;margin-left: 64px;">
                 <div class="form-group">
                     <div>
                         <fieldset class="text-center">
                             <legend class="text-center">Wybierz głos</legend>
-                            <div class="custom-control custom-radio custom-control-inline"><input type="radio" id="customRadioInline1" class="custom-control-input" name="votingRadio" value="1"><label class="custom-control-label" for="customRadioInline1">Za</label></div>
-                            <div class="custom-control custom-radio custom-control-inline"><input type="radio" id="customRadioInline3" class="custom-control-input" name="votingRadio" value="-1"><label class="custom-control-label" for="customRadioInline3">Wstrzymaj się</label></div>
-                            <div class="custom-control custom-radio custom-control-inline"><input type="radio" id="customRadioInline2" class="custom-control-input" name="votingRadio" value="0"><label class="custom-control-label" for="customRadioInline2">Przeciw</label></div>
+                            <div class="custom-control custom-radio custom-control-inline"><input type="radio"
+                                                                                                  id="customRadioInline1"
+                                                                                                  class="custom-control-input"
+                                                                                                  name="votingRadio"
+                                                                                                  value="1"><label
+                                    class="custom-control-label" for="customRadioInline1">Za</label></div>
+                            <div class="custom-control custom-radio custom-control-inline"><input type="radio"
+                                                                                                  id="customRadioInline3"
+                                                                                                  class="custom-control-input"
+                                                                                                  name="votingRadio"
+                                                                                                  value="-1"><label
+                                    class="custom-control-label" for="customRadioInline3">Wstrzymaj się</label></div>
+                            <div class="custom-control custom-radio custom-control-inline"><input type="radio"
+                                                                                                  id="customRadioInline2"
+                                                                                                  class="custom-control-input"
+                                                                                                  name="votingRadio"
+                                                                                                  value="0"><label
+                                    class="custom-control-label" for="customRadioInline2">Przeciw</label></div>
                         </fieldset>
                     </div>
                 </div>
-                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Wyślij głos</button></div>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit">Wyślij głos</button>
+                </div>
                 <div></div>
             </form>
         </div>
