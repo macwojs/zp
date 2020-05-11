@@ -11,6 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /** @SecutityConfig
  * @apiNote Password encrypting, User authentication
@@ -22,13 +26,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private citizenDetailsService cS;
-
+    @Autowired
+    private DataSource dataSource;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf();
         http.httpBasic().disable();
         // TODO...Change the authorization
         http.authorizeRequests().antMatchers("/parlament/**").authenticated()
+                .antMatchers("/kalendarz").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/signin")
@@ -57,4 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
+
+    PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
+        tokenRepositoryImpl.setDataSource(dataSource);
+        return tokenRepositoryImpl;
+    }
 }

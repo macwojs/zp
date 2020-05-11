@@ -2,9 +2,12 @@ package edu.agh.zp;
 
 
 import edu.agh.zp.objects.CitizenEntity;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,11 +15,13 @@ public class CitizenDetails  implements UserDetails {
     private String email;
     private String password;
     private boolean active;
+    private String role;
     private List<GrantedAuthority> authorities;
 
     public CitizenDetails(CitizenEntity citizen) {
         this.email = citizen.getEmail();
         this.password = citizen.getPassword();
+//        this.role = citizen.getRoles().toString();
 //         this.active = citizen.isActive()
 //        this.authorities = Arrays.stream(citizen.getRoles().split(",")).map(SimpleGrantedAuthority::new)
 //                .collect(Collectors.toList())
@@ -24,9 +29,22 @@ public class CitizenDetails  implements UserDetails {
 
     public CitizenDetails() { ; }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+
+        list.add(new SimpleGrantedAuthority("ROLE_"+role));
+
+        return list;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

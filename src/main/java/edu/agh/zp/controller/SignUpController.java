@@ -1,7 +1,11 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.CitizenEntity;
+import edu.agh.zp.objects.Role;
+import edu.agh.zp.repositories.RoleRepository;
 import edu.agh.zp.services.CitizenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,14 +18,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping (value={"/signup"})
 public class SignUpController {
 	private CitizenService cS;
+	@Autowired
+	private RoleRepository rR;
 	public SignUpController(CitizenService cS){
 		this.cS = cS;
 	}
@@ -54,10 +58,15 @@ public class SignUpController {
 			exists = cS.findByIdNumer(citizen.getIdNumber());
 			if(exists.isPresent()){
 				ModelAndView mv = new ModelAndView("signup");
-				mv.addObject("error", "Obywetel z tym numerem dowodu osobistego już istnieje.");
+				mv.addObject("error", "Obywatel z tym numerem dowodu osobistego już istnieje.");
 				return mv;
 			} else {
 				citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()));
+				List<Role> roles = new ArrayList <Role>();
+
+				Optional<Role> temp = rR.findById((long)1);
+				temp.ifPresent(roles::add);
+				citizen.setRoles(roles);
 				cS.create(citizen);
 			}
 		}
