@@ -4,7 +4,9 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
-    <div th:remove="tag" class="extraHead"></div>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
+    </div>
 </head>
 
 
