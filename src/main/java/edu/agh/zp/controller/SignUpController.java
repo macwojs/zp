@@ -63,8 +63,7 @@ public class SignUpController {
 			} else {
 				citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()));
 				List<Role> roles = new ArrayList <Role>();
-
-				Optional<Role> temp = rR.findById((long)1);
+				Optional<Role> temp = rR.findByName("ROLE_USER");
 				temp.ifPresent(roles::add);
 				citizen.setRoles(roles);
 				cS.create(citizen);
