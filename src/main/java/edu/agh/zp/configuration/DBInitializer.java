@@ -25,26 +25,25 @@ public class DBInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         createSampleAdmin("admin@zp.pl", "adminadmin","Admin", "Admin", "00010100190", "ARY546695");
         createSampleUser("user@zp.pl", "useruser","User", "User", "00010133000", "AOS266716");
-        createSampleMarszalek("marszalek@zp.pl", "marszalekmarszalek","Marszalek", "Marszalek", "00010133000", "AOS266716");
+        createSampleMarszalek("marszalek@zp.pl", "marszalekmarszalek","Marszalek", "Marszalek", "00010102260", "AEX304345");
     }
 
     private void createSampleAdmin(String email, String password, String name, String surname, String pesel, String idnumber){
-        CitizenEntity admin=  createBasicUser(password, email, name, surname,pesel, idnumber);
+        CitizenEntity admin=  createBasicUser(email, password, name, surname,pesel, idnumber);
         String[] roles =  {"ROLE_ADMIN"};
         setRole(admin,roles);
         cS.create(admin);
     }
 
     private void createSampleUser(String email, String password, String name, String surname, String pesel, String idnumber){
-        CitizenEntity user=  createBasicUser(password, email, name, surname,pesel, idnumber);
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        CitizenEntity user=  createBasicUser(email, password, name, surname,pesel, idnumber);
         String[] roles =  {"ROLE_USER"};
         setRole(user, roles);
         cS.create(user);
     }
 
     private void createSampleMarszalek(String email, String password, String name, String surname, String pesel, String idnumber){
-        CitizenEntity marszalek=  createBasicUser(password, email, name, surname,pesel, idnumber);
+        CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
         String[] roles =  {"ROLE_USER", "ROLE_MARSZALEK", "ROLE_POSEL"};
         setRole(marszalek, roles);
         cS.create(marszalek);
