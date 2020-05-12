@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable();
         // TODO...Change the authorization
         http.authorizeRequests().antMatchers("/parlament/**").authenticated()
-                .antMatchers("/kalendarz").hasRole("ADMIN")
+                .antMatchers("/glosowania/**").hasAnyRole("ADMIN", "MARSZALEK")
                 .and()
                 .formLogin()
                 .loginPage("/signin")
