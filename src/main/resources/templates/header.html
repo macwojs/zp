@@ -7,7 +7,7 @@
                 class="collapse navbar-collapse" id="navcol-1">
             <ul class="nav navbar-nav mr-auto">
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/kalendarz">Kalendarz</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania">Głosowania</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK')">Głosowania</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
                 <li class="nav-item dropdown">
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="/parlament">Parlament</a>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>ZP - Sejm</title>
     <div th:remove="tag" class="extraHead"></div>
@@ -8,9 +8,10 @@
 <body>
     <section id="tresc" style="height: 80vh;">
         <p style="font-size: 43px;text-align: center;"><br>Sejm</p>
-        <a class="nav-link" href="/parlament/documentForm">Dodawnie dokumentu</a>
-        <a class="nav-link" href="/parlament/sejm/voteAdd">Dodawnie głosowania w sejmie</a>
-        <a class="nav-link" href="/parlament/sejm/vote">Głosuj</a>
+        <a class="nav-link" href="/parlament/documentForm" sec:authorize="hasAnyRole('MARSZALEK', 'ADMIN')">Dodawnie dokumentu</a>
+        <a class="nav-link" href="/parlament/sejm/voteAdd" sec:authorize="hasAnyRole('MARSZALEK', 'ADMIN')" >Dodawnie głosowania w sejmie</a>
+        <a class="nav-link" href="/parlament/sejm/vote"   sec:authorize="hasAnyRole('POSEL', 'ADMIN')">Głosuj</a>
+
     </section>
 </body>
 </html>
