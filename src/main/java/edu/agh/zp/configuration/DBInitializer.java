@@ -25,7 +25,7 @@ public class DBInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         createSampleAdmin("admin@zp.pl", "adminadmin","Admin", "Admin", "00010100190", "ARY546695");
         createSampleUser("user@zp.pl", "useruser","User", "User", "00010133000", "AOS266716");
-        createSampleMarszalek("marszalek@zp.pl", "marszalekmarszalek","Marszalek", "Marszalek", "00010102260", "AEX304345");
+        createSampleMarszalekSejmu("marszaleksejmu@zp.pl", "marszalekmarszalek","Marszalek", "Sejmu", "00010102260", "AEX304345");
     }
 
     private void createSampleAdmin(String email, String password, String name, String surname, String pesel, String idnumber){
@@ -42,9 +42,30 @@ public class DBInitializer implements CommandLineRunner {
         cS.create(user);
     }
 
-    private void createSampleMarszalek(String email, String password, String name, String surname, String pesel, String idnumber){
+    private void createSampleMarszalekSejmu(String email, String password, String name, String surname, String pesel, String idnumber){
         CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
-        String[] roles =  {"ROLE_USER", "ROLE_MARSZALEK", "ROLE_POSEL"};
+        String[] roles =  {"ROLE_USER", "ROLE_MARSZALEK_SEJMU", "ROLE_POSEL"};
+        setRole(marszalek, roles);
+        cS.create(marszalek);
+    }
+
+    private void createSampleMarszalekSenatu(String email, String password, String name, String surname, String pesel, String idnumber){
+        CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
+        String[] roles =  {"ROLE_USER", "ROLE_MARSZALEK_SENATU", "ROLE_SENATOR"};
+        setRole(marszalek, roles);
+        cS.create(marszalek);
+    }
+
+    private void createSampleSenator(String email, String password, String name, String surname, String pesel, String idnumber){
+        CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
+        String[] roles =  {"ROLE_USER", "ROLE_SENATOR"};
+        setRole(marszalek, roles);
+        cS.create(marszalek);
+    }
+
+    private void createSamplePosel(String email, String password, String name, String surname, String pesel, String idnumber){
+        CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
+        String[] roles =  {"ROLE_USER", "ROLE_POSEL"};
         setRole(marszalek, roles);
         cS.create(marszalek);
     }

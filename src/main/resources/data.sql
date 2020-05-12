@@ -1,4 +1,4 @@
-INSERT INTO role VALUES (1,'ROLE_ADMIN'),(2,'ROLE_USER'), (3, 'ROLE_MARSZALEK'), (4, 'ROLE_POSEL'), (5, 'ROLE_SENATOR'), (6, 'ROLE_PREZYDENT');
+INSERT INTO role VALUES (1,'ROLE_ADMIN'),(2,'ROLE_USER'), (3, 'ROLE_MARSZALEK_SEJMU'), (4, 'ROLE_MARSZALEK_SENATU'), (5, 'ROLE_POSEL'), (6, 'ROLE_SENATOR'), (7, 'ROLE_PREZYDENT');
 
 INSERT INTO "option" VALUES  (1, 'Tak'), (2, 'Nie'), (3, 'Za'), (4, 'Przeciw'), (5, 'Wstrzymaj się');
 

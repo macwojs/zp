@@ -33,8 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf();
         http.httpBasic().disable();
         // TODO...Change the authorization
-        http.authorizeRequests().antMatchers("/parlament/**").authenticated()
-                .antMatchers("/glosowania/**").hasAnyRole("ADMIN", "MARSZALEK")
+        http.authorizeRequests()
+                .antMatchers("/glosowania/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU")
+                .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU")
+                .antMatchers("/parlament/sejm/vote").hasAnyRole("POSEL", "ADMIN")
+                .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/signin")
