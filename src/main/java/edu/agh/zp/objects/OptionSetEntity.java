@@ -26,12 +26,12 @@ public class OptionSetEntity implements Serializable {
         this.optionSetID.setOptionID(optionID);
     }
 
-    public SetEntity getSetID_column() {
-        return this.optionSetID.getSetID_column();
+    public SetEntity getSetIDcolumn() {
+        return this.optionSetID.getSetIDcolumn();
     }
 
-    public void setSetID_column(SetEntity setID_column) {
-        this.optionSetID.setSetID_column(setID_column);
+    public void setSetIDcolumn(SetEntity setID_column) {
+        this.optionSetID.setSetIDcolumn(setID_column);
     }
 
 }
@@ -48,15 +48,14 @@ class OptionSetID implements Serializable {
     @ManyToOne
     @NotNull
     @JoinColumn(name="setID")
-    private SetEntity setID_column;
+    private SetEntity setIDcolumn;
 
-    public OptionSetID(@NotNull OptionEntity optionID, @NotNull SetEntity setID_column) {
+    public OptionSetID(@NotNull OptionEntity optionID, @NotNull SetEntity setIDcolumn) {
         this.optionID = optionID;
-        this.setID_column = setID_column;
+        this.setIDcolumn = setIDcolumn;
     }
 
-    public OptionSetID() {
-    }
+    public OptionSetID() {}
 
     public OptionEntity getOptionID() {
         return optionID;
@@ -66,11 +65,11 @@ class OptionSetID implements Serializable {
         this.optionID = optionID;
     }
 
-    public SetEntity getSetID_column() {
-        return setID_column;
+    public SetEntity getSetIDcolumn() {
+        return setIDcolumn;
     }
 
-    public void setSetID_column(SetEntity setID_column) {
-        this.setID_column = setID_column;
+    public void setSetIDcolumn(SetEntity setID_column) {
+        this.setIDcolumn = setID_column;
     }
 }

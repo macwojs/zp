@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Ustawy</title>
+    <div th:remove="tag" class="extraHead"></div>
+</head>
+
+<body>
+<section id="tresc" style="height: 80vh;">
+    <p style="font-size: 43px;text-align: center;"><br>Głos oddany po przepisowym zakończeniu głosowania.</p>
+    <p><a th:href="${type}">Wróć do strony głosowań </a></p>
+</section>
+</body>
+
+</html>
