@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
+
 
 @Service
 public class StorageService {
@@ -25,11 +29,17 @@ public class StorageService {
 		}
 
 		try {
-			var fileName = file.getOriginalFilename( );
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "ddMM_hhmmss" );
+			String dateAsString = simpleDateFormat.format( new Date( ) );
+
+			String fileExt = com.google.common.io.Files.getFileExtension( Objects.requireNonNull( file.getOriginalFilename( ) ) );
+			String fileNameWOExt = com.google.common.io.Files.getNameWithoutExtension( Objects.requireNonNull( file.getOriginalFilename( ) ) );
+
+			var fileName = fileNameWOExt + "_" + dateAsString + "." + fileExt;
 			var is = file.getInputStream( );
 
-			File file_path = new File( path );
-			String absolutePath = file_path.getAbsolutePath( );
+			File filePath = new File( path );
+			String absolutePath = filePath.getAbsolutePath( );
 
 			Files.copy( is, Paths.get( absolutePath + '/' + fileName ), StandardCopyOption.REPLACE_EXISTING );
 

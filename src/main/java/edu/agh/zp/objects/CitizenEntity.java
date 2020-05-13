@@ -1,5 +1,6 @@
 package edu.agh.zp.objects;
 
+//import edu.agh.zp.Role;
 import edu.agh.zp.validator.ID;
 import edu.agh.zp.validator.Password;
 import edu.agh.zp.validator.Pesel;
@@ -10,6 +11,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -67,6 +70,23 @@ public class CitizenEntity implements Serializable {
     @NotBlank (message = "Musisz powtórzyć hasło.")
     private String repeatPassword;
 
+
+
+    @ManyToMany(cascade=CascadeType.MERGE)
+    @JoinTable(
+            name="user_role",
+            joinColumns={@JoinColumn(name="citizenID", referencedColumnName="citizenID")},
+            inverseJoinColumns={@JoinColumn(name="roleid", referencedColumnName="roleid")})
+    private List<Role> roles;
+
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
     public CitizenEntity() {}
 
     public CitizenEntity(String password, String rp, String email, String name, String surname, String pesel, String idNumber) {
@@ -167,3 +187,4 @@ public class CitizenEntity implements Serializable {
                 '}';
     }
 }
+

@@ -11,6 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /** @SecutityConfig
  * @apiNote Password encrypting, User authentication
@@ -22,13 +26,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private citizenDetailsService cS;
-
+    @Autowired
+    private DataSource dataSource;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf();
         http.httpBasic().disable();
         // TODO...Change the authorization
-        http.authorizeRequests().antMatchers("/parlament/**").authenticated()
+        http.authorizeRequests()
+                .antMatchers("/glosowania/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU")
+                .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU")
+                .antMatchers("/parlament/sejm/vote").hasAnyRole("POSEL", "ADMIN")
+                .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
+                .antMatchers("/parlament/**").authenticated()
+                .and()
+                .exceptionHandling().accessDeniedPage("/error/accessdenied")
                 .and()
                 .formLogin()
                 .loginPage("/signin")
@@ -57,4 +69,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
+
+    PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
+        tokenRepositoryImpl.setDataSource(dataSource);
+        return tokenRepositoryImpl;
+    }
 }

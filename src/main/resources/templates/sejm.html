@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>ZP - Sejm</title>
     <div th:remove="tag" class="extraHead"></div>
@@ -8,13 +8,13 @@
 <body>
     <section id="tresc" style="height: 80vh;">
         <p style="font-size: 43px;text-align: center;"><br>Sejm</p>
-        <a class="nav-link" href="/parlament/documentForm">Dodawnie dokumentu</a>
-        <a class="nav-link" href="/parlament/sejm/voteAdd">Dodawnie głosowania w sejmie</a>
+        <a class="nav-link" href="/parlament/documentForm" sec:authorize="hasAnyRole('MARSZALEK_SEJMU', 'ADMIN')">Dodawnie dokumentu</a>
+        <a class="nav-link" href="/parlament/sejm/voteAdd" sec:authorize="hasAnyRole('MARSZALEK_SEJMU', 'ADMIN')" >Dodawnie głosowania w sejmie</a>
         <h3>najbliższe głosowania</h3>
         <ul class="list-group" th:each="voting : ${VotingList}">
             <li th:switch="${Sign[votingStat.index]}" class="list-group-item">
                 <div th:case="true">
-                    <a class="nav-link" th:href="'/parlament/sejm/vote/'+${voting.getVotingID()}" th:text="${voting.getVotingID()}"></a>
+                    <a class="nav-link" th:href="'/parlament/sejm/vote/'+${voting.getVotingID()}" th:text="${voting.getVotingID()}" sec:authorize="hasAnyRole('POSEL', 'ADMIN')"></a>
                     <span class="table-info" th:text="'Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getVotingID()}"></span>
                 </div>
                 <div th:case="false" class="closed-voting">

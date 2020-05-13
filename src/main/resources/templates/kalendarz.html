@@ -61,7 +61,7 @@
 
 <body>
     <div class="calendarclass" id="calendar" th:id="calendar">
-        <div class="form-group"><a style="text-decoration: none;" href="/kalendarz/addevent"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Dodaj wydarzenie do kalendarza</button></a></div>
+        <div class="form-group" sec:authorize="hasAnyRole('MARSZALEK_SEJMU','MARSZALEK_SENATU', 'ADMIN')"><a style="text-decoration: none;" href="/kalendarz/addevent"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Dodaj wydarzenie do kalendarza</button></a></div>
     </div>
 
 </body>
