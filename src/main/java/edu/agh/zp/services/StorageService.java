@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -28,10 +30,14 @@ public class StorageService {
 		}
 
 		try {
-			Timestamp timeStamp = new Timestamp( System.currentTimeMillis( ) );
+			SimpleDateFormat simpleDateFormat =
+					new SimpleDateFormat("ddMM_hhmmss");
+			String dateAsString = simpleDateFormat.format(new Date());
+
 			String fileExt = com.google.common.io.Files.getFileExtension( Objects.requireNonNull( file.getOriginalFilename( ) ) );
 			String fileNameWOExt = com.google.common.io.Files.getNameWithoutExtension( Objects.requireNonNull( file.getOriginalFilename( ) ) );
-			var fileName = fileNameWOExt + "_" + timeStamp.toString( ) + "." + fileExt;
+
+			var fileName = fileNameWOExt + "_" + dateAsString + "." + fileExt;
 			var is = file.getInputStream( );
 
 			File filePath = new File( path );
