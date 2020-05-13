@@ -14,7 +14,7 @@ public class VoteEntity implements Serializable {
     @SequenceGenerator(name = "Vote_VoteID_seq", sequenceName = "Vote_VoteID_seq", allocationSize = 1)
     @NotNull
     @Column(name = "VoteID")
-    private long CitizenID;
+    private long VoteID;
 
     @NotNull
     @Column(name = "voteTimestamp")
@@ -23,7 +23,7 @@ public class VoteEntity implements Serializable {
     @ManyToOne
     @NotNull
     @JoinColumn(name="citizenID")
-    private CitizenEntity docTypeID;
+    private CitizenEntity citizenID;
 
     @ManyToOne
     @NotNull
@@ -35,6 +35,43 @@ public class VoteEntity implements Serializable {
     @JoinColumn(name="votingID")
     private VotingEntity votingID;
 
+    public VoteEntity() {
+    }
 
 
+    public long getVoteID() {
+        return VoteID;
+    }
+
+    public Timestamp getVoteTimestamp() {
+        return voteTimestamp;
+    }
+
+    public void setVoteTimestamp(Timestamp voteTimestamp) {
+        this.voteTimestamp = voteTimestamp;
+    }
+
+    public CitizenEntity getCitizenID() {
+        return citizenID;
+    }
+
+    public void setCitizenID(CitizenEntity docTypeID) {
+        this.citizenID = docTypeID;
+    }
+
+    public OptionEntity getOptionID() {
+        return optionID;
+    }
+
+    public void setOptionID(OptionEntity optionID) {
+        this.optionID = optionID;
+    }
+
+    public VotingEntity getVotingID() {
+        return votingID;
+    }
+
+    public void setVotingID(VotingEntity votingID) {
+        this.votingID = votingID;
+    }
 }

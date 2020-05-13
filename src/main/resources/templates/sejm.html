@@ -10,7 +10,19 @@
         <p style="font-size: 43px;text-align: center;"><br>Sejm</p>
         <a class="nav-link" href="/parlament/documentForm">Dodawnie dokumentu</a>
         <a class="nav-link" href="/parlament/sejm/voteAdd">Dodawnie głosowania w sejmie</a>
-        <a class="nav-link" href="/parlament/sejm/vote">Głosuj</a>
+        <h3>najbliższe głosowania</h3>
+        <ul class="list-group" th:each="voting : ${VotingList}">
+            <li th:switch="${Sign[votingStat.index]}" class="list-group-item">
+                <div th:case="true">
+                    <a class="nav-link" th:href="'/parlament/sejm/vote/'+${voting.getVotingID()}" th:text="${voting.getVotingID()}"></a>
+                    <span class="table-info" th:text="'Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getVotingID()}"></span>
+                </div>
+                <div th:case="false" class="closed-voting">
+                    <p class="nav-link" th:text="${voting.getVotingDescription()}">aaa</p>
+                    <span class="table-info" th:text="'Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
+                </div>
+            </li>
+        </ul>
     </section>
 </body>
 </html>
