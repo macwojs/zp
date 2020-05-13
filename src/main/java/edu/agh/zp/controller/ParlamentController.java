@@ -108,6 +108,7 @@ public class ParlamentController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         vote.setCitizenID(citizenRepository.findByEmail(auth.getName()).get());
         model.addObject("vote", vote);
+        model.addObject("voting",voting);
 //	    for (OptionSetEntity optionSet :optionSetRepository.findBySetIDcolumn(setRepository.findById(1L).get()))
 //		{
 //			TODO Nie usuwać, ta idea będzie użyta w wyborach  prezydenckich!
@@ -120,7 +121,7 @@ public class ParlamentController {
         return model;
     }
 
-    @PostMapping(value = {"/vote/{id}"})
+    @PostMapping(value = {"/vote/add"})
     public ModelAndView parlamentVoteSubmit(@ModelAttribute("vote") VoteEntity vote, @ModelAttribute("options") ArrayList<OptionEntity> options, BindingResult res) {
         LocalTime time = LocalTime.now();
         LocalDate date = LocalDate.now();
@@ -136,7 +137,8 @@ public class ParlamentController {
         vote.setVoteTimestamp(new Timestamp(System.currentTimeMillis()));
         voteRepository.save(vote);
         RedirectView redirect = new RedirectView();
-        redirect.setUrl("/parlament/sejm");
+        if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) redirect.setUrl("/parlament/sejm");
+        else redirect.setUrl("/parlament/senat");
         return new ModelAndView(redirect);
     }
 
