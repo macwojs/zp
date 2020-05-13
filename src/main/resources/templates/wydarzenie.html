@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::.contact-clean}, ~{::.extraHead} )">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
     <div th:remove="tag" class="extraHead">
@@ -8,8 +10,9 @@
     </div>
 </head>
 <body>
-    <div class="contact-clean" th:object="${voting}">
-        <form>
+<div class="event">
+    <div class="contact-clean" style="padding-bottom: 40px;" th:object="${voting}">
+        <form style="max-width: 600px; margin-bottom: 40px;">
             <h2 class="text-center">Szczegóły wydarzenia</h2>
             <table>
             <tr th:if="*{votingDate}">
@@ -42,7 +45,10 @@
             </tr>
             </table>
         </form>
+        <div th:if="*{votingType.toString() == 'PREZYDENT' || votingType.toString() == 'REFERENDUM'}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="isAuthenticated()"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="*{votingType.toString() == 'SEJM'}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('POSEL','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="*{votingType.toString() == 'SENAT'}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('SENATOR','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
     </div>
+</div>
 </body>
-
 </html>
