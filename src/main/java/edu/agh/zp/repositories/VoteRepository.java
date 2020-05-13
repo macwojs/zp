@@ -10,6 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<VoteEntity, Long> {
-	@Query (value="SELECT u FROM vote u WHERE u.votingid=?1 and u.citizenid=?2")
+	@Query (value="SELECT u FROM vote u WHERE u.votingid=?1 and u.citizenid=?2", nativeQuery=true)
 	Optional<VoteEntity> findByCitizenIdVotingId( long voting, long citizen );
 }

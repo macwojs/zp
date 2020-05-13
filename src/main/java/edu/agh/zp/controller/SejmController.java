@@ -30,13 +30,13 @@ public class SejmController {
 	private DocumentRepository documentRepository;
 
 	@Autowired
-	private final CitizenRepository citizenRepository;
+	private CitizenRepository citizenRepository;
 
 	@Autowired
 	private VotingRepository votingRepository;
 
 	@Autowired
-	private final VoteRepository voteRepository;
+	private VoteRepository voteRepository;
 
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
@@ -92,9 +92,10 @@ public class SejmController {
 	@GetMapping ( value = { "/vote/{num}" } )
 	public ModelAndView sejmVote( ModelAndView model, Principal principal, @PathVariable Long num, final HttpServletRequest request ) {
 		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ));
+		final String referer = request.getHeader( "referer" );
 		Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( num, optCurUser.get( ).getCitizenID( ) );
 		if ( vote.isPresent() ){
-			final String referer = request.getHeader( "referer" );
+			//final String referer = request.getHeader( "referer" );
 			model.setViewName( referer );
 		}
 
