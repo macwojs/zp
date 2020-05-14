@@ -26,6 +26,8 @@ public class SejmController {
     @Autowired
     private SetRepository setRepository;
 
+    @Autowired
+    private DocumentRepository documentRepository;
 
 	@Autowired
 	private CitizenRepository citizenRepository;
@@ -40,6 +42,7 @@ public class SejmController {
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "sejm" );
+		createVotingList.run(modelAndView, VotingEntity.TypeOfVoting.SEJM, votingRepository);
 		return modelAndView;
 	}
 
@@ -86,18 +89,18 @@ public class SejmController {
 		redirect.setUrl( "/parlament/sejm" );
 		return new ModelAndView( redirect );
 	}
-
-	@GetMapping ( value = { "/vote/{num}" } )
-	public ModelAndView sejmVote( ModelAndView model, Principal principal, @PathVariable Long num, final HttpServletRequest request ) {
-		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ));
-		final String referer = request.getHeader( "referer" );
-		Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( num, optCurUser.get( ).getCitizenID( ) );
-		if ( vote.isPresent() ){
-			//final String referer = request.getHeader( "referer" );
-			model.setViewName( referer );
-		}
-
-		model.setViewName( "parliamentVoting" );
-		return model;
-	}
+//
+//	@GetMapping ( value = { "/vote/{num}" } )
+//	public ModelAndView sejmVote( ModelAndView model, Principal principal, @PathVariable Long num, final HttpServletRequest request ) {
+//		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ));
+//		final String referer = request.getHeader( "referer" );
+//		Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( num, optCurUser.get( ).getCitizenID( ) );
+//		if ( vote.isPresent() ){
+//			//final String referer = request.getHeader( "referer" );
+//			model.setViewName( referer );
+//		}
+//
+//		model.setViewName( "parliamentVoting" );
+//		return model;
+//	}
 }
