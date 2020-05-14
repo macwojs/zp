@@ -100,14 +100,18 @@ public class ParlamentController {
 
     @GetMapping(value = {"/vote/{id}"})
     public ModelAndView parlamentVote( ModelAndView model, @PathVariable long id, Principal principal ) {
+        VotingEntity voting = votingRepository.findByVotingID(id);
+
         Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ));
         Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( id, optCurUser.get( ).getCitizenID( ) );
         if ( vote.isPresent() ){
+            if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) model.addObject( "th_redirect", "/parlament/sejm" );
+            else model.addObject( "th_redirect", "/parlament/senat" );
             model.setViewName( "418_REPEAT_VOTE" );
             return model;
         }
 
-        VotingEntity voting = votingRepository.findByVotingID(id);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addObject("voting",voting);
         model.addObject("id",id);
