@@ -14,15 +14,15 @@
         <ul class="list-group" th:each="voting : ${VotingList}">
             <li th:switch="${Sign[votingStat.index]}" class="list-group-item">
                 <div th:case="true">
-                    <div th:switch="${voting.getVotingDescription}">
-                        <a th:case="''" class="nav-link" th:href="'/parlament/vote/'+${voting.getVotingID()}" th:text="${voting.getDocumentID().getDocDescription()}" sec:authorize="hasAnyRole('POSEL', 'ADMIN')"></a>
-                        <a th:default="*" class="nav-link" th:href="'/parlament/vote/'+${voting.getVotingID()}" th:text="${voting.getVotingID()}" sec:authorize="hasAnyRole('POSEL', 'ADMIN')"></a>
-                        <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getVotingID()}"></span>
+                    <div th:switch="${voting.getVotingDescription()}">
+                        <a th:case="null" class="nav-link" th:href="'/parlament/vote/'+${voting.getVotingID()}"  sec:authorize="hasAnyRole('POSEL', 'ADMIN')"><p th:text="${voting.getDocumentID().getDocDescription()}"></p></a>
+                        <a th:case="*" class="nav-link" th:href="'/parlament/vote/'+${voting.getVotingID()}" th:text="${voting.getVotingID()}" sec:authorize="hasAnyRole('POSEL', 'ADMIN')"><p th:text="${voting.getVotingID()}"></p></a>
+                        <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
                     </div>
                 </div>
                 <div th:case="false" class="closed-voting">
                     <div th:switch="${voting.getVotingDescription()}">
-                        <p th:case="''" class="nav-link" th:text="${voting.getDocumentID().getDocDescription()}"></p>
+                        <p th:case="null" class="nav-link" th:text="${voting.getDocumentID().getDocDescription()}"></p>
                         <p th:case="*" class="nav-link" th:text="${voting.getVotingDescription()}"></p>
                     </div>
                     <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>

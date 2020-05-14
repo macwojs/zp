@@ -21,6 +21,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -103,26 +104,25 @@ public class ParlamentController {
     public ModelAndView parlamentVote(ModelAndView model, @PathVariable long id) {
         VoteEntity vote = new VoteEntity();
         VotingEntity voting = votingRepository.findByVotingID(id);
-        vote.setVotingID(voting);
         //TODO Sprawdź, czy już nie głosował!!!
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        vote.setCitizenID(citizenRepository.findByEmail(auth.getName()).get());
-        model.addObject("vote", vote);
         model.addObject("voting",voting);
+        model.addObject("id",id);
 //	    for (OptionSetEntity optionSet :optionSetRepository.findBySetIDcolumn(setRepository.findById(1L).get()))
 //		{
 //			TODO Nie usuwać, ta idea będzie użyta w wyborach  prezydenckich!
 //		}
-        model.addObject("options", new ArrayList<OptionEntity>(Arrays.asList(
-                optionRepository.findById(1L).get(),
-                optionRepository.findById(2L).get(),
-                optionRepository.findById(3L).get())));
         model.setViewName("parliamentVoting");
         return model;
     }
 
-    @PostMapping(value = {"/vote/add"})
-    public ModelAndView parlamentVoteSubmit(@ModelAttribute("vote") VoteEntity vote, @ModelAttribute("options") ArrayList<OptionEntity> options, BindingResult res) {
+    @PostMapping(value = {"/vote/{id}}"})
+    public ModelAndView parlamentVoteSubmit( @PathVariable long id, @RequestParam("votingRadio") long radio) {
+        VoteEntity vote = new VoteEntity();
+        vote.setOptionID(optionRepository.findById(radio).get());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        vote.setCitizenID(citizenRepository.findByEmail(auth.getName()).get());
+        vote.setVotingID(votingRepository.findByVotingID(id));
         LocalTime time = LocalTime.now();
         LocalDate date = LocalDate.now();
         VotingEntity voting = vote.getVotingID();
