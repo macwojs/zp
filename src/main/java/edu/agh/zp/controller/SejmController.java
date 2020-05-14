@@ -1,17 +1,21 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.*;
+import edu.agh.zp.objects.DocumentEntity;
+import edu.agh.zp.objects.SetEntity;
+import edu.agh.zp.objects.VotingEntity;
+import edu.agh.zp.objects.createVotingList;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.security.Principal;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,14 +24,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(value = {"/parlament/sejm"})
+@RequestMapping ( value = { "/parlament/sejm" } )
 public class SejmController {
 
-    @Autowired
-    private SetRepository setRepository;
+	@Autowired
+	private SetRepository setRepository;
 
-    @Autowired
-    private DocumentRepository documentRepository;
+	@Autowired
+	private DocumentRepository documentRepository;
 
 	@Autowired
 	private CitizenRepository citizenRepository;
@@ -42,7 +46,7 @@ public class SejmController {
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "sejm" );
-		createVotingList.run(modelAndView, VotingEntity.TypeOfVoting.SEJM, votingRepository);
+		createVotingList.run( modelAndView, VotingEntity.TypeOfVoting.SEJM, votingRepository );
 		return modelAndView;
 	}
 
@@ -89,18 +93,4 @@ public class SejmController {
 		redirect.setUrl( "/parlament/sejm" );
 		return new ModelAndView( redirect );
 	}
-//
-//	@GetMapping ( value = { "/vote/{num}" } )
-//	public ModelAndView sejmVote( ModelAndView model, Principal principal, @PathVariable Long num, final HttpServletRequest request ) {
-//		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ));
-//		final String referer = request.getHeader( "referer" );
-//		Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( num, optCurUser.get( ).getCitizenID( ) );
-//		if ( vote.isPresent() ){
-//			//final String referer = request.getHeader( "referer" );
-//			model.setViewName( referer );
-//		}
-//
-//		model.setViewName( "parliamentVoting" );
-//		return model;
-//	}
 }
