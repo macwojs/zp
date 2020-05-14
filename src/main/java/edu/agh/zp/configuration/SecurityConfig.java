@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // TODO...Change the authorization
         http.authorizeRequests()
                 .antMatchers("/glosowania/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU")
-                .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU")
+                .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU", "ADMIN")
                 .antMatchers("/parlament/sejm/vote").hasAnyRole("POSEL", "ADMIN")
                 .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
                 .antMatchers("/parlament/**").authenticated()
