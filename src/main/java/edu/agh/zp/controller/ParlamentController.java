@@ -15,13 +15,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -101,10 +99,15 @@ public class ParlamentController {
     }
 
     @GetMapping(value = {"/vote/{id}"})
-    public ModelAndView parlamentVote(ModelAndView model, @PathVariable long id) {
-        VoteEntity vote = new VoteEntity();
+    public ModelAndView parlamentVote( ModelAndView model, @PathVariable long id, Principal principal ) {
+        Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ));
+        Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( id, optCurUser.get( ).getCitizenID( ) );
+        if ( vote.isPresent() ){
+            model.setViewName( "418_REPEAT_VOTE" );
+            return model;
+        }
+
         VotingEntity voting = votingRepository.findByVotingID(id);
-        //TODO Sprawdź, czy już nie głosował!!!
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addObject("voting",voting);
         model.addObject("id",id);
