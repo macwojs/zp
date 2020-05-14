@@ -116,7 +116,7 @@ public class ParlamentController {
         return model;
     }
 
-    @PostMapping(value = {"/vote/{id}}"})
+    @PostMapping(value = {"/vote/{id}"})
     public ModelAndView parlamentVoteSubmit( @PathVariable long id, @RequestParam("votingRadio") long radio) {
         VoteEntity vote = new VoteEntity();
         vote.setOptionID(optionRepository.findById(radio).get());
