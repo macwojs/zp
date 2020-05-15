@@ -1,4 +1,4 @@
-CandidateNum=1;
+let CandidateNum=1;
 
 
 function addElem(){

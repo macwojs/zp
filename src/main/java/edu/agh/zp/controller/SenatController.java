@@ -3,6 +3,7 @@ package edu.agh.zp.controller;
 import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.SetEntity;
 import edu.agh.zp.objects.VotingEntity;
+import edu.agh.zp.objects.createVotingList;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.SetRepository;
 import edu.agh.zp.repositories.VotingRepository;
@@ -40,6 +41,7 @@ public class SenatController {
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
+		createVotingList.run( modelAndView, VotingEntity.TypeOfVoting.SENAT, votingRepository );
 		modelAndView.setViewName( "senat" );
 		return modelAndView;
 	}
