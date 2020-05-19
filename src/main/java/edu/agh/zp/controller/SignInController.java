@@ -1,13 +1,17 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.CitizenEntity;
+import edu.agh.zp.services.CitizenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -18,12 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 //@RequestMapping (value={"/signin"})
 public class SignInController {
 
-
+@Autowired
+private CitizenService cS;
 
 
 	private AuthenticationManager authManager;
@@ -51,10 +57,17 @@ public class SignInController {
 	}
 
 	@RequestMapping(value = "/signin", method = RequestMethod.POST)
-	public ModelAndView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request) {
+	public ModelAndView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res) {
 		UsernamePasswordAuthenticationToken authReq =
 				new UsernamePasswordAuthenticationToken(citizen.getEmail(), citizen.getPassword());
-		Authentication auth = authManager.authenticate(authReq);
+		Authentication auth;
+		try {
+			auth = authManager.authenticate(authReq);
+		}catch(AuthenticationException e){
+			ModelAndView mv = new ModelAndView("signin");
+			mv.addObject("error", "Błędna nazwa użytkownika lub hasło");
+			return mv;
+		}
 		SecurityContext sc = SecurityContextHolder.getContext();
 		sc.setAuthentication(auth);
 		HttpSession session = request.getSession(true);
