@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>List of votes</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/fonts/font-awesome.min.css}">
+        <link rel="stylesheet" th:href="@{/css/Table-with-search.css}">
+        <script th:src="@{/js/jquery.min.js}" type="text/javascript"></script>
+        <script th:src="@{/js/Table-with-search.js}" type="text/javascript"></script>
+    </div>
+</head>
+
+<body>
+<section id="tresc" style="height: 70vh;">
+    <h2 style="font-weight: 600;margin-top: 8px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;">Szczegółowe wyniki
+        głosowania</h2>
+    <div class="form-group pull-right">
+        <input type="text" class="search form-control" placeholder="Kogo szukasz?">
+    </div>
+    <span class="counter pull-right"></span>
+    <table class="table table-hover table-bordered results text-center">
+        <thead>
+        <tr>
+            <th scope="col">Nazwisko</th>
+            <th scope="col">Imię</th>
+            <th scope="col">Partia</th>
+            <th scope="col">Głos</th>
+            <th scope="col">Szczegóły</th>
+        </tr>
+        <tr class="warning no-result">
+            <td colspan="4"><i class="fa fa-warning"></i> Brak wyników</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td scope="row">Nowak</td>
+            <td>Jan</td>
+            <td>Prawo i Sprawiedliwość</td>
+            <td>Za</td>
+            <td><a href="#"><i class="icon-info" style="color: rgb(212,33,61);"></i></a></td>
+        </tr>
+        <tr>
+            <td scope="row">Kowalska</td>
+            <td>Anna</td>
+            <td>Koalicja Obywatelska</td>
+            <td>Przeciw</td>
+            <td><a href="#"><i class="icon-info" style="color: rgb(212,33,61);"></i></a></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>
