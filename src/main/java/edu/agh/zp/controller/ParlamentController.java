@@ -154,6 +154,12 @@ public class ParlamentController {
 		return new ModelAndView( redirect );
 	}
 
+	@GetMapping ( value = { "/vote/votesList/{id}" } )
+	public ModelAndView parlamentVotesList(@PathVariable long id) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("votesList");
+		return modelAndView;
+	}
 }
 
 
