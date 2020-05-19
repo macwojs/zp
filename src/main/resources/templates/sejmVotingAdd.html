@@ -17,7 +17,7 @@
                 <span class="text-danger" th:errors="*{global}"></span>
             </div>
             <div class="form-group">
-                <select th:field="*{documentID}" class="form-control" name="document">
+                <select th:field="*{documentID}" class="form-control" name="document" required>
                     <option th:each="document: ${documents}"
                             th:value="${document.docID}"
                             th:text="${document.docName}"></option>
