@@ -90,19 +90,12 @@ public class KalendarzController {
 		modelAndView.addObject("voting", voting);
 		//System.out.println("\n\n\n"+num+"\n\n\n");
 		String link = "";
-		//String authorize = "";
 		if(voting.getVotingType()== VotingEntity.TypeOfVoting.PREZYDENT){
 			link="/prezydent/vote/"+voting.getVotingID();
-			//authorize="isAuthenticated()";
 		}else if(voting.getVotingType()== VotingEntity.TypeOfVoting.REFERENDUM){
 			link="/referendum/vote/"+voting.getVotingID();
-			//authorize="isAuthenticated()";
-		}else if(voting.getVotingType()== VotingEntity.TypeOfVoting.SEJM){
-			link="/parlament/sejm/vote/"+voting.getVotingID();
-			//authorize="hasAnyRole('POSEL','ADMIN')";
-		}else if(voting.getVotingType()== VotingEntity.TypeOfVoting.SENAT){
-			link="/parlament/senat/vote/"+voting.getVotingID();
-			//authorize="hasAnyRole('SENATOR','ADMIN')";
+		}else if(voting.getVotingType()== VotingEntity.TypeOfVoting.SEJM || voting.getVotingType()== VotingEntity.TypeOfVoting.SENAT){
+			link="/parlament/vote/"+voting.getVotingID();
 		}
 		modelAndView.addObject("link", link);
 		//modelAndView.addObject("authorize", authorize);
