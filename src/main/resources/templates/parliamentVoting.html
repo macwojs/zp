@@ -30,7 +30,7 @@
                            th:text="${voting.getDocumentID().getDocDescription()}">Opis do ustawy wprowadzany z bazy</p>
                     </div>
                     <div class="col-2 text-center align-self-center">
-                        <a href="#">
+                        <a th:href="@{/{doc}(doc=${voting.getDocumentID().getPdfFilePath()})}" target="_blank">
                             <img src="/img/doc_icon.svg" style="height: 50px;">
                         </a>
                     </div>
