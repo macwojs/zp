@@ -18,8 +18,7 @@ public class VotingTimerEntity implements Serializable {
 
     @Id
     @NotNull
-    @OneToOne
-    @JoinColumn(name = "votingID")
+    @Column(name="VotingID")
     private VotingEntity votingID;
 
 
