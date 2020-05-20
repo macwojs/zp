@@ -1,9 +1,12 @@
 package edu.agh.zp.configuration;
 
 import edu.agh.zp.objects.CitizenEntity;
+import edu.agh.zp.objects.PoliticianEntity;
 import edu.agh.zp.objects.Role;
+import edu.agh.zp.repositories.PoliticianRepository;
 import edu.agh.zp.repositories.RoleRepository;
 import edu.agh.zp.services.CitizenService;
+import edu.agh.zp.services.PoliticianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,6 +24,9 @@ public class DBInitializer implements CommandLineRunner {
     private CitizenService cS;
     @Autowired
     private RoleRepository rR;
+    @Autowired
+    private PoliticianService pS;
+
     @Override
     public void run(String... args) throws Exception {
         createSampleAdmin("admin@zp.pl", "adminadmin","Admin", "Admin", "00010100190", "ARY546695");
@@ -47,6 +53,8 @@ public class DBInitializer implements CommandLineRunner {
         String[] roles =  {"ROLE_USER", "ROLE_MARSZALEK_SEJMU", "ROLE_POSEL"};
         setRole(marszalek, roles);
         cS.create(marszalek);
+        PoliticianEntity politician= new PoliticianEntity(marszalek);
+        pS.create(politician);
     }
 
     private void createSampleMarszalekSenatu(String email, String password, String name, String surname, String pesel, String idnumber){
@@ -54,20 +62,26 @@ public class DBInitializer implements CommandLineRunner {
         String[] roles =  {"ROLE_USER", "ROLE_MARSZALEK_SENATU", "ROLE_SENATOR"};
         setRole(marszalek, roles);
         cS.create(marszalek);
+        PoliticianEntity politician= new PoliticianEntity(marszalek);
+        pS.create(politician);
     }
 
     private void createSampleSenator(String email, String password, String name, String surname, String pesel, String idnumber){
-        CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
+        CitizenEntity senator=  createBasicUser(email, password, name, surname,pesel, idnumber);
         String[] roles =  {"ROLE_USER", "ROLE_SENATOR"};
-        setRole(marszalek, roles);
-        cS.create(marszalek);
+        setRole(senator, roles);
+        cS.create(senator);
+        PoliticianEntity s= new PoliticianEntity(senator);
+        pS.create(s);
     }
 
     private void createSamplePosel(String email, String password, String name, String surname, String pesel, String idnumber){
-        CitizenEntity marszalek=  createBasicUser(email, password, name, surname,pesel, idnumber);
+        CitizenEntity politician=  createBasicUser(email, password, name, surname,pesel, idnumber);
         String[] roles =  {"ROLE_USER", "ROLE_POSEL"};
-        setRole(marszalek, roles);
-        cS.create(marszalek);
+        setRole(politician, roles);
+        cS.create(politician);
+        PoliticianEntity p= new PoliticianEntity(politician);
+        pS.create(p);
     }
 
     private void setRole(CitizenEntity citizen, String[] roles){
@@ -84,4 +98,5 @@ public class DBInitializer implements CommandLineRunner {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         return user;
     }
+
 }

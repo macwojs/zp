@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface PoliticianRepository extends JpaRepository<PoliticianEntity, Long> {
     Optional<PoliticianEntity> findByCitizenID(Long CitizenID);
-    Optional<PoliticianEntity> findByPoliticianID(Long PolitiacianID);
-    Optional<PoliticianEntity> findByPesel(String pesel);
-    Optional<PoliticianEntity> findByEmail(String email);
-    Optional<PoliticianEntity> findByIdNumber(String idNumber);
+    PoliticianEntity findByPoliticianID(Long PoliticianID);
+    Optional<PoliticianEntity> findByCitizenID_Pesel(String pesel);
+    Optional<PoliticianEntity> findByCitizenID_Email(String email);
+    Optional<PoliticianEntity> findByCitizenID_IdNumber(String idNumber);
     List<PoliticianEntity> findAll();
 }
