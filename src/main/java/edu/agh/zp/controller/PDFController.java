@@ -29,7 +29,7 @@ public class PDFController {
             DefaultResourceLoader loader = new DefaultResourceLoader();
             InputStream is = loader.getResource("classpath:static/uploaded/"+doc+".pdf").getInputStream();
             IOUtils.copy(is, response.getOutputStream());
-            response.setHeader("Content-Disposition", "attachment; filename=doc.pdf");
+            response.setHeader("Content-Disposition", "attachment; filename="+doc+".pdf");
             response.flushBuffer();
         } catch (IOException ex) {
             throw new RuntimeException("IOError writing file to output stream");
