@@ -29,4 +29,15 @@ public class createVotingList {
         }
         modelAndView.addObject("VotingList", voting);
     }
+
+    public static void past(ModelAndView modelAndView, VotingEntity.TypeOfVoting type, VotingRepository votingRepository)
+    {
+        LocalDate now = LocalDate.now();
+        Date nowSql = java.sql.Date.valueOf(now);
+        Time time = java.sql.Time.valueOf(LocalTime.now());
+        List<VotingEntity> voting = votingRepository.findByVotingDateBeforeAndVotingTypeOrderByVotingDateDescOpenVotingDesc(nowSql, type);
+        List<VotingEntity> voting2 =votingRepository.findByVotingDateAndCloseVotingBeforeAndVotingTypeOrderByVotingDateDescOpenVotingDesc(nowSql,time,type);
+        voting2.addAll(voting);
+        modelAndView.addObject("VotingList", voting2);
+    }
 }
