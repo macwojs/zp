@@ -1,5 +1,6 @@
 package edu.agh.zp.services;
 
+import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.objects.PoliticianEntity;
 import edu.agh.zp.repositories.PoliticianRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class PoliticianService {
         return (ArrayList<PoliticianEntity>)pR.findAll();
     }
 
-    public Optional<PoliticianEntity> findByCitizenID(Long citizenId){
+    public Optional<PoliticianEntity> findByCitizenID(CitizenEntity citizenId){
         return pR.findByCitizenID(citizenId);
     }
 

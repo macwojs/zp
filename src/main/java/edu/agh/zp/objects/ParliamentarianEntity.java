@@ -36,10 +36,10 @@ public class ParliamentarianEntity implements Serializable {
     }
 
     public ParliamentarianEntity(String Card, String group, String chamber, PoliticianEntity politician) {
-    this.idCardNumber = Card;
-    this.politicalGroup = group;
-    this.chamberOfDeputies = chamber;
-    this.politicianID = politician;
+        this.idCardNumber = Card;
+        this.politicalGroup = group;
+        this.chamberOfDeputies = chamber;
+        this.politicianID = politician;
     }
 
     public long getParliamentarianID() {
@@ -58,5 +58,20 @@ public class ParliamentarianEntity implements Serializable {
         this.chamberOfDeputies = chamberOfDeputies;
     }
 
+    public PoliticianEntity getPoliticianID() {
+        return politicianID;
+    }
+
+    public String getIdCardNumber() {
+        return idCardNumber;
+    }
+
+    public String getPoliticalGroup() {
+        return politicalGroup;
+    }
+
+    public String getChamberOfDeputies() {
+        return chamberOfDeputies;
+    }
 
 }
