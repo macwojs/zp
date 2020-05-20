@@ -104,7 +104,7 @@ public class ParlamentController {
 		VotingEntity voting = votingRepository.findByVotingID( id );
 
 		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ) );
-		Optional< VoteEntity > vote = voteRepository.findByCitizenIdVotingId( id, optCurUser.get( ).getCitizenID( ) );
+		Optional< VoteEntity > vote = voteRepository.findByCitizenID_CitizenIDAndVotingID_VotingID( id, optCurUser.get( ).getCitizenID( ) );
 		if ( vote.isPresent( ) ) {
 			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
 				model.addObject( "th_redirect", "/parlament/sejm" );
@@ -128,7 +128,7 @@ public class ParlamentController {
 	@PostMapping ( value = { "/vote/{id}" } )
 	public ModelAndView parlamentVoteSubmit( @PathVariable long id, @RequestParam ( "votingRadio" ) long radio ) {
 		VoteEntity vote = new VoteEntity( );
-		vote.setOptionID( optionRepository.findById( radio ).get( ) );
+		vote.setOptionID( optionRepository.findByOptionID( radio ).get( ) );
 		Authentication auth = SecurityContextHolder.getContext( ).getAuthentication( );
 		vote.setCitizenID( citizenRepository.findByEmail( auth.getName( ) ).get( ) );
 		vote.setVotingID( votingRepository.findByVotingID( id ) );
