@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
-    <div th:remove="tag" class="extraHead"></div>
+    <div class="extraHead">
+        <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
+    </div>
 </head>
 
 <body>
@@ -10,8 +12,19 @@
         <p style="font-size: 43px;text-align: center;"><br>glosowania</p>
         <h3>Zarządzanie głosowaniami</h3>
         <a class="nav-link" href="/glosowania/prezydenckie/plan">Dodaj wybory prezydenckie</a>
-
         <a class="nav-link" href="/glosowania/referendum/plan">Dodaj referendum</a>
     </section>
+    <h3>najbliższe głosowania</h3>
+    <button id="hide_button" type="button" class="btn btn-info" onclick="hideVoting()">Ukryj nieaktywne glosowania</button>
+    <ul class="list-group" th:each="voting : ${VotingList}" th:switch="${Sign[votingStat.index]}">
+        <li th:case="true"  class="list-group-item">
+                <a class="nav-link" th:href="'/glosowania/'+${voting.getVotingID()}"  sec:authorize="hasAnyRole('USER','ADMIN','MARSZALEK_SEJMU','MARSZALEK_SENATU','POSEL','SENATOR','PREZYDENT')"><p th:text="${voting.getVotingDescription()}"></p></a>
+                <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
+        </li>
+        <li th:case="false" class="list-group-item closed-voting">
+                <p class="nav-link" th:text="${voting.getVotingDescription()}"></p>
+            <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
+        </li>
+    </ul>
 </body>
 </html>

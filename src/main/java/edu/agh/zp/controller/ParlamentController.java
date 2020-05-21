@@ -114,7 +114,6 @@ public class ParlamentController {
 			return model;
 		}
 
-		Authentication auth = SecurityContextHolder.getContext( ).getAuthentication( );
 		model.addObject( "voting", voting );
 		model.addObject( "id", id );
 //	    for (OptionSetEntity optionSet :optionSetRepository.findBySetIDcolumn(setRepository.findById(1L).get()))

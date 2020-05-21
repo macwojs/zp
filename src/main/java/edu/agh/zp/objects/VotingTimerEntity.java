@@ -8,6 +8,7 @@ import edu.agh.zp.validator.TimeOrder;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
@@ -18,35 +19,34 @@ public class VotingTimerEntity implements Serializable {
 
     @Id
     @NotNull
-    @Column(name="VotingID")
-    private VotingEntity votingID;
+    private long votingID;
 
 
     @NotNull
     @Column(name = "eraseTime")
-    private Time erase;
+    private Date erase;
 
     public VotingTimerEntity() {
     }
 
-    public VotingTimerEntity(@NotNull VotingEntity votingID, @NotNull Time erase) {
+    public VotingTimerEntity(@NotNull long votingID, @NotNull Date erase) {
         this.votingID = votingID;
         this.erase = erase;
     }
 
-    public VotingEntity getVotingID() {
+    public long getVotingID() {
         return votingID;
     }
 
-    public void setVotingID(VotingEntity votingID) {
+    public void setVotingID(long votingID) {
         this.votingID = votingID;
     }
 
-    public Time getErase() {
+    public Date getErase() {
         return erase;
     }
 
-    public void setErase(Time erase) {
+    public void setErase(Date erase) {
         this.erase = erase;
     }
 }

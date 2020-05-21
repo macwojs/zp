@@ -1,10 +1,7 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.*;
-import edu.agh.zp.repositories.OptionRepository;
-import edu.agh.zp.repositories.OptionSetRepository;
-import edu.agh.zp.repositories.SetRepository;
-import edu.agh.zp.repositories.VotingRepository;
+import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -13,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.security.Principal;
+import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -40,15 +39,31 @@ public class GlosowaniaController {
     @Autowired
     SetRepository setSession;
 
+    @Autowired
+    VotingTimerRepository votingTimerSession;
+
+    @Autowired
+    VotingControlRepository votingControlSession;
+
+    @Autowired
+    CitizenRepository citizenSession;
+
+    @Autowired
+    VoteRepository voteSession;
+
+
+
     @GetMapping(value = {""})
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
+        createVotingList.run( modelAndView, VotingEntity.TypeOfVoting.REFERENDUM, votingSession );
         modelAndView.setViewName("glosowania");
         return modelAndView;
     }
 
     @GetMapping(value = {"/prezydenckie/plan"})
     public ModelAndView prezydentForm() {
+        deleteOldVotingData(Date.valueOf(LocalDate.now()));
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("ErrorList", null);
         modelAndView.setViewName("presidentVotingAdd");
@@ -69,14 +84,16 @@ public class GlosowaniaController {
             return modelAndView;
         }
         setSession.save(set);
-        votingSession.save(new VotingEntity(
+        VotingEntity voting = new VotingEntity(
                 java.sql.Date.valueOf(time),
                 java.sql.Time.valueOf(LocalTime.parse("06:00:00")),
                 java.sql.Time.valueOf(LocalTime.parse("21:00:00")),
                 set,
                 null,
                 VotingEntity.TypeOfVoting.PREZYDENT,
-                "Wybory Prezydenckie " + data));
+                "Wybory Prezydenckie " + data);
+        votingSession.save(voting);
+        votingTimerSession.save(new VotingTimerEntity(voting.getVotingID(),java.sql.Date.valueOf(time)));
         for (Map.Entry<String, String> entry : reqParameters.entrySet()) {
             if (entry.getKey().equals("_csrf")) continue;
             OptionEntity option = new OptionEntity(entry.getValue());
@@ -88,6 +105,7 @@ public class GlosowaniaController {
 
     @GetMapping(value = {"/referendum/plan"})
     public ModelAndView referendumForm() {
+        deleteOldVotingData(Date.valueOf(LocalDate.now()));
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("ErrorList", null);
         modelAndView.setViewName("referendumAdd");
@@ -109,15 +127,38 @@ public class GlosowaniaController {
             modelAndView.addObject("ErrorList", errors);
             return modelAndView;
         }
-        votingSession.save(new VotingEntity(
+        VotingEntity voting = new VotingEntity(
                 java.sql.Date.valueOf(time),
                 java.sql.Time.valueOf(LocalTime.parse("06:00:00")),
                 java.sql.Time.valueOf(LocalTime.parse("21:00:00")),
                 setSession.findById(2L).get(),
                 null,
                 VotingEntity.TypeOfVoting.REFERENDUM,
-                desc));
+                desc);
+        votingSession.save(voting);
+        votingTimerSession.save(new VotingTimerEntity(voting.getVotingID(),java.sql.Date.valueOf(time)));
         return modelAndView;
+    }
+
+    @GetMapping(value={"{id}"})
+    public ModelAndView referendumVote(ModelAndView model, @PathVariable long id, Principal principal) {
+        Optional< CitizenEntity > optCurUser = citizenSession.findByEmail( principal.getName( ) );
+        if(optCurUser.isEmpty()){
+            model.setViewName("signin");
+            return model;
+        }
+        VotingEntity voting = votingSession.findByVotingID( id );
+        Optional< VotingControlEntity > votingControl = votingControlSession.findByCitizenIDAndVotingID(optCurUser.get(),voting);
+        if (votingControl.isPresent()) {
+            model.addObject( "th_redirect", "/glosowania" );
+            model.setViewName( "418_REPEAT_VOTE" );
+            return model;
+        }
+        model.addObject( "voting", voting );
+        model.addObject( "id", id );
+        if(voting.getVotingType().equals(VotingEntity.TypeOfVoting.REFERENDUM)) model.setViewName( "referendumVoting" );
+        else model.setViewName("presidentVoting");
+        return model;
     }
 
 
@@ -142,6 +183,17 @@ public class GlosowaniaController {
             res.add("dane kandydata nie mogą być puste\n");
         }
         return res;
+    }
+
+    public void deleteOldVotingData(Date time)
+    {
+        List<VotingTimerEntity> list = votingTimerSession.findByEraseBefore(time);
+        if (list.isEmpty()) return;
+        for (VotingTimerEntity Timer : list)
+        {
+            votingControlSession.deleteAllByVotingID(votingSession.findByVotingID(Timer.getVotingID()));
+            votingTimerSession.delete(Timer);
+        }
     }
 
 }
