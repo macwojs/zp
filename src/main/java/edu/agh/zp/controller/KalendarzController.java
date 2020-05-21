@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,6 +100,10 @@ public class KalendarzController {
 			link="/parlament/vote/"+voting.getVotingID();
 		}
 		modelAndView.addObject("link", link);
+		Time time = java.sql.Time.valueOf(LocalTime.now());
+		Date date = java.sql.Date.valueOf(LocalDate.now());
+		boolean vs = (voting.getVotingDate().equals(date) && voting.getOpenVoting().before(time) && voting.getCloseVoting().after(time));
+		modelAndView.addObject("visibility",vs);
 		//modelAndView.addObject("authorize", authorize);
 		return modelAndView;
 	}
