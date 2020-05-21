@@ -76,7 +76,7 @@ public class SejmController {
 			model.setViewName( "sejmVotingAdd" );
 			return model;
 		}
-		Optional< SetEntity > set = setRepository.findById( (long) 1 );
+		Optional< SetEntity > set = setRepository.findById( (long) 2 );
 		if ( set.isPresent( ) ) {
 			voting.setSetID_column( set.get( ) );
 			DateFormat formatter = new SimpleDateFormat( "HH:mm:ss" );
