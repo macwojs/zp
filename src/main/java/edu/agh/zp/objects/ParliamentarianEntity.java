@@ -58,8 +58,8 @@ public class ParliamentarianEntity implements Serializable {
         this.chamberOfDeputies = chamberOfDeputies;
     }
 
-    public PoliticianEntity getPoliticianID() {
-        return politicianID;
+    public void setParliamentarianID( long parliamentarianID ) {
+        this.parliamentarianID = parliamentarianID;
     }
 
     public String getIdCardNumber() {
@@ -73,5 +73,14 @@ public class ParliamentarianEntity implements Serializable {
     public String getChamberOfDeputies() {
         return chamberOfDeputies;
     }
+
+    public PoliticianEntity getPoliticianID() {
+        return politicianID;
+    }
+
+    public void setPoliticianID( PoliticianEntity politicianID ) {
+        this.politicianID = politicianID;
+    }
+
 
 }

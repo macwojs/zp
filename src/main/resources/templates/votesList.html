@@ -34,19 +34,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td scope="row">Nowak</td>
-            <td>Jan</td>
-            <td>Prawo i Sprawiedliwość</td>
-            <td>Za</td>
-            <td><a href="#"><i class="icon-info" style="color: rgb(212,33,61);"></i></a></td>
-        </tr>
-        <tr>
-            <td scope="row">Kowalska</td>
-            <td>Anna</td>
-            <td>Koalicja Obywatelska</td>
-            <td>Przeciw</td>
-            <td><a href="#"><i class="icon-info" style="color: rgb(212,33,61);"></i></a></td>
+        <tr th:each="vote : ${votes}">
+            <td th:text="${vote.surname}" scope="row">Nowak</td>
+            <td th:text="${vote.name}">Jan</td>
+            <td th:text="${vote.party}">Prawo i Sprawiedliwość</td>
+            <td th:text="${vote.voteValue}">Za</td>
+            <td>
+                <a th:href="@{/obywatel/polityk/{id}(id=${vote.politicID})}"><img src="/img/info_icon.svg" style="height: 20px;"></a>
+            </td>
         </tr>
         </tbody>
     </table>

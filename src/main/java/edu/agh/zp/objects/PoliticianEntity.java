@@ -36,6 +36,6 @@ public class PoliticianEntity implements Serializable {
     }
 
     public void setCitizenID(CitizenEntity citizenID) {
-        citizenID = citizenID;
+        this.citizenID = citizenID;
     }
 }

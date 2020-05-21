@@ -10,6 +10,4 @@ public interface CitizenRepository extends JpaRepository<CitizenEntity, Long> {
     Optional<CitizenEntity> findByPesel(String pesel);
     Optional<CitizenEntity> findByEmail(String email);
     Optional<CitizenEntity> findByIdNumber(String idNumber);
-
-
 }
