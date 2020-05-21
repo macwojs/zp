@@ -104,7 +104,8 @@ public class KalendarzController {
 		Date date = java.sql.Date.valueOf(LocalDate.now());
 		boolean vs = (voting.getVotingDate().equals(date) && voting.getOpenVoting().before(time) && voting.getCloseVoting().after(time));
 		modelAndView.addObject("visibility",vs);
-		//modelAndView.addObject("authorize", authorize);
+		boolean ended = (voting.getVotingDate().before(date)||(voting.getVotingDate().equals(date)&&voting.getCloseVoting().before(time)));
+		modelAndView.addObject("ended", ended);
 		return modelAndView;
 	}
 }
