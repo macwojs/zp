@@ -21,5 +21,5 @@ public interface ParliamentarianRepository extends JpaRepository<Parliamentarian
     List<ParliamentarianEntity> findAllByChamberOfDeputiesAndPoliticalGroup(String chamberOfDeputies, String politicalGroup);
     List<ParliamentarianEntity> findAllByPoliticalGroup(String politicalGroup);
     List<ParliamentarianEntity> findAll();
-	Optional<ParliamentarianEntity> findByPoliticianID( PoliticianEntity politicianID);
+	//Optional<ParliamentarianEntity> findByPoliticianID( PoliticianEntity politicianID);
 }

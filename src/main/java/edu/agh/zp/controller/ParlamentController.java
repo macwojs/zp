@@ -229,11 +229,14 @@ public class ParlamentController {
 			String party = "-";
 			if ( politicianEntity.isPresent( ) ) {
 				politicID = politicianEntity.get( ).getPoliticianID( );
-				Optional< ParliamentarianEntity > parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get() );
-				if ( parliamentarianEntity.isPresent( ) ) {
-					party = parliamentarianEntity.get( ).getPoliticalGroup( );
+				try {
+					ParliamentarianEntity parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get() );
+					party = parliamentarianEntity.getPoliticalGroup( );
+				} catch ( Exception e ) {
+					e.printStackTrace( );
 				}
 			}
+
 			votesTh.add( new Votes(
 					citizen.getSurname( ),
 					citizen.getName( ),
