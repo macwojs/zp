@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <div th:remove="tag" class="extraHead"></div>
+</head>
+
+<body>
+    <section id="tresc" style="height: 80vh;">
+        <p style="font-size: 43px;text-align: center;"><br>Historia</p>
+        <h3>Przeszłe głosowania</h3>
+        <a class="nav-link" href="/historia/sejm">Sejm</a>
+        <a class="nav-link" href="/historia/senat">Senat</a>
+        <a class="nav-link" href="/historia/prezydent">Wybory Prezydenckie</a>
+        <a class="nav-link" href="/historia/referendum">Referendum</a>
+    </section>
+</body>
+</html>

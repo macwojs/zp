@@ -45,9 +45,10 @@
             </tr>
             </table>
         </form>
-        <div th:if="*{votingType.toString() == 'PREZYDENT' || votingType.toString() == 'REFERENDUM'}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="isAuthenticated()"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
-        <div th:if="*{votingType.toString() == 'SEJM'}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('POSEL','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
-        <div th:if="*{votingType.toString() == 'SENAT'}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('SENATOR','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${(voting.votingType.toString() == 'PREZYDENT' || voting.votingType.toString() == 'REFERENDUM')&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="isAuthenticated()"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${voting.votingType.toString() == 'SEJM'&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('POSEL','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${voting.votingType.toString() == 'SENAT'&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('SENATOR','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${ended}" style="max-width: 600px; width: 90%; margin: 0 auto;"><a style="text-decoration: none;" th:href="'/kalendarz/wydarzenie/'+*{votingID}+'/wyniki'"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Wyniki</button></a></div>
     </div>
 </div>
 </body>

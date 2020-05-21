@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Historia</title>
+    <div th:remove="tag" class="extraHead"></div>
+</head>
+
+<body>
+    <section id="tresc" style="min-height: 60vh;">
+        <p style="font-size: 43px;text-align: center;"><br>Historia</p>
+        <h3>Przeszłe głosowania</h3>
+        <ul class="list-group" th:each="voting : ${VotingList}" >
+            <li class="list-group-item">
+                <div th:switch="${voting.getVotingDescription()}">
+                    <a th:case="null" class="nav-link" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}" th:text="${voting.getDocumentID().getDocDescription()}"></a>
+                    <a th:case="*" class="nav-link" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}" th:text="${voting.getVotingDescription()}"></a>
+                </div>
+                <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
+            </li>
+        </ul>
+    </section>
+</body>
+</html>
