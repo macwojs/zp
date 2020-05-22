@@ -20,14 +20,14 @@
             <li th:case="true" class="list-group-item">
                 <a class="nav-link" th:href="'/glosowania/'+${voting.getVotingID()}"
                    sec:authorize="hasAnyRole('USER','ADMIN','MARSZALEK_SEJMU','MARSZALEK_SENATU','POSEL','SENATOR','PREZYDENT')">
-                    <p th:text="${voting.getVotingDescription().substring(0, Math.min(voting.getVotingDescription().length(), 31))}"></p>
+                    <p th:text="${voting.getVotingDescription().substring(0, min.run(voting.getVotingDescription().length(), 31))}"></p>
                 </a>
                 <span class="table-info"
                       th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
             </li>
             <li th:case="false" class="list-group-item closed-voting">
                 <p class="nav-link"
-                   th:text="${voting.getVotingDescription().substring(0, Math.min(voting.getVotingDescription().length(), 31))}"></p>
+                   th:text="${voting.getVotingDescription().substring(0, min.run(voting.getVotingDescription().length(), 31))}"></p>
                 <span class="table-info"
                       th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
             </li>
