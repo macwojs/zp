@@ -15,4 +15,6 @@ public interface PoliticianRepository extends JpaRepository<PoliticianEntity, Lo
     Optional<PoliticianEntity> findByCitizenID_Email(String email);
     Optional<PoliticianEntity> findByCitizenID_IdNumber(String idNumber);
     List<PoliticianEntity> findAll();
+
+
 }

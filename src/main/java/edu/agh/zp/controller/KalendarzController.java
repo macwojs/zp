@@ -1,12 +1,11 @@
 package edu.agh.zp.controller;
 
 import com.github.javafaker.DateAndTime;
-import edu.agh.zp.objects.OptionEntity;
-import edu.agh.zp.objects.OptionSetEntity;
-import edu.agh.zp.objects.VotingEntity;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.OptionRepository;
 import edu.agh.zp.repositories.OptionSetRepository;
 import edu.agh.zp.repositories.VotingRepository;
+import edu.agh.zp.services.ParliamentarianService;
 import edu.agh.zp.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +20,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 class Event{
 	public long id;
@@ -42,16 +38,12 @@ class Event{
 	}
 }
 
-class StatisticsRecord{
-	public String label;
-	public String value;
 
-	public StatisticsRecord(String label, String value) {
-		this.label = label;
-		this.value = value;
-	}
+//
+//class MultiCulumnData extends Chart{
+//	public Map<String, List<StatisticRecord>> data;
+//}
 
-}
 
 @Controller
 @RequestMapping (value={"/kalendarz"})
@@ -63,10 +55,14 @@ public class KalendarzController {
 	private VoteService voteS;
 
 	@Autowired
+	private ParliamentarianService parlS;
+
+	@Autowired
 	private OptionSetRepository osR;
 
 	@Autowired
 	private OptionRepository oR;
+
 
 	@GetMapping (value = {""})
 	public ModelAndView index() {
@@ -141,22 +137,31 @@ public class KalendarzController {
 		if(voting==null) {
 			return new ModelAndView(String.valueOf(HttpStatus.NOT_FOUND));
 		}
-		List<StatisticsRecord> statistics = new ArrayList<>();
-		List<OptionSetEntity> tempoptions = osR.findAllByOptionSetID_SetID( voting.getSetID_column() );
-		for( OptionSetEntity i : tempoptions ){
-			Optional<OptionEntity> temp = oR.findByOptionID( i.getOptionID().getOptionID() );
-			if(temp.isPresent()){
-				OptionEntity option = temp.get();
-				Long voteCount = voteS.countByVotingAndOption(voting, option);
-				statistics.add(new StatisticsRecord(option.getOptionDescription(), voteCount.toString()));
-			}
+		Statistics stats = new Statistics();
+		switch(voting.getVotingType()){
+			case SEJM:
+				List<StatisticRecord> pieChart = new ArrayList<>();
+				List<OptionSetEntity> tempoptions = osR.findAllByOptionSetID_SetID( voting.getSetID_column() );
+				for( OptionSetEntity i : tempoptions ){
+					Optional<OptionEntity> temp = oR.findByOptionID( i.getOptionID().getOptionID() );
+					if(temp.isPresent()){
+						OptionEntity option = temp.get();
+						Long voteCount = voteS.countByVotingAndOption(voting, option);
+						pieChart.add(new StatisticRecord(option.getOptionDescription(), voteCount.toString()));
+					}
+				}
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), new Chart("Głosowanie w sejmie", pieChart));
+				break;
 		}
+
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "votingResults" );
 		modelAndView.addObject("voting", voting);
 		modelAndView.addObject("chartTitle", "Wyniki głosowania nad ustawą");
-		modelAndView.addObject("statistics",  statistics);
+		modelAndView.addObject("statistics",  stats);
 		return modelAndView;
 	}
 }
+
+
 

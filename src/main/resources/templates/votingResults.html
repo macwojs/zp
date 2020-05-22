@@ -8,14 +8,13 @@
     <div th:remove="tag" class="extraHead">
         <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
         <script type="text/javascript" th:inline="javascript">
-            var stats = [[${statistics}]] ;
         </script>
         <!-- !!! EXAMPLE: https://canvasjs.com/spring-mvc-charts/ !!! -->
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         <script type="text/javascript" th:inline="javascript">
             var dps = [];
             window.onload = function () {
-                /*[# th:each="item : ${statistics}"]*/
+                /*[# th:each="item : ${statistics.chart.data}"]*/
                 yValue = parseFloat([[${item.value}]]);
                 label = [[${item.label}]];
                 dps.push({
@@ -25,9 +24,10 @@
                 /*[/]*/
 
                 var piechart = new CanvasJS.Chart("piechartContainer", {
+                    theme: light,
                     animationEnabled: true,
                     title: {
-                        text: [[${chartTitle}]]
+                        text: [[${statistics.chart.title}]]
                     },
                     data: [{
                         type: "pie",
@@ -52,14 +52,6 @@
                     <td><a>Data głosowania: </a></td>
                     <td><a style="text-align:right" th:text="*{votingDate}" ></a></td>
                 </tr>
-                <tr th:if="*{openVoting}">
-                    <td><a>Czas rozpoczęcia głosowania: </a></td>
-                    <td><a th:text="*{openVoting}" ></a></td>
-                </tr>
-                <tr th:if="*{closeVoting}">
-                    <td><a>Czas zakończecia głosowania: </a></td>
-                    <td><a th:text="*{closeVoting}" ></a></td>
-                </tr>
                 <tr th:if="*{votingDescription}">
                     <td><a>Opis: </a></td>
                     <td><a th:text="*{votingDescription}" ></a></td>
@@ -70,7 +62,19 @@
                 </tr>
                 <tr th:if="*{documentID}">
                     <td><a>Dokument: </a></td>
-                    <td><a th:text="*{documentID.docName}" ></a></td>
+                    <td><a th:text="*{documentID.docName}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Upoważnionych do głosowania: </a></td>
+                    <td><a th:text="${statistics.entitledToVote}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Oddanych głosów: </a></td>
+                    <td><a th:text="${statistics.votesCount}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Frekwencja: </a></td>
+                    <td><a> <span th:text="${#numbers.formatDecimal(statistics.frequency, 0, 'COMMA', 2, 'POINT')}"> </span> %</a></td>
                 </tr>
             </table>
             <div id="piechartContainer" style="height: 300px; width: 100%;"></div>
