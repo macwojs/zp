@@ -16,8 +16,19 @@ public class createVotingList {
         LocalDate now = LocalDate.now();
         Date nowSql = java.sql.Date.valueOf(now);
         List<VotingEntity> voting = votingRepository.findByVotingDateBetweenAndVotingTypeOrderByVotingDateAscOpenVotingAsc(nowSql, java.sql.Date.valueOf(now.plusDays(1)), type);
+        TableCreation(modelAndView, nowSql, voting);
+    }
+    public static void run(ModelAndView modelAndView, VotingEntity.TypeOfVoting type, VotingEntity.TypeOfVoting type2, VotingRepository votingRepository)
+    {
+        LocalDate now = LocalDate.now();
+        Date nowSql = java.sql.Date.valueOf(now);
+        List<VotingEntity> voting = votingRepository.findByVotingDateBetweenAndVotingTypeOrVotingTypeOrderByVotingDateAscOpenVotingAsc(nowSql, java.sql.Date.valueOf(now.plusDays(1)), type, type2);
+        TableCreation(modelAndView, nowSql, voting);
+    }
+
+    private static void TableCreation(ModelAndView modelAndView, Date nowSql, List<VotingEntity> voting) {
         boolean[] nums = new boolean[voting.size()];
-        Time time = java.sql.Time.valueOf(LocalTime.now());
+        Time time = Time.valueOf(LocalTime.now());
         if (voting.isEmpty()) modelAndView.addObject("Sign", null);
         else {
             for (int i = 0; i < voting.size(); i++) {

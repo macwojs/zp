@@ -1,20 +1,16 @@
 package edu.agh.zp.objects;
 
 
-import edu.agh.zp.validator.TimeAfterNow;
-import edu.agh.zp.validator.TimeOrder;
+
 
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Time;
-import java.util.List;
+
 
 @Entity(name = "VotingTimer")
-@TimeOrder
-@TimeAfterNow
 public class VotingTimerEntity implements Serializable {
 
     @Id
