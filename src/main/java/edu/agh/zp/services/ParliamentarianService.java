@@ -73,4 +73,10 @@ public class ParliamentarianService {
         return pR.countAllByChamberOfDeputiesAndPoliticalGroup(chamberOfDeputies, politicalGroup);
     }
 
+    /* OTHERS */
+
+    public ArrayList<String> findPoliticalGroups(){
+        return (ArrayList<String>)pR.findDistinctPoliticalGroups();
+    }
+
 }

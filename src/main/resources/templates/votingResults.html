@@ -13,6 +13,7 @@
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         <script type="text/javascript" th:inline="javascript">
             var dps = [];
+            var dps1 = [];
             window.onload = function () {
                 /*[# th:each="item : ${statistics.chart.data}"]*/
                 yValue = parseFloat([[${item.value}]]);
@@ -24,7 +25,7 @@
                 /*[/]*/
 
                 var piechart = new CanvasJS.Chart("piechartContainer", {
-                    theme: light,
+                    theme: "light1",
                     animationEnabled: true,
                     title: {
                         text: [[${statistics.chart.title}]]
@@ -34,10 +35,85 @@
                         startAngle: 240,
                         yValueFormatString:"#\" głosy\"",
                         dataPoints: dps
-                }]
-            });
+                    }],
+
+
+                });
+
+                /*[# th:each="item, iter : ${multichart}"  ]*/
+                    /*[# th:each="item : ${item.data}"]*/
+                    yValue = parseFloat([[${item.value}]]);
+                    label = [[${item.label}]];
+                    dps1[parseInt([[${iter.index}]])].push({
+                        label : label,
+                        y : yValue,
+                    });
+                    /*[/]*/
+                /*[/]*/
+
+
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    exportEnabled: true,
+                    animationEnabled: true,
+                    title: {
+                        text: "Quarterly Sales Comparison"
+                    },
+                    subtitles: [{
+                        text: "Click Legend to Hide or Unhide Data Series"
+                    }],
+                    axisX: {
+                        title: "Quarter"
+                    },
+                    axisY: {
+                        title: "Sales",
+                        prefix: "$",
+                        includeZero: false
+                    },
+                    toolTip: {
+                        shared: true
+                    },
+                    legend: {
+                        cursor: "pointer",
+                        verticalAlign: "top",
+                        itemclick: toggleDataSeries
+                    },
+                    data: [{
+                        type: "column",
+                        name: "2016",
+                        showInLegend: true,
+                        yValueFormatString: "$#,##0",
+                        dataPoints: dps1[0]
+                    },
+                        {
+                            type: "column",
+                            name: "2017",
+                            showInLegend: true,
+                            yValueFormatString: "$#,##0",
+                            dataPoints: dps1[1]
+                        }]
+                });
+
+                // var yValue;
+                // var label;
+
+
+
+
+
+
+
+                function toggleDataSeries(e) {
+                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                        e.dataSeries.visible = false;
+                    } else {
+                        e.dataSeries.visible = true;
+                    }
+                    e.chart.render();
+                }
+
 
                 piechart.render();
+                chart.render();
             }
         </script>
     </div>
@@ -78,6 +154,7 @@
                 </tr>
             </table>
             <div id="piechartContainer" style="height: 300px; width: 100%;"></div>
+            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
         </form>
     </div>
 </div>

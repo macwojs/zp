@@ -138,27 +138,42 @@ public class KalendarzController {
 			return new ModelAndView(String.valueOf(HttpStatus.NOT_FOUND));
 		}
 		Statistics stats = new Statistics();
+		Chart pieChart = new Chart( "Rozkład głosów");
+		List<Chart> multiChart = new ArrayList<>();
+
+		List<String> politicalGroups = parlS.findPoliticalGroups();
+		for(String group : politicalGroups){
+			multiChart.add(new Chart(group));
+		}
+		List<OptionSetEntity> tempOptions = osR.findAllByOptionSetID_SetID( voting.getSetID_column() );
+		for( OptionSetEntity i : tempOptions ){
+			Optional<OptionEntity> temp = oR.findByOptionID( i.getOptionID().getOptionID() );
+			if(temp.isPresent()){
+				OptionEntity option = temp.get(); // option
+				for(int j = 0; j < politicalGroups.size(); ++j){ // iterate through political groups to get information about votes in each of them
+					Long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
+					multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount.toString()));
+				}
+				Long voteCount = voteS.countByVotingAndOption(voting, option);
+				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount.toString()));
+			}
+		}
+
 		switch(voting.getVotingType()){
 			case SEJM:
-				List<StatisticRecord> pieChart = new ArrayList<>();
-				List<OptionSetEntity> tempoptions = osR.findAllByOptionSetID_SetID( voting.getSetID_column() );
-				for( OptionSetEntity i : tempoptions ){
-					Optional<OptionEntity> temp = oR.findByOptionID( i.getOptionID().getOptionID() );
-					if(temp.isPresent()){
-						OptionEntity option = temp.get();
-						Long voteCount = voteS.countByVotingAndOption(voting, option);
-						pieChart.add(new StatisticRecord(option.getOptionDescription(), voteCount.toString()));
-					}
-				}
-				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), new Chart("Głosowanie w sejmie", pieChart));
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), pieChart);
+
+				break;
+			case SENAT:
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSenat(), pieChart);
 				break;
 		}
 
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "votingResults" );
 		modelAndView.addObject("voting", voting);
-		modelAndView.addObject("chartTitle", "Wyniki głosowania nad ustawą");
 		modelAndView.addObject("statistics",  stats);
+		modelAndView.addObject("multichart",  multiChart);
 		return modelAndView;
 	}
 }
