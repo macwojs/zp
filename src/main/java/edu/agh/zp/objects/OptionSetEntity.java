@@ -5,60 +5,32 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity(name = "OptionSet")
-
+@IdClass(IdOptionSet.class)
 public class OptionSetEntity implements Serializable {
-
-    @EmbeddedId OptionSetID optionSetID;
-
-    public OptionSetEntity(OptionEntity optionID, SetEntity setID_column) {
-        this.optionSetID = new OptionSetID(optionID,setID_column);
-    }
-
-    public OptionSetEntity() {
-        this.optionSetID = new OptionSetID();
-    }
-
-    public OptionEntity getOptionID() {
-        return this.optionSetID.getOptionID();
-    }
-
-    public void setOptionID(OptionEntity optionID) {
-        this.optionSetID.setOptionID(optionID);
-    }
-
-    public SetEntity getSetIDcolumn() {
-        return this.optionSetID.getSetIDcolumn();
-    }
-
-    public void setSetIDcolumn(SetEntity setID_column) {
-        this.optionSetID.setSetIDcolumn(setID_column);
-    }
-
-}
-
-
-@Embeddable
-class OptionSetID implements Serializable {
+    @Id
     @ManyToOne
     @NotNull
     @JoinColumn(name="optionID")
     private OptionEntity optionID;
 
-
+    @Id
     @ManyToOne
     @NotNull
     @JoinColumn(name="setID")
     private SetEntity setIDcolumn;
 
-    public OptionSetID(@NotNull OptionEntity optionID, @NotNull SetEntity setIDcolumn) {
+
+
+    public OptionSetEntity(OptionEntity optionID, SetEntity setID_column) {
         this.optionID = optionID;
-        this.setIDcolumn = setIDcolumn;
+        this.setIDcolumn = setID_column;
     }
 
-    public OptionSetID() {}
+    public OptionSetEntity() {
+    }
 
     public OptionEntity getOptionID() {
-        return optionID;
+        return this.optionID;
     }
 
     public void setOptionID(OptionEntity optionID) {
@@ -66,10 +38,12 @@ class OptionSetID implements Serializable {
     }
 
     public SetEntity getSetIDcolumn() {
-        return setIDcolumn;
+        return this.setIDcolumn;
     }
 
     public void setSetIDcolumn(SetEntity setID_column) {
         this.setIDcolumn = setID_column;
     }
+
+
 }

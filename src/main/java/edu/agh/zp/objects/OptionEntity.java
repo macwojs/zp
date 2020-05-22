@@ -10,7 +10,7 @@ public class OptionEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Option_optionID_seq")
-    @SequenceGenerator(name = "Option_optionID_seq", sequenceName = "Option_optionID_seq", allocationSize = 1)
+    @SequenceGenerator(name = "Option_optionID_seq", sequenceName = "Option_optionID_seq", allocationSize = 1, initialValue = 6)
     @Column(name="optionID")
     private long optionID;
 

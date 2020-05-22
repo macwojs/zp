@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -47,7 +48,7 @@ public class WyboryController {
     @GetMapping(value = {""})
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
-        createVotingList.run(modelAndView, VotingEntity.TypeOfVoting.REFERENDUM,VotingEntity.TypeOfVoting.PREZYDENT , votingSession);
+        createVotingList.run(modelAndView, Arrays.asList(VotingEntity.TypeOfVoting.REFERENDUM,VotingEntity.TypeOfVoting.PREZYDENT) , votingSession);
         modelAndView.setViewName("wyboryReferenda");
         return modelAndView;
     }
