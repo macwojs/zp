@@ -1,18 +1,19 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.objects.VotingControlEntity;
-import edu.agh.zp.objects.VotingEntity;
-import edu.agh.zp.objects.createVotingList;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -56,7 +57,7 @@ public class WyboryController {
     }
 
 
-    @GetMapping(value = {"{id}"})
+    @GetMapping(value = {"/{id}"})
     public ModelAndView referendumVote(ModelAndView model, @PathVariable long id, Principal principal) {
         Optional<CitizenEntity> optCurUser = citizenSession.findByEmail(principal.getName());
         if (optCurUser.isEmpty()) {
@@ -75,6 +76,36 @@ public class WyboryController {
         if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.REFERENDUM)) model.setViewName("referendumVoting");
         else model.setViewName("presidentVoting");
         return model;
+    }
+
+    @PostMapping(value = {"/{id}"})
+    public ModelAndView referendumVoteSubmit( @PathVariable long id, @RequestParam( "votingRadio" ) long radio ) {
+        VoteEntity vote = new VoteEntity( );
+        vote.setOptionID( optionSession.findById( radio ).get( ) );
+        Authentication auth = SecurityContextHolder.getContext( ).getAuthentication( );
+
+        vote.setVotingID( votingSession.findByVotingID( id ) );
+        LocalTime time = LocalTime.now( );
+        LocalDate date = LocalDate.now( );
+        VotingEntity voting = vote.getVotingID( );
+        if ( voting.getCloseVoting( ).before( java.sql.Time.valueOf( time ) ) || !voting.getVotingDate( ).equals( java.sql.Date.valueOf( date ) ) ) {
+            ModelAndView model = new ModelAndView( );
+            model.setViewName( "timeOut" );
+            if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
+                model.addObject( "type", "/wyboryReferenda" );
+            else
+                model.addObject( "type", "/wyboryReferenda" );
+            return model;
+        }
+        vote.setVoteTimestamp( new Timestamp( System.currentTimeMillis( ) ) );
+        voteSession.save( vote );
+        votingControlSession.save(new VotingControlEntity(citizenSession.findByEmail( auth.getName( ) ).get( ),voting));
+        RedirectView redirect = new RedirectView( );
+        if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
+            redirect.setUrl( "/parlament/sejm" );
+        else
+            redirect.setUrl( "/parlament/senat" );
+        return new ModelAndView( redirect );
     }
 
 
