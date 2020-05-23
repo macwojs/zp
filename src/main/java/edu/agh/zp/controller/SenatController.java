@@ -22,6 +22,8 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +43,7 @@ public class SenatController {
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
-		createVotingList.run( modelAndView, VotingEntity.TypeOfVoting.SENAT, votingRepository );
+		createVotingList.run( modelAndView, Collections.singletonList(VotingEntity.TypeOfVoting.SENAT), votingRepository );
 		modelAndView.setViewName( "senat" );
 		return modelAndView;
 	}

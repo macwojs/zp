@@ -10,7 +10,7 @@ public class SetEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Set_setID_seq")
-    @SequenceGenerator(name = "Set_setID_seq", sequenceName = "Set_setID_seq", allocationSize = 1)
+    @SequenceGenerator(name = "Set_setID_seq", sequenceName = "Set_setID_seq", allocationSize = 1, initialValue = 3)
     @Column(name="setID")
     private long setID_column;
 

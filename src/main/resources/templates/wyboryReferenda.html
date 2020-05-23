@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <div class="extraHead">
+        <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
+    </div>
+</head>
+
+<body>
+<section id="tresc" style="height: 80vh;">
+    <p style="font-size: 43px;text-align: center;"><br>glosowania</p>
+
+    <h3>najbliższe głosowania</h3>
+    <div th:if="${!VotingList.isEmpty()}">
+        <button id="hide_button" type="button" class="btn btn-info" onclick="hideVoting()">Ukryj nieaktywne glosowania
+        </button>
+        <ul class="list-group" th:each="voting : ${VotingList}" th:switch="${Sign[votingStat.index]}">
+            <li th:case="true" class="list-group-item">
+                <a class="nav-link" th:href="'/wyboryReferenda/'+${voting.getVotingID()}"
+                   sec:authorize="hasAnyRole('USER','ADMIN','MARSZALEK_SEJMU','MARSZALEK_SENATU','POSEL','SENATOR','PREZYDENT')">
+                    <p th:text="${voting.getVotingDescription().substring(0, min.run(voting.getVotingDescription().length(), 31))}"></p>
+                </a>
+                <span class="table-info"
+                      th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
+            </li>
+            <li th:case="false" class="list-group-item closed-voting">
+                <p class="nav-link"
+                   th:text="${voting.getVotingDescription().substring(0, min.run(voting.getVotingDescription().length(), 31))}"></p>
+                <span class="table-info"
+                      th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
+            </li>
+        </ul>
+    </div>
+</section>
+</body>
+</html>

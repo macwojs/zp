@@ -21,7 +21,6 @@ public class VoteEntity implements Serializable {
     private Timestamp voteTimestamp;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name="citizenID")
     private CitizenEntity citizenID;
 

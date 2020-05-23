@@ -1,22 +1,15 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.*;
-import edu.agh.zp.repositories.OptionRepository;
-import edu.agh.zp.repositories.OptionSetRepository;
-import edu.agh.zp.repositories.SetRepository;
-import edu.agh.zp.repositories.VotingRepository;
+import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
-import javax.validation.Valid;
-import java.sql.Time;
-import java.text.DateFormat;
+import java.security.Principal;
+import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -40,6 +33,16 @@ public class GlosowaniaController {
     @Autowired
     SetRepository setSession;
 
+    @Autowired
+    VotingTimerRepository votingTimerSession;
+
+    @Autowired
+    VotingControlRepository votingControlSession;
+
+
+
+
+
     @GetMapping(value = {""})
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
@@ -49,6 +52,7 @@ public class GlosowaniaController {
 
     @GetMapping(value = {"/prezydenckie/plan"})
     public ModelAndView prezydentForm() {
+        deleteOldVotingData(java.sql.Date.valueOf(LocalDate.now()));
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("ErrorList", null);
         modelAndView.setViewName("presidentVotingAdd");
@@ -69,14 +73,16 @@ public class GlosowaniaController {
             return modelAndView;
         }
         setSession.save(set);
-        votingSession.save(new VotingEntity(
+        VotingEntity voting = new VotingEntity(
                 java.sql.Date.valueOf(time),
                 java.sql.Time.valueOf(LocalTime.parse("06:00:00")),
                 java.sql.Time.valueOf(LocalTime.parse("21:00:00")),
                 set,
                 null,
                 VotingEntity.TypeOfVoting.PREZYDENT,
-                "Wybory Prezydenckie " + data));
+                "Wybory Prezydenckie " + data);
+        votingSession.save(voting);
+        votingTimerSession.save(new VotingTimerEntity(voting.getVotingID(), java.sql.Date.valueOf(time)));
         for (Map.Entry<String, String> entry : reqParameters.entrySet()) {
             if (entry.getKey().equals("_csrf")) continue;
             OptionEntity option = new OptionEntity(entry.getValue());
@@ -88,6 +94,7 @@ public class GlosowaniaController {
 
     @GetMapping(value = {"/referendum/plan"})
     public ModelAndView referendumForm() {
+        deleteOldVotingData(java.sql.Date.valueOf(LocalDate.now()));
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("ErrorList", null);
         modelAndView.setViewName("referendumAdd");
@@ -102,23 +109,26 @@ public class GlosowaniaController {
         LocalDate time = timeVerify(data, 7);
         String desc = reqParameters.remove("desc");
         if (time == null || desc.isEmpty()) {
-            ArrayList<String>  errors = new ArrayList<String>();
-            if (time==null) errors.add("Wydarzenie musi być zaplanowane z 7 dniowym wyprzedzeniem\n");
+            ArrayList<String> errors = new ArrayList<String>();
+            if (time == null) errors.add("Wydarzenie musi być zaplanowane z 7 dniowym wyprzedzeniem\n");
             if (desc.isEmpty()) errors.add("Należy wpisać treść pytania\n");
             modelAndView.setViewName("referendumAdd");
             modelAndView.addObject("ErrorList", errors);
             return modelAndView;
         }
-        votingSession.save(new VotingEntity(
+        VotingEntity voting = new VotingEntity(
                 java.sql.Date.valueOf(time),
                 java.sql.Time.valueOf(LocalTime.parse("06:00:00")),
                 java.sql.Time.valueOf(LocalTime.parse("21:00:00")),
-                setSession.findById(2L).get(),
+                setSession.findById(1L).get(),
                 null,
                 VotingEntity.TypeOfVoting.REFERENDUM,
-                desc));
+                desc);
+        votingSession.save(voting);
+        votingTimerSession.save(new VotingTimerEntity(voting.getVotingID(), java.sql.Date.valueOf(time)));
         return modelAndView;
     }
+
 
 
     public LocalDate timeVerify(String time, int delay) {
@@ -142,6 +152,15 @@ public class GlosowaniaController {
             res.add("dane kandydata nie mogą być puste\n");
         }
         return res;
+    }
+
+    public void deleteOldVotingData(Date time) {
+        List<VotingTimerEntity> list = votingTimerSession.findByEraseBefore(time);
+        if (list.isEmpty()) return;
+        for (VotingTimerEntity Timer : list) {
+            votingControlSession.deleteByVotingID(votingSession.findByVotingID(Timer.getVotingID()));
+            votingTimerSession.delete(Timer);
+        }
     }
 
 }

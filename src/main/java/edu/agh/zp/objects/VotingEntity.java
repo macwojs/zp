@@ -154,5 +154,3 @@ public class VotingEntity implements Serializable {
         this.documentID = documentID;
     }
 }
-
-//TODO...

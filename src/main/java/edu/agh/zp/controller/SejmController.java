@@ -20,6 +20,8 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +48,7 @@ public class SejmController {
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "sejm" );
-		createVotingList.run( modelAndView, VotingEntity.TypeOfVoting.SEJM, votingRepository );
+		createVotingList.run( modelAndView, Collections.singletonList(VotingEntity.TypeOfVoting.SEJM), votingRepository );
 		return modelAndView;
 	}
 
