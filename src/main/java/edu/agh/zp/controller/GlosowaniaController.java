@@ -158,7 +158,7 @@ public class GlosowaniaController {
         List<VotingTimerEntity> list = votingTimerSession.findByEraseBefore(time);
         if (list.isEmpty()) return;
         for (VotingTimerEntity Timer : list) {
-            votingControlSession.deleteAllByVotingID(votingSession.findByVotingID(Timer.getVotingID()));
+            votingControlSession.deleteByVotingID(votingSession.findByVotingID(Timer.getVotingID()));
             votingTimerSession.delete(Timer);
         }
     }

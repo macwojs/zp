@@ -31,24 +31,18 @@
                 </div>
             </div>
             <hr style="background-color: #D4213D;margin: 32px;margin-right: 64px;margin-left: 64px;">
-            <div class="form-group">
+            <div class="form-group" >
                 <div>
                     <fieldset class="text-center">
                         <legend class="text-center">Wybierz głos</legend>
+                        <div th:each="option : ${options}">
                         <div class="custom-control custom-radio custom-control-inline"><input type="radio"
                                                                                               required="required"
-                                                                                              id="customRadioInline1"
+                                                                                              th:id="customRadioInline+${option.getOptionID()}"
                                                                                               class="custom-control-input"
                                                                                               name="votingRadio"
-                                                                                              value="1"><label
-                                class="custom-control-label" for="customRadioInline1">Tak</label></div>
-                        <div class="custom-control custom-radio custom-control-inline"><input type="radio"
-                                                                                              required="required"
-                                                                                              id="customRadioInline2"
-                                                                                              class="custom-control-input"
-                                                                                              name="votingRadio"
-                                                                                              value="2">
-                            <label class="custom-control-label" for="customRadioInline2" >Nie</label>
+                                                                                              th:value="${option.getOptionID()}"><label
+                                class="custom-control-label" th:for="customRadioInline+${option.getOptionID()}" th:text="${option.getOptionDescription()}"></label></div>
                         </div>
                     </fieldset>
                 </div>
