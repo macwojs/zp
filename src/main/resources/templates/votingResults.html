@@ -26,7 +26,8 @@
                 CanvasJS.addColorSet("greyColorSet",
                     [//colorSet Array
                         "#b50717",
-                        "#bfbfbf",
+                        "#B8B2B6",
+                        "#463F43",
                         "#1d1d1d",
                         "#ececec",
                         "#cf291d",
@@ -34,7 +35,7 @@
                     ]);
 
                 /*[# th:each="item : ${statistics.chart.data}"]*/
-                x = parseFloat(Math.round( (( parseInt([[${item.value}]])/parseInt([[${statistics.votesCount}]])*100 + Number.EPSILON) * 100) / 100)).toFixed(2);
+                x = Math.round(( parseFloat([[${item.value}]])/parseFloat([[${statistics.votesCount}]])*100 + Number.EPSILON) *100)/100;
                 yValue = parseFloat([[${item.value}]]);
                 label = [[${item.label}]] + " " + x + "%";
                 dps.push({
@@ -58,6 +59,7 @@
                         yValueFormatString:"#\" głosy\"",
                         dataPoints: dps
                     }],
+
                 });
 
                 /*[# th:each="item : ${multichart}"  ]*/
@@ -175,8 +177,9 @@
                     </td>
                 </tr>
             </table>
-            <div id="piechartContainer" style="height: 300px; width: 100%;"></div>
-            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+            <div id="piechartContainer" style="height: 300px; width: 100%; margin-bottom: 20px; margin-top: 10px;"></div>
+            <div id="chartContainer" style="height: 300px; width: 100%; margin-bottom: 20px;"></div>
+            <a th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">Sprawdź jak głosowali poszczególni parlamentarzyści</a>
         </form>
     </div>
 </div>
