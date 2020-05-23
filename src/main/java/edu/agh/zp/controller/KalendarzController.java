@@ -1,6 +1,5 @@
 package edu.agh.zp.controller;
 
-import com.github.javafaker.DateAndTime;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.OptionRepository;
 import edu.agh.zp.repositories.OptionSetRepository;
@@ -39,15 +38,11 @@ class Event{
 }
 
 
-//
-//class MultiCulumnData extends Chart{
-//	public Map<String, List<StatisticRecord>> data;
-//}
-
-
 @Controller
 @RequestMapping (value={"/kalendarz"})
 public class KalendarzController {
+
+
 	@Autowired
 	private VotingRepository vr;
 
@@ -152,20 +147,19 @@ public class KalendarzController {
 				OptionEntity option = temp.get(); // option
 				for(int j = 0; j < politicalGroups.size(); ++j){ // iterate through political groups to get information about votes in each of them
 					Long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
-					multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount.toString()));
+					multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
 				}
 				Long voteCount = voteS.countByVotingAndOption(voting, option);
-				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount.toString()));
+				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
 			}
 		}
 
 		switch(voting.getVotingType()){
 			case SEJM:
-				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), pieChart);
-
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), pieChart, VotingEntity.TypeOfVoting.SEJM);
 				break;
 			case SENAT:
-				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSenat(), pieChart);
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSenat(), pieChart, VotingEntity.TypeOfVoting.SENAT);
 				break;
 		}
 
