@@ -87,7 +87,7 @@ public class PopulateController {
                 new FunctionEntity("minister"),
                 new FunctionEntity("członek komisji")));
 
-        ArrayList<OptionEntity> OptionList = new ArrayList<OptionEntity>(Arrays.asList(new OptionEntity("Za"), new OptionEntity("przeciw"), new OptionEntity("wstrzymał się")));
+        ArrayList<OptionEntity> OptionList = new ArrayList<OptionEntity>(Arrays.asList(new OptionEntity("Za"), new OptionEntity("Przeciw"), new OptionEntity("Wstrzymał się")));
         SetEntity set = new SetEntity("głosowanie parlamentarne");
         OptionSession.saveAll(OptionList);
         SetSession.save(set);

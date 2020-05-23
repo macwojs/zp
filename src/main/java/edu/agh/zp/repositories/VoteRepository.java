@@ -4,6 +4,8 @@ import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.objects.OptionEntity;
 import edu.agh.zp.objects.VoteEntity;
 import edu.agh.zp.objects.VotingEntity;
+import org.apache.catalina.startup.ListenerCreateRule;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -29,4 +31,9 @@ public interface VoteRepository extends JpaRepository< VoteEntity, Long > {
 	long countAllByVotingID_VotingIDAndOptionID_OptionDescription(long voting, String optionDescription);
 	long countAllByVotingID_VotingID(long voting);
 
+	@Query ( value = "SELECT * FROM vote u WHERE (u.votingid = ?1 and u.citizenid = ?2)", nativeQuery = true )
+	Optional< VoteEntity > findByCitizenIdVotingId( long voting, long citizen );
+
+	@Query ( value = "SELECT * FROM vote u WHERE u.votingid = ?1", nativeQuery = true )
+	List<VoteEntity> findAllByVotingId(long voting);
 }

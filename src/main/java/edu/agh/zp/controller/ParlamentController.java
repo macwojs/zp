@@ -19,9 +19,66 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+class Votes {
+	String surname;
+	String name;
+	String party;
+	String voteValue;
+	long politicID;
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname( String surname ) {
+		this.surname = surname;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	public String getParty() {
+		return party;
+	}
+
+	public void setParty( String party ) {
+		this.party = party;
+	}
+
+	public String getVoteValue() {
+		return voteValue;
+	}
+
+	public void setVoteValue( String voteValue ) {
+		this.voteValue = voteValue;
+	}
+
+	public long getPoliticID() {
+		return politicID;
+	}
+
+	public void setPoliticID( long politicID ) {
+		this.politicID = politicID;
+	}
+
+	public Votes( String surname, String name, String party, String voteValue, long politicID ) {
+		this.surname = surname;
+		this.name = name;
+		this.party = party;
+		this.voteValue = voteValue;
+		this.politicID = politicID;
+	}
+}
 
 @Controller
 @RequestMapping ( value = { "/parlament" } )
@@ -50,6 +107,12 @@ public class ParlamentController {
 
 	@Autowired
 	private VotingRepository votingRepository;
+
+	@Autowired
+	private PoliticianRepository politicianRepository;
+
+	@Autowired
+	private ParliamentarianRepository parliamentarianRepository;
 
 
 	@GetMapping ( value = { "" } )
@@ -154,6 +217,39 @@ public class ParlamentController {
 		return new ModelAndView( redirect );
 	}
 
+	@GetMapping ( value = { "/vote/votesList/{id}" } )
+	public ModelAndView parlamentVotesList( @PathVariable long id ) {
+		List< VoteEntity > votes = voteRepository.findAllByVotingId( id );
+
+		List< Votes > votesTh = new ArrayList<>( );
+		for ( VoteEntity i : votes ) {
+			CitizenEntity citizen = i.getCitizenID( );
+			Optional< PoliticianEntity > politicianEntity = politicianRepository.findByCitizenID( i.getCitizenID( ) );
+			long politicID = 0;
+			String party = "-";
+			if ( politicianEntity.isPresent( ) ) {
+				politicID = politicianEntity.get( ).getPoliticianID( );
+				try {
+					ParliamentarianEntity parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get() );
+					party = parliamentarianEntity.getPoliticalGroup( );
+				} catch ( Exception e ) {
+					e.printStackTrace( );
+				}
+			}
+
+			votesTh.add( new Votes(
+					citizen.getSurname( ),
+					citizen.getName( ),
+					party,
+					i.getOptionID( ).getOptionDescription( ),
+					politicID ));
+		}
+
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.addObject( "votes", votesTh );
+		modelAndView.setViewName( "votesList" );
+		return modelAndView;
+	}
 }
 
 

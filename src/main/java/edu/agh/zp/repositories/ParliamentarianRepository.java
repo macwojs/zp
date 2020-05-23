@@ -23,12 +23,10 @@ public interface ParliamentarianRepository extends JpaRepository<Parliamentarian
     Optional<ParliamentarianEntity> findByIdCardNumber(String cardID);
 
     List<ParliamentarianEntity> findAllByChamberOfDeputies(String chamberOfDeputies);
-
-
-
     List<ParliamentarianEntity> findAllByChamberOfDeputiesAndPoliticalGroup(String chamberOfDeputies, String politicalGroup);
     List<ParliamentarianEntity> findAllByPoliticalGroup(String politicalGroup);
     List<ParliamentarianEntity> findAll();
+	//Optional<ParliamentarianEntity> findByPoliticianID( PoliticianEntity politicianID);
 
     long countAllByChamberOfDeputies(String chamberOfDeputies);
     long countAllByChamberOfDeputiesAndPoliticalGroup(String chamberOfDeputies, String politicalGroup);
