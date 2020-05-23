@@ -190,6 +190,7 @@ public class ParlamentController {
 
 	@PostMapping ( value = { "/vote/{id}" } )
 	public ModelAndView parlamentVoteSubmit( @PathVariable long id, @RequestParam ( "votingRadio" ) long radio ) {
+		ModelAndView model = new ModelAndView( );
 		VoteEntity vote = new VoteEntity( );
 		vote.setOptionID( optionRepository.findById( radio ).get( ) );
 		Authentication auth = SecurityContextHolder.getContext( ).getAuthentication( );
@@ -198,8 +199,16 @@ public class ParlamentController {
 		LocalTime time = LocalTime.now( );
 		LocalDate date = LocalDate.now( );
 		VotingEntity voting = vote.getVotingID( );
+		Optional< VoteEntity > voteControl = voteRepository.findByCitizenIdVotingId(  id,vote.getCitizenID().getCitizenID());
+		if ( voteControl.isPresent( ) ) {
+			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
+				model.addObject( "th_redirect", "/parlament/sejm" );
+			else
+				model.addObject( "th_redirect", "/parlament/senat" );
+			model.setViewName( "418_REPEAT_VOTE" );
+			return model;
+		}
 		if ( voting.getCloseVoting( ).before( java.sql.Time.valueOf( time ) ) || !voting.getVotingDate( ).equals( java.sql.Date.valueOf( date ) ) ) {
-			ModelAndView model = new ModelAndView( );
 			model.setViewName( "timeOut" );
 			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
 				model.addObject( "type", "/parlament/sejm" );
