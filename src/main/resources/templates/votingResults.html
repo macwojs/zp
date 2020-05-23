@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )">
+      th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )" lang="pl">
 <head>
     <title>zp</title>
     <div th:remove="tag" class="extraHead">
@@ -13,8 +12,27 @@
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
         <script type="text/javascript" th:inline="javascript">
             var dps = [];
-            var dps1 = [];
+            var pop = [  /*[# th:each="item, iter : ${statistics.chart.data}"  ]*/ [] /*[# th:if="${iter.index} != ${iter.size}-1"  ]*/, /*[/]*/ /*[/]*/ ];
             window.onload = function () {
+                CanvasJS.addCultureInfo("pl", {
+                        decimalSeparator: ",",
+                        digitGroupSeparator: " ",
+                        menuText: "Menu",
+                        savePNGText: "Zapisz jako PNG",
+                        saveJPGText: "Zapisz jako JPG",
+                        printText: "Drukuj wykres"
+                    });
+
+                CanvasJS.addColorSet("greyColorSet",
+                    [//colorSet Array
+                        "#cf291d",
+                        "#bfbfbf",
+                        "#1d1d1d",
+                        "#ececec",
+                        "#b50717",
+                        "#131313"
+                    ]);
+
                 /*[# th:each="item : ${statistics.chart.data}"]*/
                 yValue = parseFloat([[${item.value}]]);
                 label = [[${item.label}]];
@@ -27,8 +45,11 @@
                 var piechart = new CanvasJS.Chart("piechartContainer", {
                     theme: "light1",
                     animationEnabled: true,
+                    culture:  "pl",
+                    colorSet: "greyColorSet",
                     title: {
-                        text: [[${statistics.chart.title}]]
+                        text: [[${statistics.chart.title}]],
+                        fontFamily: "helvetica"
                     },
                     data: [{
                         type: "pie",
@@ -36,37 +57,37 @@
                         yValueFormatString:"#\" głosy\"",
                         dataPoints: dps
                     }],
-
-
                 });
 
-                /*[# th:each="item, iter : ${multichart}"  ]*/
-                    /*[# th:each="item : ${item.data}"]*/
-                    yValue = parseFloat([[${item.value}]]);
-                    label = [[${item.label}]];
-                    dps1[parseInt([[${iter.index}]])].push({
-                        label : label,
-                        y : yValue,
-                    });
-                    /*[/]*/
+                /*[# th:each="item : ${multichart}"  ]*/
+                /*[# th:each="d, iter : ${item.data}"]*/
+                yValue = parseFloat([[${d.value}]]);
+                label = [[${item.title}]];
+                pop[ parseInt([[${iter.index}]]) ].push({
+                    label : label,
+                    y : yValue,
+                });
                 /*[/]*/
-
+                /*[/]*/
 
                 var chart = new CanvasJS.Chart("chartContainer", {
                     exportEnabled: true,
                     animationEnabled: true,
+                    colorSet: "greyColorSet",
                     title: {
-                        text: "Quarterly Sales Comparison"
+                        text: "Rozkład głosów w partii",
+                        fontFamily: "helvetica"
                     },
-                    subtitles: [{
-                        text: "Click Legend to Hide or Unhide Data Series"
-                    }],
                     axisX: {
-                        title: "Quarter"
+                        title: "Partia",
+                        titleFontFamily: "helvetica",
+                        labelFontFamily: "helvetica",
+
                     },
                     axisY: {
-                        title: "Sales",
-                        prefix: "$",
+                        title: "Głosy",
+                        titleFontFamily: "helvetica",
+                        labelFontFamily: "helvetica",
                         includeZero: false
                     },
                     toolTip: {
@@ -77,41 +98,28 @@
                         verticalAlign: "top",
                         itemclick: toggleDataSeries
                     },
-                    data: [{
-                        type: "column",
-                        name: "2016",
-                        showInLegend: true,
-                        yValueFormatString: "$#,##0",
-                        dataPoints: dps1[0]
-                    },
+                    culture:  "pl",
+                    data: [
+
+                        /*[# th:each="item, iter : ${statistics.chart.data}"  ]*/
                         {
                             type: "column",
-                            name: "2017",
+                            name: [[${item.label}]],
                             showInLegend: true,
-                            yValueFormatString: "$#,##0",
-                            dataPoints: dps1[1]
-                        }]
+                            yValueFormatString: "#,##0",
+                            dataPoints: pop[parseInt([[${iter.index}]])]
+                        }
+                        /*[# th:if="${iter.index} != ${iter.size}-1"  ]*/
+                        ,
+                        /*[/]*/
+                        /*[/]*/
+                    ]
                 });
 
-                // var yValue;
-                // var label;
-
-
-
-
-
-
-
                 function toggleDataSeries(e) {
-                    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                        e.dataSeries.visible = false;
-                    } else {
-                        e.dataSeries.visible = true;
-                    }
+                    e.dataSeries.visible = !(typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible);
                     e.chart.render();
                 }
-
-
                 piechart.render();
                 chart.render();
             }
