@@ -3,7 +3,7 @@ INSERT INTO role VALUES (1,'ROLE_ADMIN'),(2,'ROLE_USER'), (3, 'ROLE_MARSZALEK_SE
 INSERT INTO "option" VALUES  (1, 'Tak'), (2, 'Nie'), (3, 'Za'), (4, 'Przeciw'), (5, 'Wstrzymał się');
 
 INSERT INTO "function" VALUES    (1, 'Prezydent'), (2,'Premier'), (3,'Wicepremier'), (4, 'Minister'), (5,'Wiceminister'), (6,'Marszałek Sejmu'), (7,'Wicemarszałek Sejmu'),(8, 'Marszałek Senatu'), (9, 'Wicemarszałek Senatu');
-INSERT INTO "documenttype" VALUES    (1,'Ustawa'), (2,'Rozporządzenie'), (3, 'Zarządzenie'), (4,'Uchwała'), (5,'Dyrektywa'), (6,'Poprawka do ustawy'), (7,'Poprawka do rozporządzenie'), (8,'poprawka do zarządzenia'), (9, 'Poprawka do uchwały'), (10,'Poprawka do Dyrektywa');
+INSERT INTO "documenttype" VALUES    (1,'Ustawa'), (2,'Rozporządzenie'), (3, 'Zarządzenie'), (4,'Uchwała'), (5,'Dyrektywa'), (6,'Poprawka do ustawy'), (7, 'Poprawka do uchwały');
 INSERT INTO "documentstatus" VALUES   (1,'Głosowanie w Sejmie'), (2,'Głosowanie w Senacie'), (3,'Przyjęta'), (4,'Odrzucona'),  (5,'Pierwsze czytanie'), (6,'Drugie czytanie'), (7,'Trzecie czytanie'), (8,'Do zatwierdzenia przez Prezydenta'), (9, 'Do ponownego rozpatrzenia w Sejmie');
 
 
