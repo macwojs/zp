@@ -44,6 +44,4 @@ public class OptionSetEntity implements Serializable {
     public void setSetIDcolumn(SetEntity setID_column) {
         this.setIDcolumn = setID_column;
     }
-
-
 }

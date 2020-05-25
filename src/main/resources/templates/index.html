@@ -3,66 +3,13 @@
 <html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::.tresc}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
-    <div th:remove="tag" class="extraHead">
-        <!-- !!! EXAMPLE: https://canvasjs.com/spring-mvc-charts/ !!! -->
-        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-        <script type="text/javascript">
-
-            window.onload = function () {
-                var chart = new CanvasJS.Chart("chartContainer", {
-                    title:{
-                        text: "My First Chart in CanvasJS"
-                    },
-                    data: [
-                        {
-                            // Change type to "doughnut", "line", "splineArea", etc.
-                            type: "column",
-                            dataPoints: [
-                                { label: "apple",  y: 10  },
-                                { label: "orange", y: 15  },
-                                { label: "banana", y: 25  },
-                                { label: "mango",  y: 30  },
-                                { label: "grape",  y: 28  }
-                            ]
-                        }
-                    ]
-                });
-
-                var piechart = new CanvasJS.Chart("piechartContainer", {
-                    animationEnabled: true,
-                    title: {
-                        text: "Desktop Search Engine Market Share - 2016"
-                    },
-                    data: [{
-                        type: "pie",
-                        startAngle: 240,
-                        yValueFormatString: "##0.00\"%\"",
-                        indexLabel: "{label} {y}",
-                        dataPoints: [
-                            {y: 79.45, label: "Google"},
-                            {y: 7.31, label: "Bing"},
-                            {y: 7.06, label: "Baidu"},
-                            {y: 4.91, label: "Yahoo"},
-                            {y: 1.26, label: "Others"}
-                        ]
-                    }]
-                });
-                chart.render();
-                piechart.render();
-            }
-        </script>
-        <link id="themecss" rel="stylesheet" type="text/css" href="//www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css" />
-        <script type="text/javascript" src="//www.shieldui.com/shared/components/latest/js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="//www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
-    </div>
+    <div th:remove="tag" class="extraHead"></div>
 </head>
 
 
 <body>
     <div class="tresc" style="">
         <p style="font-size: 43px;text-align: center;"><br>Welcome to the Zarzadzanie Panstwem!<br><br></p>
-        <div id="chartContainer" style="height: 300px; width: 50%; margin: auto;"></div>
-        <div id="piechartContainer" style="height: 300px; width: 100%;"></div>
     </div>
 </body>
 

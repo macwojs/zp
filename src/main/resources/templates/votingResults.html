@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )" lang="pl">
+<head>
+    <title>zp</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+        <script type="text/javascript" th:inline="javascript">
+        </script>
+        <!-- !!! EXAMPLE: https://canvasjs.com/spring-mvc-charts/ !!! -->
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <script type="text/javascript" th:inline="javascript">
+            var dps = [];
+            var pop = [  /*[# th:each="item, iter : ${statistics.chart.data}"  ]*/ [] /*[# th:if="${iter.index} != ${iter.size}-1"  ]*/, /*[/]*/ /*[/]*/ ];
+            window.onload = function () {
+                CanvasJS.addCultureInfo("pl", {
+                        decimalSeparator: ",",
+                        digitGroupSeparator: " ",
+                        menuText: "Menu",
+                        savePNGText: "Zapisz jako PNG",
+                        saveJPGText: "Zapisz jako JPG",
+                        printText: "Drukuj wykres"
+                    });
+
+                CanvasJS.addColorSet("greyColorSet",
+                    [//colorSet Array
+                        "#b50717",
+                        "#B8B2B6",
+                        "#463F43",
+                        "#1d1d1d",
+                        "#ececec",
+                        "#cf291d",
+                        "#131313"
+                    ]);
+
+                /*[# th:each="item : ${statistics.chart.data}"]*/
+                x = Math.round(( parseFloat([[${item.value}]])/parseFloat([[${statistics.votesCount}]])*100 + Number.EPSILON) *100)/100;
+                yValue = parseFloat([[${item.value}]]);
+                label = [[${item.label}]] + " " + x + "%";
+                dps.push({
+                    label : label,
+                    y : yValue,
+                });
+                /*[/]*/
+
+                var piechart = new CanvasJS.Chart("piechartContainer", {
+                    theme: "light1",
+                    animationEnabled: true,
+                    culture:  "pl",
+                    colorSet: "greyColorSet",
+                    title: {
+                        text: [[${statistics.chart.title}]],
+                        fontFamily: "helvetica"
+                    },
+                    data: [{
+                        type: "pie",
+                        startAngle: 240,
+                        yValueFormatString:"#\" głosy\"",
+                        dataPoints: dps
+                    }],
+
+                });
+
+                /*[# th:each="item : ${multichart}"  ]*/
+                /*[# th:each="d, iter : ${item.data}"]*/
+                yValue = parseFloat([[${d.value}]]);
+                label = [[${item.title}]];
+                pop[ parseInt([[${iter.index}]]) ].push({
+                    label : label,
+                    y : yValue,
+                });
+                /*[/]*/
+                /*[/]*/
+
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    exportEnabled: true,
+                    animationEnabled: true,
+                    colorSet: "greyColorSet",
+                    title: {
+                        text: "Rozkład głosów w partii",
+                        fontFamily: "helvetica"
+                    },
+                    axisX: {
+                        title: "Partia",
+                        titleFontFamily: "helvetica",
+                        labelFontFamily: "helvetica",
+                    },
+                    axisY: {
+                        title: "Głosy",
+                        titleFontFamily: "helvetica",
+                        labelFontFamily: "helvetica",
+                        includeZero: false
+                    },
+                    toolTip: {
+                        shared: true
+                    },
+                    legend: {
+                        cursor: "pointer",
+                        verticalAlign: "top",
+                        itemclick: toggleDataSeries
+                    },
+                    culture:  "pl",
+                    data: [
+
+                        /*[# th:each="item, iter : ${statistics.chart.data}"  ]*/
+                        {
+                            type: "column",
+                            name: [[${item.label}]],
+                            showInLegend: true,
+                            yValueFormatString: "#,##0",
+                            dataPoints: pop[parseInt([[${iter.index}]])]
+                        }
+                        /*[# th:if="${iter.index} != ${iter.size}-1"  ]*/
+                        ,
+                        /*[/]*/
+                        /*[/]*/
+                    ]
+                });
+
+                function toggleDataSeries(e) {
+                    e.dataSeries.visible = !(typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible);
+                    e.chart.render();
+                }
+                piechart.render();
+                chart.render();
+            }
+        </script>
+    </div>
+</head>
+<body>
+<div class="event">
+    <div class="contact-clean" style="padding-bottom: 40px;" th:object="${voting}">
+        <form style="max-width: 600px; margin-bottom: 40px;">
+            <h2 class="text-center">Wyniki głosowania</h2>
+            <table>
+                <tr th:if="*{votingDate}">
+                    <td><a>Data głosowania: </a></td>
+                    <td><a style="text-align:right" th:text="*{votingDate}" ></a></td>
+                </tr>
+                <tr th:if="*{votingDescription}">
+                    <td><a>Opis: </a></td>
+                    <td><a th:text="*{votingDescription}" ></a></td>
+                </tr>
+                <tr th:if="*{votingType}">
+                    <td><a>Typ: </a></td>
+                    <td><a th:text="*{votingType}" ></a></td>
+                </tr>
+                <tr th:if="*{documentID}">
+                    <td><a>Dokument: </a></td>
+                    <td><a th:text="*{documentID.docName}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Upoważnionych do głosowania: </a></td>
+                    <td><a th:text="${statistics.entitledToVote}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Oddanych głosów: </a></td>
+                    <td><a th:text="${statistics.votesCount}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Frekwencja: </a></td>
+                    <td><a> <span th:text="${#numbers.formatDecimal(statistics.frequency, 0, 'COMMA', 2, 'POINT')}"> </span> %</a></td>
+                </tr>
+                <tr>
+                    <td><a>Połowa głosów przy danej frekwencji: </a></td>
+                    <td><a th:text="${statistics.freq50percent}"></a></td>
+                </tr>
+                <tr>
+                    <td><a>Wynik głosowania: </a></td>
+                    <td th:switch="${statistics.result}">
+                        <a th:case="'Przyjęto'" th:text="${statistics.result}" style="color: #00b300 "></a>
+                        <a th:case="'Odrzucono'" th:text="${statistics.result}" style="color: red"></a>
+                        <div th:case="*">
+                            <a>Nierozstrzygnięto</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div id="piechartContainer" style="height: 300px; width: 100%; margin-bottom: 20px; margin-top: 10px;"></div>
+            <div id="chartContainer" style="height: 300px; width: 100%; margin-bottom: 20px;"></div>
+            <a th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">Sprawdź jak głosowali poszczególni parlamentarzyści</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

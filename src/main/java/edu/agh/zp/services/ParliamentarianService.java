@@ -41,6 +41,7 @@ public class ParliamentarianService {
 
     public Optional<ParliamentarianEntity> findByParliamentarianIdNumber(String idNumber) { return pR.findByIdCardNumber(idNumber);}
 
+    /* LISTS */
 
     public ArrayList<ParliamentarianEntity> findAll(){
         return (ArrayList<ParliamentarianEntity>)pR.findAll();
@@ -58,5 +59,24 @@ public class ParliamentarianService {
         return (ArrayList<ParliamentarianEntity>)pR.findAllByChamberOfDeputiesAndPoliticalGroup(chamberOfDeputies, politicalGroup);
     }
 
+    /* COUNTS  */
+
+    public long countMemberOfSejm(){
+        return pR.countAllByChamberOfDeputies("Sejm");
+    }
+
+    public long countMemberOfSenat(){
+        return pR.countAllByChamberOfDeputies("Senat");
+    }
+
+    public long countMemberOfPoliticalGroupInChamber(String chamberOfDeputies, String politicalGroup){
+        return pR.countAllByChamberOfDeputiesAndPoliticalGroup(chamberOfDeputies, politicalGroup);
+    }
+
+    /* OTHERS */
+
+    public ArrayList<String> findPoliticalGroups(){
+        return (ArrayList<String>)pR.findDistinctPoliticalGroups();
+    }
 
 }

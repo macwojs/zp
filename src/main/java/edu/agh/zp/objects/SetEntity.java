@@ -12,31 +12,30 @@ public class SetEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Set_setID_seq")
     @SequenceGenerator(name = "Set_setID_seq", sequenceName = "Set_setID_seq", allocationSize = 1, initialValue = 3)
     @Column(name="setID")
-    private long setID_column;
+    private long setID;
 
 
     @NotNull
     @Column(name="setName")
-    private String setName_column;
+    private String setName;
 
 
-    public SetEntity(@NotNull String setName_column) {
-        this.setName_column = setName_column;
+    public SetEntity(@NotNull String setName) {
+        this.setName = setName;
     }
 
     public SetEntity() {
-        this.setName_column = setName_column;
     }
 
-    public long getSetID_column() {
-        return setID_column;
+    public long getSetID() {
+        return setID;
     }
 
-    public String getSetName_column() {
-        return setName_column;
+    public String getSetName() {
+        return setName;
     }
 
-    public void setSetName_column(String setName_column) {
-        this.setName_column = setName_column;
+    public void setSetName(String setName) {
+        this.setName = setName;
     }
 }

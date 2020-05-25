@@ -1,8 +1,11 @@
 package edu.agh.zp.controller;
 
-import com.github.javafaker.DateAndTime;
-import edu.agh.zp.objects.VotingEntity;
+import edu.agh.zp.objects.*;
+import edu.agh.zp.repositories.OptionRepository;
+import edu.agh.zp.repositories.OptionSetRepository;
 import edu.agh.zp.repositories.VotingRepository;
+import edu.agh.zp.services.ParliamentarianService;
+import edu.agh.zp.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -16,9 +19,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 class Event{
 	public long id;
@@ -36,11 +37,27 @@ class Event{
 	}
 }
 
+
 @Controller
 @RequestMapping (value={"/kalendarz"})
 public class KalendarzController {
+
+
 	@Autowired
 	private VotingRepository vr;
+
+	@Autowired
+	private VoteService voteS;
+
+	@Autowired
+	private ParliamentarianService parlS;
+
+	@Autowired
+	private OptionSetRepository osR;
+
+	@Autowired
+	private OptionRepository oR;
+
 
 	@GetMapping (value = {""})
 	public ModelAndView index() {
@@ -108,5 +125,52 @@ public class KalendarzController {
 		modelAndView.addObject("ended", ended);
 		return modelAndView;
 	}
+
+	@GetMapping("/wydarzenie/{num}/wyniki")
+	public ModelAndView results(@PathVariable Long num) {
+		VotingEntity voting = vr.findByVotingID(num);
+		if(voting==null) {
+			return new ModelAndView(String.valueOf(HttpStatus.NOT_FOUND));
+		}
+		Statistics stats = new Statistics();
+		Chart pieChart = new Chart( "Rozkład głosów");
+		List<Chart> multiChart = new ArrayList<>();
+
+		List<String> politicalGroups = parlS.findPoliticalGroups();
+		for(String group : politicalGroups){
+			multiChart.add(new Chart(group));
+		}
+		List<OptionSetEntity> tempOptions = osR.findAllBySetIDcolumn( voting.getSetID_column() );
+		for( OptionSetEntity i : tempOptions ){
+			Optional<OptionEntity> temp = oR.findByOptionID( i.getOptionID().getOptionID() );
+			if(temp.isPresent()){
+				OptionEntity option = temp.get(); // option
+				for(int j = 0; j < politicalGroups.size(); ++j){ // iterate through political groups to get information about votes in each of them
+					Long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
+					multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
+				}
+				Long voteCount = voteS.countByVotingAndOption(voting, option);
+				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
+			}
+		}
+
+		switch(voting.getVotingType()){
+			case SEJM:
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), pieChart, VotingEntity.TypeOfVoting.SEJM);
+				break;
+			case SENAT:
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSenat(), pieChart, VotingEntity.TypeOfVoting.SENAT);
+				break;
+		}
+
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "votingResults" );
+		modelAndView.addObject("voting", voting);
+		modelAndView.addObject("statistics",  stats);
+		modelAndView.addObject("multichart",  multiChart);
+		return modelAndView;
+	}
 }
+
+
 
