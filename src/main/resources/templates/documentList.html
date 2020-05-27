@@ -35,19 +35,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td scope="row">Ustawa</td>
-            <td>Ustawa o tym i o tamtyk w ogole taka o w ciul długim tytule i cos tam jeszce w nim jest i z tego co widać może być na prawdę długi tytuł</td>
-            <td>Do zatwierdzenia przez Senat</td>
+        <tr th:each="document : ${documents}">
+            <td th:text="${document.docTypeID.docTypeName}" scope="row" >Ustawa</td>
+            <td th:text="${document.docName}" >Ustawa o tym i o tamtyk w ogole taka o długim tytule i cos tam jeszce w nim jest i z tego co widać może być na prawdę długi tytuł</td>
+            <td th:text="${document.docStatusID.docStatusName}" >Do zatwierdzenia przez Senat</td>
             <td>
 <!--            <a th:href="@{/{doc}(doc=${voting.getDocumentID().getPdfFilePath()})}" target="_blank">-->
-                <a href="#" target="_blank">
+                <a th:href="@{/{doc}(doc=${document.getPdfFilePath()})}" target="_blank">
                     <img src="/img/doc_icon.svg" style="height: 30px;">
                 </a>
             </td>
             <td>
-                <a href="#" target="_blank">
-<!--                <a th:href="@{/obywatel/polityk/{id}(id=${vote.politicID})}">-->
+<!--                <a href="#" target="_blank">-->
+                <a th:href="@{/ustawy/{id}(id=${document.docID})}">
                     <img src="/img/info_icon.svg" style="height: 30px;">
                 </a>
             </td>
