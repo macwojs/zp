@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>votingForm</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
+    </div>
+</head>
+
+<body>
+<section id="tresc">
+    <div class="register-photo">
+        <div class="container text-center form-container" style="max-width: 900px;background-color: #ffffff;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 style="margin: 24px;font-weight: 600;">Dane obywatela</h1>
+                </div>
+            </div>
+            <div class="row" style="margin: 0px 24px;">
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">Imię:</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">Jan</h4>
+                </div>
+            </div>
+            <div class="row" style="margin: 0px 24px;">
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">Nazwisko:</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">Kowalski</h4>
+                </div>
+            </div>
+            <div class="row" style="margin: 0px 24px;">
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">Pesel:</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">98672408872</h4>
+                </div>
+            </div>
+            <div class="row" style="margin: 0px 24px;margin-bottom: 8px;">
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">Numer dowodu osobistego:</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 style="margin: 16px;">AYD982839</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
