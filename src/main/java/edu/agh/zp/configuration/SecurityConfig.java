@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
                 .antMatchers("/parlament/**").authenticated()
                 .antMatchers("/wyboryReferenda/**").authenticated()
+                .antMatchers( "/obywatel/**" ).authenticated()
                 .and()
                 .exceptionHandling().accessDeniedPage("/error/accessdenied")
                 .and()
