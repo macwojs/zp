@@ -48,6 +48,7 @@ public class StatisticsController {
         Statistics stats = new Statistics();
         Chart pieChart = new Chart( "Rozkład głosów");
         List<Chart> multiChart = new ArrayList<>();
+
         List<String> politicalGroups = parlS.findPoliticalGroups();
         if(voting.getVotingType() == VotingEntity.TypeOfVoting.SEJM ||  voting.getVotingType() == VotingEntity.TypeOfVoting.SENAT  ) {
             for (String group : politicalGroups) {
