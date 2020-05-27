@@ -14,9 +14,12 @@
 
 <body>
 <section id="tresc">
-    <h2 class="text-center" style="font-weight: 600;margin-top: 8px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;">Dziennik Ustaw</h2><div class="form-group pull-right">
-    <input type="text" class="search form-control" placeholder="Czego szukasz?">
-</div>
+    <div class="text-center d-xl-flex justify-content-xl-center">
+    <div style="width: 90%; max-width: 1200px">
+    <h2 class="text-center" style="font-weight: 600;margin-top: 24px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;">Dziennik Ustaw</h2>
+    <div class="form-group pull-right">
+        <input type="text" class="search form-control" placeholder="Czego szukasz?">
+    </div>
     <span class="counter pull-right"></span>
     <table class="table table-hover table-bordered results text-center">
         <thead>
@@ -36,8 +39,18 @@
             <td scope="row">Ustawa</td>
             <td>Ustawa o tym i o tamtyk w ogole taka o w ciul długim tytule i cos tam jeszce w nim jest i z tego co widać może być na prawdę długi tytuł</td>
             <td>Do zatwierdzenia przez Senat</td>
-            <td><a href="#"><i class="typcn typcn-document-text" style="color: rgb(212,33,61);"></i></a></td>
-            <td><a href="#"><i class="icon-info" style="color: rgb(212,33,61);"></i></a></td>
+            <td>
+<!--            <a th:href="@{/{doc}(doc=${voting.getDocumentID().getPdfFilePath()})}" target="_blank">-->
+                <a href="#" target="_blank">
+                    <img src="/img/doc_icon.svg" style="height: 30px;">
+                </a>
+            </td>
+            <td>
+                <a href="#" target="_blank">
+<!--                <a th:href="@{/obywatel/polityk/{id}(id=${vote.politicID})}">-->
+                    <img src="/img/info_icon.svg" style="height: 30px;">
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -53,6 +66,8 @@
                 <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
             </ul>
         </nav>
+    </div>
+    </div>
     </div>
 </section>
 
