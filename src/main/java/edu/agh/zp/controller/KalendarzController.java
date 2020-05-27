@@ -126,50 +126,6 @@ public class KalendarzController {
 		return modelAndView;
 	}
 
-	@GetMapping("/wydarzenie/{num}/wyniki")
-	public ModelAndView results(@PathVariable Long num) {
-		VotingEntity voting = vr.findByVotingID(num);
-		if(voting==null) {
-			return new ModelAndView(String.valueOf(HttpStatus.NOT_FOUND));
-		}
-		Statistics stats = new Statistics();
-		Chart pieChart = new Chart( "Rozkład głosów");
-		List<Chart> multiChart = new ArrayList<>();
-
-		List<String> politicalGroups = parlS.findPoliticalGroups();
-		for(String group : politicalGroups){
-			multiChart.add(new Chart(group));
-		}
-		List<OptionSetEntity> tempOptions = osR.findAllBySetIDcolumn( voting.getSetID_column() );
-		for( OptionSetEntity i : tempOptions ){
-			Optional<OptionEntity> temp = oR.findByOptionID( i.getOptionID().getOptionID() );
-			if(temp.isPresent()){
-				OptionEntity option = temp.get(); // option
-				for(int j = 0; j < politicalGroups.size(); ++j){ // iterate through political groups to get information about votes in each of them
-					Long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
-					multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
-				}
-				Long voteCount = voteS.countByVotingAndOption(voting, option);
-				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
-			}
-		}
-
-		switch(voting.getVotingType()){
-			case SEJM:
-				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), pieChart, VotingEntity.TypeOfVoting.SEJM);
-				break;
-			case SENAT:
-				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSenat(), pieChart, VotingEntity.TypeOfVoting.SENAT);
-				break;
-		}
-
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "votingResults" );
-		modelAndView.addObject("voting", voting);
-		modelAndView.addObject("statistics",  stats);
-		modelAndView.addObject("multichart",  multiChart);
-		return modelAndView;
-	}
 }
 
 
