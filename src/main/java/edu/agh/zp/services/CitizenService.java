@@ -35,4 +35,8 @@ public class CitizenService {
     public Optional<CitizenEntity> findByPesel(String pesel) { return cR.findByPesel(pesel);}
 
     public Optional<CitizenEntity> findByIdNumer(String idNumber) { return cR.findByIdNumber(idNumber);}
+
+    public long countEntitledToVote(){
+        return cR.count();
+    };
 }

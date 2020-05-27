@@ -16,15 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 class Event {
 	public long id;
@@ -53,9 +49,6 @@ public class KalendarzController {
 
 	@Autowired
 	private VoteService voteS;
-
-	@Autowired
-	private VoteRepository voteRepository;
 
 	@Autowired
 	private ParliamentarianService parlS;
@@ -94,11 +87,15 @@ public class KalendarzController {
 		return parseVotingsToEvents( );
 	}
 
-	public List< Event > parseVotingsToEvents() {
-		List< VotingEntity > votings = vr.findAll( );
-		List< Event > events = new ArrayList<>( );
-		for ( VotingEntity i : votings ) {
-			events.add( new Event( i.getVotingID( ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getOpenVoting( ) ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getCloseVoting( ) ), i.getDocumentID( ) != null ? i.getDocumentID( ).getDocName( ) : i.getVotingDescription( ) != null ? i.getVotingDescription( ) : i.getVotingType( ).toString( ), "/kalendarz/wydarzenie/" + i.getVotingID( ) ) );
+	public List<Event> parseVotingsToEvents(){
+		List<VotingEntity> votings = vr.findAll();
+		List<Event> events = new ArrayList<>();
+		for( VotingEntity i : votings) {
+			events.add(new Event(i.getVotingID(),
+					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getOpenVoting()),
+					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getCloseVoting()),
+					i.getDocumentID() != null ? i.getDocumentID().getDocName() :
+							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "/kalendarz/wydarzenie/"+i.getVotingID()));
 		}
 		return events;
 	}
@@ -136,96 +133,6 @@ public class KalendarzController {
 		return modelAndView;
 	}
 
-	@GetMapping ( "/wydarzenie/{num}/wyniki" )
-	public ModelAndView results( @PathVariable Long num ) {
-		VotingEntity voting = vr.findByVotingID( num );
-		if ( voting == null ) {
-			return new ModelAndView( String.valueOf( HttpStatus.NOT_FOUND ) );
-		}
-		Statistics stats = new Statistics( );
-		Chart pieChart = new Chart( "Rozkład głosów" );
-		List< Chart > multiChart = new ArrayList<>( );
-
-		List< String > politicalGroups = parlS.findPoliticalGroups( );
-		for ( String group : politicalGroups ) {
-			multiChart.add( new Chart( group ) );
-		}
-		List< OptionSetEntity > tempOptions = osR.findAllBySetIDcolumn( voting.getSetID_column( ) );
-		for ( OptionSetEntity i : tempOptions ) {
-			Optional< OptionEntity > temp = oR.findByOptionID( i.getOptionID( ).getOptionID( ) );
-			if ( temp.isPresent( ) ) {
-				OptionEntity option = temp.get( ); // option
-				for ( int j = 0; j < politicalGroups.size( ); ++j ) { // iterate through political groups to get information about votes in each of them
-					long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup( voting, option, politicalGroups.get( j ) );
-					multiChart.get( j ).data.add( new StatisticRecord( option.getOptionDescription( ), voteCount ) );
-				}
-				long voteCount = voteS.countByVotingAndOption( voting, option );
-				pieChart.data.add( new StatisticRecord( option.getOptionDescription( ), voteCount ) );
-			}
-		}
-
-		switch ( voting.getVotingType( ) ) {
-			case SEJM:
-				stats = new Statistics( voteS.countAllByVoting( voting ), parlS.countMemberOfSejm( ), pieChart, VotingEntity.TypeOfVoting.SEJM );
-				break;
-			case SENAT:
-				stats = new Statistics( voteS.countAllByVoting( voting ), parlS.countMemberOfSenat( ), pieChart, VotingEntity.TypeOfVoting.SENAT );
-				break;
-		}
-
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "votingResults" );
-		modelAndView.addObject( "voting", voting );
-		modelAndView.addObject( "statistics", stats );
-		modelAndView.addObject( "multichart", multiChart );
-		return modelAndView;
-	}
-
-	@GetMapping ( value = { "/wydarzenie/{id}/votesList" } )
-	public ModelAndView parlamentVotesList( @PathVariable long id, HttpServletRequest request ) {
-//		Pagination control
-		int page = 0;
-		int size = 10;
-		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
-			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
-		}
-		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
-			size = Integer.parseInt( request.getParameter( "size" ) );
-		}
-
-
-		List< VoteEntity > votes = voteRepository.findAllByVotingId( id );
-		List< Votes > votesTh = new ArrayList<>( );
-		for ( VoteEntity i : votes ) {
-			CitizenEntity citizen = i.getCitizenID( );
-			Optional< PoliticianEntity > politicianEntity = politicianRepository.findByCitizenID( i.getCitizenID( ) );
-			long politicID = 0;
-			String party = "-";
-			if ( politicianEntity.isPresent( ) ) {
-				politicID = politicianEntity.get( ).getPoliticianID( );
-				try {
-					ParliamentarianEntity parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get( ) );
-					party = parliamentarianEntity.getPoliticalGroup( );
-				} catch ( Exception e ) {
-					e.printStackTrace( );
-				}
-			}
-
-			votesTh.add( new Votes( citizen.getSurname( ), citizen.getName( ), party, i.getOptionID( ).getOptionDescription( ), politicID ) );
-		}
-
-//		Convert list to page
-		PageRequest pageable = PageRequest.of( page, size );
-		long start = pageable.getOffset( );
-		long end = ( start + pageable.getPageSize( ) ) > votesTh.size( ) ? votesTh.size( ) : ( start + pageable.getPageSize( ) );
-		Page< Votes > pageTh = new PageImpl<>( votesTh.subList( (int) start, (int) end ), pageable, votesTh.size( ) );
-
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.addObject( "votes", pageTh );
-		modelAndView.addObject( "vote_id", id );
-		modelAndView.setViewName( "votesList" );
-		return modelAndView;
-	}
 }
 
 

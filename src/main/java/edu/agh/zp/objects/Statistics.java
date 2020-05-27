@@ -34,12 +34,23 @@ public class Statistics {
                     }
                 }
                 break;
-//            case REFERENDUM:
-//                if( val.equals("Tak")){
-//                    result = "Przyjęto";
-//                }else {
-//                    result = "Odrzucono";
-//                }
+            case REFERENDUM:
+                result = "Odrzucono";
+                for( StatisticRecord record : chart_.data){
+                    if (record.value * 2 > votesCount) {
+                        result = "Przyjęto";
+                    }
+                    record.value = record.value/votesCount *100;
+                }
+                break;
+            case PREZYDENT:
+                for( StatisticRecord record : chart_.data){
+                    if(record.value * 2 > votesCount ){
+                        result= record.label;
+                    }
+                    record.value = record.value/votesCount *100;
+                }
+                break;
         }
 
     }
