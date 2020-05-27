@@ -15,4 +15,11 @@ public class UstawyController {
 		modelAndView.setViewName( "ustawy" );
 		return modelAndView;
 	}
+
+	@GetMapping (value = {"dziennikUstaw"})
+	public ModelAndView documentList() {
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "documentList" );
+		return modelAndView;
+	}
 }
