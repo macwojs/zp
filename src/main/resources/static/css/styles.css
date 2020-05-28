@@ -9,3 +9,12 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
+.page-link {
+    color: rgb(212,33,61);
+}
+
+a:hover {
+    color: rgb(212,33,61);
+}
+
