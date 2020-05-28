@@ -41,8 +41,8 @@
             <td th:text="${document.docStatusID.docStatusName}" >Do zatwierdzenia przez Senat</td>
             <td>
 <!--            <a th:href="@{/{doc}(doc=${voting.getDocumentID().getPdfFilePath()})}" target="_blank">-->
-                <a th:href="@{/{doc}(doc=${document.getPdfFilePath()})}" target="_blank">
-                    <img src="/img/doc_icon.svg" style="height: 30px;">
+                <a class="" th:href="@{/{doc}(doc=${document.getPdfFilePath()})}" target="_blank" th:classappend="${document.getPdfFilePath()} ? '' : 'btn-link disabled'">
+                    <img th:src="${document.getPdfFilePath()} ? '/img/doc_icon.svg' : '/img/doc_icon_disable.svg' " style="height: 30px;">
                 </a>
             </td>
             <td>
