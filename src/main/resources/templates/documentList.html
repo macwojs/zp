@@ -74,7 +74,7 @@
                     <a class="page-link" th:href="@{/ustawy/dziennikUstaw?page={id}(id=${i})}" th:text="${i}"
                        th:title="${'Page '+ i}"></a>
                 </li>
-                <li class="page-item disabled" th:if="${documents.number + 4 < documents.totalPages}">
+                <li class="page-item disabled" th:if="${documents.number + 4 < documents.totalPages and documents.totalPages < 6}">
                     <a class="page-link" href="#" aria-label="More">
                         <span aria-hidden="true">...</span>
                     </a>
