@@ -179,7 +179,8 @@
             </table>
             <div id="piechartContainer" style="height: 300px; width: 100%; margin-bottom: 20px; margin-top: 10px;"></div>
             <div id="chartContainer" style="height: 300px; width: 100%; margin-bottom: 20px;"></div>
-            <a th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">Sprawdź jak głosowali poszczególni parlamentarzyści</a>
+            <a th:href="@{/kalendarz/wydarzenie/{vote_id}/votesList(vote_id=${voting.votingID})}">Sprawdź jak głosowali poszczególni parlamentarzyści</a>
+<!--            <a th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">Sprawdź jak głosowali poszczególni parlamentarzyści</a>-->
         </form>
     </div>
 </div>

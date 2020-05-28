@@ -220,40 +220,6 @@ public class ParlamentController {
 			redirect.setUrl( "/parlament/senat" );
 		return new ModelAndView( redirect );
 	}
-
-	@GetMapping ( value = { "/vote/votesList/{id}" } )
-	public ModelAndView parlamentVotesList( @PathVariable long id ) {
-		List< VoteEntity > votes = voteRepository.findAllByVotingId( id );
-
-		List< Votes > votesTh = new ArrayList<>( );
-		for ( VoteEntity i : votes ) {
-			CitizenEntity citizen = i.getCitizenID( );
-			Optional< PoliticianEntity > politicianEntity = politicianRepository.findByCitizenID( i.getCitizenID( ) );
-			long politicID = 0;
-			String party = "-";
-			if ( politicianEntity.isPresent( ) ) {
-				politicID = politicianEntity.get( ).getPoliticianID( );
-				try {
-					ParliamentarianEntity parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get() );
-					party = parliamentarianEntity.getPoliticalGroup( );
-				} catch ( Exception e ) {
-					e.printStackTrace( );
-				}
-			}
-
-			votesTh.add( new Votes(
-					citizen.getSurname( ),
-					citizen.getName( ),
-					party,
-					i.getOptionID( ).getOptionDescription( ),
-					politicID ));
-		}
-
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.addObject( "votes", votesTh );
-		modelAndView.setViewName( "votesList" );
-		return modelAndView;
-	}
 }
 
 

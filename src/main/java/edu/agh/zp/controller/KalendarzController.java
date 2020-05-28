@@ -1,9 +1,7 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.*;
-import edu.agh.zp.repositories.OptionRepository;
-import edu.agh.zp.repositories.OptionSetRepository;
-import edu.agh.zp.repositories.VotingRepository;
+import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.ParliamentarianService;
 import edu.agh.zp.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,16 @@ public class KalendarzController {
 	private VoteService voteS;
 
 	@Autowired
+	private VoteRepository voteRepository;
+
+	@Autowired
 	private ParliamentarianService parlS;
+
+	@Autowired
+	private ParliamentarianRepository parliamentarianRepository;
+
+	@Autowired
+	private PoliticianRepository politicianRepository;
 
 	@Autowired
 	private OptionSetRepository osR;
@@ -168,6 +175,40 @@ public class KalendarzController {
 		modelAndView.addObject("voting", voting);
 		modelAndView.addObject("statistics",  stats);
 		modelAndView.addObject("multichart",  multiChart);
+		return modelAndView;
+	}
+
+	@GetMapping ( value = { "/wydarzenie/{id}/votesList" } )
+	public ModelAndView parlamentVotesList( @PathVariable long id ) {
+		List< VoteEntity > votes = voteRepository.findAllByVotingId( id );
+
+		List< Votes > votesTh = new ArrayList<>( );
+		for ( VoteEntity i : votes ) {
+			CitizenEntity citizen = i.getCitizenID( );
+			Optional< PoliticianEntity > politicianEntity = politicianRepository.findByCitizenID( i.getCitizenID( ) );
+			long politicID = 0;
+			String party = "-";
+			if ( politicianEntity.isPresent( ) ) {
+				politicID = politicianEntity.get( ).getPoliticianID( );
+				try {
+					ParliamentarianEntity parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get() );
+					party = parliamentarianEntity.getPoliticalGroup( );
+				} catch ( Exception e ) {
+					e.printStackTrace( );
+				}
+			}
+
+			votesTh.add( new Votes(
+					citizen.getSurname( ),
+					citizen.getName( ),
+					party,
+					i.getOptionID( ).getOptionDescription( ),
+					politicID ));
+		}
+
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.addObject( "votes", votesTh );
+		modelAndView.setViewName( "votesList" );
 		return modelAndView;
 	}
 }
