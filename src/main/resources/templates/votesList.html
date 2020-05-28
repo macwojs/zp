@@ -14,37 +14,79 @@
 
 <body>
 <section id="tresc">
-    <h2 style="font-weight: 600;margin-top: 8px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;">Szczegółowe wyniki
-        głosowania</h2>
-    <div class="form-group pull-right">
-        <input type="text" class="search form-control" placeholder="Kogo szukasz?">
+    <div class="text-center d-xl-flex justify-content-xl-center">
+        <div style="width: 90%; max-width: 1200px">
+            <h2 style="font-weight: 600;margin-top: 24px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;">
+                Szczegółowe wyniki
+                głosowania</h2>
+            <div class="form-group pull-right">
+                <input type="text" class="search form-control" placeholder="Kogo szukasz?">
+            </div>
+            <span class="counter pull-right"></span>
+            <table class="table table-hover table-bordered results text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Nazwisko</th>
+                    <th scope="col">Imię</th>
+                    <th scope="col">Partia</th>
+                    <th scope="col">Głos</th>
+                    <th scope="col">Szczegóły</th>
+                </tr>
+                <tr class="warning no-result">
+                    <td colspan="4"><i class="fa fa-warning"></i> Brak wyników</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="vote : ${votes}">
+                    <td th:text="${vote.surname}" scope="row">Nowak</td>
+                    <td th:text="${vote.name}">Jan</td>
+                    <td th:text="${vote.party}">Prawo i Sprawiedliwość</td>
+                    <td th:text="${vote.voteValue}">Za</td>
+                    <td>
+                        <a th:href="@{/obywatel/polityk/{id}(id=${vote.politicID})}"><img src="/img/info_icon.svg"
+                                                                                          style="height: 20px;"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-center d-xl-flex justify-content-xl-center" style="margin: 24px;">
+                <nav th:if="${votes.totalPages gt 0}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${votes.number eq 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/kalendarz/wydarzenie/{voteid}/votesList?page={id}(id=${votes.number - 3 < 1 ? 1 : votes.number - 3}, voteid=${vote_id})}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">«</span>
+                            </a>
+                        </li>
+                        <li class="page-item disabled" th:if="${votes.number > 3}">
+                            <a class="page-link" href="#" aria-label="More">
+                                <span aria-hidden="true">...</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${i eq votes.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( votes.number - 2 < 1 ? 1 : votes.number - 2, votes.totalPages > 10 ? (votes.number + 4 > votes.totalPages ? votes.totalPages : votes.number + 4) : votes.totalPages, 1)}">
+                            <a class="page-link" th:href="@{/kalendarz/wydarzenie/{voteid}/votesList?page={id}(id=${i}, voteid=${vote_id})}" th:text="${i}"
+                               th:title="${'Page '+ i}"></a>
+                        </li>
+                        <li class="page-item disabled" th:if="${votes.number + 4 < votes.totalPages and votes.totalPages < 6}">
+                            <a class="page-link" href="#" aria-label="More">
+                                <span aria-hidden="true">...</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${votes.number + 1 eq votes.totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/kalendarz/wydarzenie/{voteid}/votesList?page={id}(id=${votes.number + 5 < votes.totalPages ? votes.number + 5 : votes.totalPages}, voteid=${vote_id})}"
+                               aria-label="Next">
+                                <span aria-hidden="true">»</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-    <span class="counter pull-right"></span>
-    <table class="table table-hover table-bordered results text-center">
-        <thead>
-        <tr>
-            <th scope="col">Nazwisko</th>
-            <th scope="col">Imię</th>
-            <th scope="col">Partia</th>
-            <th scope="col">Głos</th>
-            <th scope="col">Szczegóły</th>
-        </tr>
-        <tr class="warning no-result">
-            <td colspan="4"><i class="fa fa-warning"></i> Brak wyników</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="vote : ${votes}">
-            <td th:text="${vote.surname}" scope="row">Nowak</td>
-            <td th:text="${vote.name}">Jan</td>
-            <td th:text="${vote.party}">Prawo i Sprawiedliwość</td>
-            <td th:text="${vote.voteValue}">Za</td>
-            <td>
-                <a th:href="@{/obywatel/polityk/{id}(id=${vote.politicID})}"><img src="/img/info_icon.svg" style="height: 20px;"></a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
 </section>
 
 </body>
