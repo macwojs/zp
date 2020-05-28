@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - zamiana statusu</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+    </div>
+</head>
+
+
+<body>
+<section id="tresc" >
+    <div class="contact-clean">
+        <form method="POST" th:action="@{/ustawy/alterstatus}" enctype="multipart/form-data" th:object="${document}">
+            <h2 class="text-center">Dodawanie dokumentu</h2>
+            <div class="form-group">
+                <select th:field="*{docTypeID}" class="form-control" name="type">
+                    <option value="">Wybierz typ dokumentu</option>
+                    <option th:each="type: ${types}"
+                            th:value="${type.docTypeID}"
+                            th:text="${type.docTypeName}"></option>
+                </select>
+                <span class="text-danger" th:errors="*{docTypeID}"></span>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+
+</html>
