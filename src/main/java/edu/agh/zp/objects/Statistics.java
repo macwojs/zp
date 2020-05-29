@@ -23,7 +23,7 @@ public class Statistics {
             case SEJM:
             case SENAT:
                 if(votesCount*2 < entitledToVote){
-                    result = "Nie wystarczająca ilość głosów.";
+                    result = "Brak wystarczającej ilość głosów.";
                 }else {
                     result = "Odrzucono";
                     for( StatisticRecord i : chart.data){
@@ -35,14 +35,18 @@ public class Statistics {
                 }
                 break;
             case REFERENDUM:
-                result = "Odrzucono";
-                for( StatisticRecord record : chart_.data){
-                    if (record.value * 2 > votesCount) {
-                        result = "Przyjęto";
+                result = "Brak wystarczającej ilość głosów.";
+                if(votesCount*2 > entitledToVote){
+                    result = "Wiążące";
+                    for( StatisticRecord record : chart_.data) {
+                        if (record.value * 2 > votesCount) {
+                            result = "Rozstrzygnięte";
+                        }
                     }
                 }
                 break;
             case PREZYDENT:
+                result = "Nierozstrzygnięte";
                 for( StatisticRecord record : chart_.data){
                     if(record.value * 2 > votesCount ){
                         result= record.label;

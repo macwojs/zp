@@ -35,10 +35,7 @@
                     ]);
 
                 /*[# th:each="item : ${statistics.chart.data}"]*/
-                x= parseFloat([[${item.value}]]);
-                /*[# th:if="${voting.votingType == voting.votingType.REFERENDUM } OR ${voting.votingType == voting.votingType.PREZYDENT }" ]*/
-                x = Math.round(( x/parseFloat([[${statistics.votesCount}]])*100 + Number.EPSILON) *100)/100;
-                /*[/]*/
+                x =  Math.round(( parseFloat([[${item.value}]])/parseFloat([[${statistics.votesCount}]])*100 + Number.EPSILON) *100)/100;
                 yValue = parseFloat([[${item.value}]]);
                 label = [[${item.label}]] + " " + x.toFixed(2) + "%";
                 dps.push({
@@ -170,7 +167,7 @@
                     <td><a>Frekwencja: </a></td>
                     <td><a> <span th:text="${#numbers.formatDecimal(statistics.frequency, 0, 'COMMA', 2, 'POINT')}"> </span> %</a></td>
                 </tr>
-                <tr>
+                <tr th:if="${voting.votingType != voting.votingType.PREZYDENT }">
                     <td><a>Połowa głosów przy danej frekwencji: </a></td>
                     <td><a th:text="${statistics.freq50percent}"></a></td>
                 </tr>
@@ -180,7 +177,7 @@
                         <a th:case="'Przyjęto'" th:text="${statistics.result}" style="color: #00b300 "></a>
                         <a th:case="'Odrzucono'" th:text="${statistics.result}" style="color: red"></a>
                         <div th:case="*">
-                            <a>Nierozstrzygnięto</a>
+                            <a th:text="${statistics.result}">Nierozstrzygnięto</a>
                         </div>
                     </td>
                 </tr>
