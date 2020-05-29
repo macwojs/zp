@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -72,15 +69,17 @@ public class UstawyController {
 				break;
 			default:
 				model.setViewName("finalStatus");
+				model.addObject("th_redirect","ustawy/"+id);
 		}
 		model.addObject("statuses",statuses);
 		return model;
 	}
 
 	@PostMapping(value = {"/status/{id}"})
-	public RedirectView statusListAdd(@PathVariable long id) {
+	public RedirectView statusListAdd(@PathVariable long id, @RequestParam("type") long type ) {
+		documentRepository.UpdateStatusByID(id,type);
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl("");
+		redirect.setUrl("ustawy/"+id);
 		return redirect;
 	}
 
