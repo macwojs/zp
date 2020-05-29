@@ -35,9 +35,12 @@
                     ]);
 
                 /*[# th:each="item : ${statistics.chart.data}"]*/
-                x = Math.round(( parseFloat([[${item.value}]])/parseFloat([[${statistics.votesCount}]])*100 + Number.EPSILON) *100)/100;
+                x= parseFloat([[${item.value}]]);
+                /*[# th:if="${voting.votingType == voting.votingType.REFERENDUM } OR ${voting.votingType == voting.votingType.PREZYDENT }" ]*/
+                x = Math.round(( x/parseFloat([[${statistics.votesCount}]])*100 + Number.EPSILON) *100)/100;
+                /*[/]*/
                 yValue = parseFloat([[${item.value}]]);
-                label = [[${item.label}]] + " " + x + "%";
+                label = [[${item.label}]] + " " + x.toFixed(2) + "%";
                 dps.push({
                     label : label,
                     y : yValue,
@@ -62,6 +65,8 @@
 
                 });
 
+                /*[# th:if="${voting.votingType == voting.votingType.SEJM } OR ${voting.votingType == voting.votingType.SENAT }" ]*/
+
                 /*[# th:each="item : ${multichart}"  ]*/
                 /*[# th:each="d, iter : ${item.data}"]*/
                 yValue = parseFloat([[${d.value}]]);
@@ -72,6 +77,7 @@
                 });
                 /*[/]*/
                 /*[/]*/
+
 
                 var chart = new CanvasJS.Chart("chartContainer", {
                     exportEnabled: true,
@@ -122,8 +128,9 @@
                     e.dataSeries.visible = !(typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible);
                     e.chart.render();
                 }
-                piechart.render();
                 chart.render();
+                /*[/]*/
+                piechart.render();
             }
         </script>
     </div>
@@ -178,8 +185,13 @@
                 </tr>
             </table>
             <div id="piechartContainer" style="height: 300px; width: 100%; margin-bottom: 20px; margin-top: 10px;"></div>
-            <div id="chartContainer" style="height: 300px; width: 100%; margin-bottom: 20px;"></div>
-            <a th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">Sprawdź jak głosowali poszczególni parlamentarzyści</a>
+            <div th:if="${voting.votingType == voting.votingType.SEJM } OR ${voting.votingType == voting.votingType.SENAT }"
+                 id="chartContainer" style="height: 300px; width: 100%; margin-bottom: 20px;" >
+            </div>
+            <a  th:if="${voting.votingType == voting.votingType.SEJM } OR ${voting.votingType == voting.votingType.SENAT }"
+                th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">
+                Sprawdź jak głosowali poszczególni parlamentarzyści
+            </a>
         </form>
     </div>
 </div>

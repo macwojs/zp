@@ -48,10 +48,11 @@ public class StatisticsController {
         Statistics stats = new Statistics();
         Chart pieChart = new Chart( "Rozkład głosów");
         List<Chart> multiChart = new ArrayList<>();
-
         List<String> politicalGroups = parlS.findPoliticalGroups();
-        for(String group : politicalGroups){
-            multiChart.add(new Chart(group));
+        if(voting.getVotingType() == VotingEntity.TypeOfVoting.SEJM ||  voting.getVotingType() == VotingEntity.TypeOfVoting.SENAT  ) {
+            for (String group : politicalGroups) {
+                multiChart.add(new Chart(group));
+            }
         }
         List<OptionSetEntity> tempOptions = osR.findAllBySetIDcolumn( voting.getSetID_column() );
         for( OptionSetEntity i : tempOptions ){

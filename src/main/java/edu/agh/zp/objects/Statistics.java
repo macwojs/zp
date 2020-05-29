@@ -22,7 +22,7 @@ public class Statistics {
         switch(type_){
             case SEJM:
             case SENAT:
-                if(votesCount < (int) Math.ceil( entitledToVote / 2.0) ){
+                if(votesCount*2 < entitledToVote){
                     result = "Nie wystarczająca ilość głosów.";
                 }else {
                     result = "Odrzucono";
@@ -40,7 +40,6 @@ public class Statistics {
                     if (record.value * 2 > votesCount) {
                         result = "Przyjęto";
                     }
-                    record.value = record.value/votesCount *100;
                 }
                 break;
             case PREZYDENT:
@@ -48,7 +47,6 @@ public class Statistics {
                     if(record.value * 2 > votesCount ){
                         result= record.label;
                     }
-                    record.value = record.value/votesCount *100;
                 }
                 break;
         }
