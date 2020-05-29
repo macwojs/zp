@@ -3,6 +3,7 @@ package edu.agh.zp.controller;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
 
 
@@ -112,7 +115,9 @@ public class SejmController {
 //		List<VotingEntity> votings = votingRepository.findByDateForSejm( dateSQL );
 		List< Long > statusID = Arrays.asList( 1L, 5L, 6L, 8L, 9L );
 		List<VotingEntity> votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
+		String formattedDate = date.format(DateTimeFormatter.ofLocalizedDate( FormatStyle.LONG));
 		model.addObject( "schedule_name", "Sejmie" );
+		model.addObject( "current_date", formattedDate );
 		model.addObject( "votings", votings );
 		model.setViewName( "votingSchedule" );
 		return model;
