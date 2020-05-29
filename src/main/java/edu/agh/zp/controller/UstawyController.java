@@ -10,13 +10,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-// TODO document repository
 
 @Controller
 @RequestMapping ( value = { "/ustawy" } )
@@ -44,10 +47,43 @@ public class UstawyController {
 		}
 		DocumentStatusEntity docStatus = document.get().getDocStatusID();
 		model.addObject("currentStatus",docStatus);
-
+		model.addObject("id",id);
+		String name = docStatus.getDocStatusName();
+		List<DocumentStatusEntity> statuses = null;
 		model.setViewName("alterStatus");
+		switch (name) {
+			case "Zgłoszona":
+			case "Pierwsze czytanie":
+			case "Drugie czytanie":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Pierwsze czytanie", "Drugie czytanie", "Głosowanie w Sejmie"));
+				break;
+			case "Do ponownego rozpatrzenia w Sejmie: Prezydent":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Odrzucona"));
+				break;
+			case "Głosowanie w Sejmie":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Głosowanie w Senacie", "Odrzucona"));
+				break;
+			case "Głosowanie w Senacie":
+			case "Do ponownego rozpatrzenia w Sejmie: Senat":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Do zatwierdzenia przez Prezydenta", "Odrzucona"));
+				break;
+			case "Do zatwierdzenia przez Prezydenta":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Do ponownego rozpatrzenia w Sejmie: Senat"));
+				break;
+			default:
+				model.setViewName("finalStatus");
+		}
+		model.addObject("statuses",statuses);
 		return model;
 	}
+
+	@PostMapping(value = {"/status/{id}"})
+	public RedirectView statusListAdd(@PathVariable long id) {
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl("");
+		return redirect;
+	}
+
 
 	@GetMapping ( value = { "/dziennikUstaw" } )
 	public ModelAndView documentList( HttpServletRequest request ) {
