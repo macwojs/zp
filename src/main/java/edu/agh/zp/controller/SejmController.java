@@ -103,7 +103,7 @@ public class SejmController {
 			if ( request.getParameter( "month" ) != null && !request.getParameter( "month" ).isEmpty( ) ) {
 				if ( request.getParameter( "year" ) != null && !request.getParameter( "year" ).isEmpty( ) ) {
 					Calendar calendar = Calendar.getInstance();
-					calendar.set( Integer.parseInt(request.getParameter( "year" ) ), Integer.parseInt( request.getParameter( "month" ) ), Integer.parseInt( request.getParameter( "day" )));
+					calendar.set( Integer.parseInt(request.getParameter( "year" ) ), Integer.parseInt( request.getParameter( "month" ) )-1, Integer.parseInt( request.getParameter( "day" )));
 					date = LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()).toLocalDate();
 				}
 			}

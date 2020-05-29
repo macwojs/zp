@@ -18,3 +18,11 @@ a:hover {
     color: rgb(212,33,61);
 }
 
+.schedule-header {
+    margin: 24px;
+}
+
+.text-left.form-container.schedule-date-box {
+    width: 60%;
+}
+
