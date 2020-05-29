@@ -23,7 +23,7 @@ public class Statistics {
             case SEJM:
             case SENAT:
                 if(votesCount*2 < entitledToVote){
-                    result = "Nie wystarczająca ilość głosów.";
+                    result = "Brak wystarczającej ilość głosów.";
                 }else {
                     result = "Odrzucono";
                     for( StatisticRecord i : chart.data){
