@@ -1,9 +1,6 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.DocumentEntity;
-import edu.agh.zp.objects.SetEntity;
-import edu.agh.zp.objects.VotingEntity;
-import edu.agh.zp.objects.createVotingList;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,15 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+
 
 @Controller
 @RequestMapping ( value = { "/parlament/sejm" } )
@@ -94,5 +93,28 @@ public class SejmController {
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl( "/parlament/sejm" );
 		return new ModelAndView( redirect );
+	}
+
+	@GetMapping ( value = { "/votingSchedule" } )
+	public ModelAndView votingSchedule( HttpServletRequest request ) {
+		ModelAndView model = new ModelAndView(  );
+		LocalDate date = LocalDate.now();
+		if ( request.getParameter( "day" ) != null && !request.getParameter( "day" ).isEmpty( ) ) {
+			if ( request.getParameter( "month" ) != null && !request.getParameter( "month" ).isEmpty( ) ) {
+				if ( request.getParameter( "year" ) != null && !request.getParameter( "year" ).isEmpty( ) ) {
+					Calendar calendar = Calendar.getInstance();
+					calendar.set( Integer.parseInt(request.getParameter( "year" ) ), Integer.parseInt( request.getParameter( "month" ) ), Integer.parseInt( request.getParameter( "day" )));
+					date = LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()).toLocalDate();
+				}
+			}
+		}
+		Date dateSQL = Date.valueOf(date); // Magic happens here!
+//		List<VotingEntity> votings = votingRepository.findByDateForSejm( dateSQL );
+		List< Long > statusID = Arrays.asList( 1L, 5L, 6L, 8L, 9L );
+		List<VotingEntity> votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
+		model.addObject( "schedule_name", "Sejmie" );
+		model.addObject( "votings", votings );
+		model.setViewName( "votingSchedule" );
+		return model;
 	}
 }
