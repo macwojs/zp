@@ -22,11 +22,5 @@ public interface VotingRepository extends JpaRepository<VotingEntity, Long> {
     List<VotingEntity> findByVotingDateBeforeAndVotingTypeOrderByVotingDateDescOpenVotingDesc(Date votingDate, VotingEntity.TypeOfVoting votingType);
     List<VotingEntity> findByVotingDateAndCloseVotingBeforeAndVotingTypeOrderByVotingDateDescOpenVotingDesc(Date votingDate, Time closeTime, VotingEntity.TypeOfVoting votingType);
 
-    @Query (value="Select * from voting WHERE votingdate=?1 and (docstatusid=1 or docstatusid=5 or docstatusid=6 or docstatusid=8 or docstatusid=9)", nativeQuery=true)
-    List< VotingEntity > findByDateForSejm( Date date );
-
-    @Query (value="Select * from voting WHERE votingdate=?1 and docstatusid=2", nativeQuery=true)
-    List< VotingEntity > findByDateForSenat( Date date );
-
     List<VotingEntity> findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn(Date date, List< Long > status);
 }
