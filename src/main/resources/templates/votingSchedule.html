@@ -24,11 +24,11 @@
                     <p th:text="${current_date}"
                        style="margin-top: auto;margin-right: 16px;margin-left: 16px;margin-bottom: auto;font-weight: 600;">
                         22 Czerwca 2020</p>
-                    <form method="POST"
+                    <form id="form" method="GET"
                           style="padding: 0px;min-height: 0px;background-color: rgba(255,255,255,0);max-width: 300px;min-width: 0px;">
                         <div class="form-group d-lg-flex align-items-lg-center"
                              style="max-width: auto;margin-bottom: 0px;height: auto;">
-                            <input
+                            <input id="dateForm" name="dateForm" value="dateForm"
                                     class="border rounded border-white shadow form-control form-control-sm" type="date"
                                     style="max-width: 150px;margin: auto;margin-left: 8px;margin-right: 0px;margin-top: auto;margin-bottom: auto;background-color: rgb(251,238,238);"
                                     required="">

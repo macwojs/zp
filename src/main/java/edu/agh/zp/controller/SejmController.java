@@ -4,7 +4,9 @@ import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.SetEntity;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.objects.createVotingList;
-import edu.agh.zp.repositories.*;
+import edu.agh.zp.repositories.DocumentRepository;
+import edu.agh.zp.repositories.SetRepository;
+import edu.agh.zp.repositories.VotingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,10 +21,6 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.*;
 
 @Controller
@@ -36,13 +34,8 @@ public class SejmController {
 	private DocumentRepository documentRepository;
 
 	@Autowired
-	private CitizenRepository citizenRepository;
-
-	@Autowired
 	private VotingRepository votingRepository;
 
-	@Autowired
-	private VoteRepository voteRepository;
 
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
@@ -97,22 +90,19 @@ public class SejmController {
 	}
 
 	@GetMapping ( value = { "/votingSchedule" } )
-	public ModelAndView votingSchedule( HttpServletRequest request ) {
+	public ModelAndView votingSchedule( HttpServletRequest request, @RequestParam ( value = "dateForm", required = false ) Date dateForm ) {
 		ModelAndView model = new ModelAndView( );
-		LocalDate date = LocalDate.now( );
-		if ( request.getParameter( "day" ) != null && !request.getParameter( "day" ).isEmpty( ) ) {
-			if ( request.getParameter( "month" ) != null && !request.getParameter( "month" ).isEmpty( ) ) {
-				if ( request.getParameter( "year" ) != null && !request.getParameter( "year" ).isEmpty( ) ) {
-					Calendar calendar = Calendar.getInstance( );
-					calendar.set( Integer.parseInt( request.getParameter( "year" ) ), Integer.parseInt( request.getParameter( "month" ) ) - 1, Integer.parseInt( request.getParameter( "day" ) ) );
-					date = LocalDateTime.ofInstant( calendar.toInstant( ), calendar.getTimeZone( ).toZoneId( ) ).toLocalDate( );
-				}
-			}
+		java.util.Date date = new java.util.Date( );
+		if ( dateForm != null ) {
+			date = dateForm;
 		}
-		Date dateSQL = Date.valueOf( date ); // Magic happens here!
+		Date dateSQL = new Date( date.getTime( ) );
 		List< Long > statusID = Arrays.asList( 1L, 5L, 6L, 8L, 9L );
 		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
-		String formattedDate = date.format( DateTimeFormatter.ofLocalizedDate( FormatStyle.LONG ) );
+		String pattern = "dd MMMMM yyyy";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
+		System.out.println( date );
+		String formattedDate = simpleDateFormat.format( date );
 		model.addObject( "schedule_name", "Sejmie" );
 		model.addObject( "current_date", formattedDate );
 		model.addObject( "votings", votings );
