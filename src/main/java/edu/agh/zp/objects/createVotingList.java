@@ -46,4 +46,12 @@ public class createVotingList {
         voting2.addAll(voting);
         modelAndView.addObject("VotingList", voting2);
     }
+
+    public static void future(ModelAndView modelAndView, Collection<VotingEntity.TypeOfVoting> type, VotingRepository votingRepository)
+    {
+        LocalDate now = LocalDate.now();
+        Date nowSql = java.sql.Date.valueOf(now);
+        List<VotingEntity> voting = votingRepository.findByVotingDateAfterAndVotingTypeIsInOrderByVotingDateAscOpenVotingAsc(java.sql.Date.valueOf(now.minusDays(1)), type);
+        TableCreation(modelAndView, nowSql, voting);
+    }
 }

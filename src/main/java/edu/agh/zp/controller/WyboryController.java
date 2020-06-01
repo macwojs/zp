@@ -51,7 +51,7 @@ public class WyboryController {
     @GetMapping(value = {""})
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
-        createVotingList.run(modelAndView, Arrays.asList(VotingEntity.TypeOfVoting.REFERENDUM, VotingEntity.TypeOfVoting.PREZYDENT), votingSession);
+        createVotingList.future(modelAndView, Arrays.asList(VotingEntity.TypeOfVoting.REFERENDUM, VotingEntity.TypeOfVoting.PREZYDENT), votingSession);
         Th_min min = new Th_min();
         modelAndView.addObject("min", min);
         modelAndView.setViewName("wyboryReferenda");

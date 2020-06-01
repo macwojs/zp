@@ -21,6 +21,7 @@ public interface VotingRepository extends JpaRepository<VotingEntity, Long> {
     List<VotingEntity> findByVotingDateBetweenAndVotingTypeOrderByVotingDateAscOpenVotingAsc(Date votingDate, Date votingDate2, VotingEntity.TypeOfVoting votingType);
     List<VotingEntity> findByVotingDateBeforeAndVotingTypeOrderByVotingDateDescOpenVotingDesc(Date votingDate, VotingEntity.TypeOfVoting votingType);
     List<VotingEntity> findByVotingDateAndCloseVotingBeforeAndVotingTypeOrderByVotingDateDescOpenVotingDesc(Date votingDate, Time closeTime, VotingEntity.TypeOfVoting votingType);
+    List<VotingEntity> findByVotingDateAfterAndVotingTypeIsInOrderByVotingDateAscOpenVotingAsc(Date votingDate, Collection<VotingEntity.TypeOfVoting> votingType);
 
     List<VotingEntity> findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn(Date date, List< Long > status);
 }
