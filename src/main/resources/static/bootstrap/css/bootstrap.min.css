@@ -4206,11 +4206,13 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 
 .nav-link {
     display: block;
-    padding: .5rem 1rem
+    padding: .5rem 0rem;
+    color: #d4213d;
 }
 
 .nav-link:focus, .nav-link:hover {
-    text-decoration: none
+    text-decoration: none;
+    color: #0087ff;
 }
 
 .nav-link.disabled {
