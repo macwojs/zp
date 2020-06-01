@@ -7,17 +7,28 @@
 
 <body>
     <section id="tresc" style="min-height: 60vh;">
-        <p style="font-size: 43px;text-align: center;"><br>Historia</p>
-        <h3>Przeszłe głosowania</h3>
-        <ul class="list-group" th:each="voting : ${VotingList}" >
-            <li class="list-group-item">
-                <div th:switch="${voting.getVotingDescription()}">
-                    <a th:case="null" class="nav-link" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}" th:text="${voting.getDocumentID().getDocDescription()}"></a>
-                    <a th:case="*" class="nav-link" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}" th:text="${voting.getVotingDescription()}"></a>
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <p style="font-size: 43px;text-align: center;">Historia</p>
+                    <ul class="list-group shadow" th:each="voting : ${VotingList}" >
+                        <li class="list-group-item">
+                            <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                                <div th:switch="${voting.getVotingDescription()}" class="media-body order-2 order-lg-1">
+                                    <a th:case="null" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}">
+                                        <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getDocumentID().getDocDescription()}"></h5>
+                                    </a>
+                                    <a th:case="*" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}">
+                                        <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getVotingDescription()}"></h5>
+                                    </a>
+                                    <p th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}" class="font-italic text-muted mb-0 small"></p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <span class="table-info" th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}"></span>
-            </li>
-        </ul>
+            </div>
+        </div>
     </section>
 </body>
 </html>
