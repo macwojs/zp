@@ -29,10 +29,10 @@ public class UstawyController {
 	DocumentStatusRepository documentStatusRepository;
 
 	@GetMapping ( value = { "" } )
-	public ModelAndView index() {
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "ustawy" );
-		return modelAndView;
+	public RedirectView index() {
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl("ustawy/dziennikUstaw/");
+		return redirect;
 	}
 
 	@GetMapping(value = {"/status/{id}"})
@@ -79,10 +79,9 @@ public class UstawyController {
 	public RedirectView statusListAdd(@PathVariable long id, @RequestParam("type") long type ) {
 		documentRepository.UpdateStatusByID(id,type);
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl("ustawy/"+id);
+		redirect.setUrl("/ustawy/"+id);
 		return redirect;
 	}
-
 
 	@GetMapping ( value = { "/dziennikUstaw" } )
 	public ModelAndView documentList( HttpServletRequest request ) {
@@ -100,5 +99,31 @@ public class UstawyController {
 		modelAndView.addObject( "documents", documents );
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
+	}
+
+	@GetMapping(value = {"/description/{id}"})
+	public ModelAndView descriptionEdit(ModelAndView model, @PathVariable long id){
+		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
+		if (document.isEmpty()){
+			model.setViewName("404 NOT_FOUND");
+			return model;
+		}
+		String docDesc = document.get().getDocDescription();
+
+		model.addObject("currentDesc",docDesc);
+		model.addObject("id",id);
+		model.setViewName("descEdit");
+		return model;
+	}
+
+	@PostMapping(value = {"/description/{id}"})
+	public RedirectView descriptionEditPost(@PathVariable long id, @RequestParam("desc") String desc ) {
+		DocumentEntity doc = documentRepository.getOne( id );
+		doc.setDocDescription( desc );
+		documentRepository.save( doc );
+
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl("/ustawy/"+id);
+		return redirect;
 	}
 }
