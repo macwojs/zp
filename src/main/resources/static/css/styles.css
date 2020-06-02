@@ -26,3 +26,28 @@ a:hover {
     width: 60%;
 }
 
+.btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus, .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(212,33,61,.5);
+}
+
+.btn.btn-primary {
+    background-color: rgb(212,33,61);
+    border-color: #8f1a1a;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: rgba(212,33,61,.5);
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(212,33,61,0.5);
+}
+
+.btn-primary.focus, .btn-primary:focus {
+    color: #fff;
+    background-color: rgb(212,33,61);
+    border-color: #8F1A1A;
+    box-shadow: 0 0 0 .2rem rgba(212,33,61,0.5);
+}
+
+
