@@ -21,7 +21,7 @@ public class FunkcyjniController {
     @Autowired
     ParliamentarianRepository parliamentarianRepository;
 
-    @GetMapping(value = {"/"})
+    @GetMapping(value = {""})
     public ModelAndView index(){
         ModelAndView model = new ModelAndView();
         model.addObject("sejm", parliamentarianRepository.findAllByChamberOfDeputies("Sejm"));
