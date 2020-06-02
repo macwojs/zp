@@ -47,8 +47,15 @@ public class DBInitializer implements CommandLineRunner {
         createSampleSenator("senator3@zp.pl", "senator3senator3", "Romuald", "Kowalczyk", "08100212961", "NWK819504", "BBB333111", "FGH");
         createSampleSenator("senator4@zp.pl", "senator4senator4", "Alfons", "Szymczyk", "00111523793", "XFO160117", "BBB444111", "FGH");
         createSampleSenator("senator5@zp.pl", "senator5senator5", "Rajmund", "Markowski", "07040132841", "NSH117627", "BBB555111", "ABC");
+        createSamplePresident("prezydent@zp.pl", "prezydentprezydent","Pan", "Prezydent", "78012957218", "RYB838889");
 
+    }
 
+    private void createSamplePresident(String email, String password, String name, String surname, String pesel, String idnumber){
+        CitizenEntity president=  createBasicUser(email, password, name, surname,pesel, idnumber);
+        String[] roles =  {"ROLE_PREZYDENT"};
+        setRole(president,roles);
+        cS.create(president);
     }
 
     private void createSampleAdmin(String email, String password, String name, String surname, String pesel, String idnumber){
