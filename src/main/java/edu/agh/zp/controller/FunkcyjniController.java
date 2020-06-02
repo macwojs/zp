@@ -1,5 +1,6 @@
 package edu.agh.zp.controller;
 
+import edu.agh.zp.objects.ParliamentarianEntity;
 import edu.agh.zp.repositories.ParliamentarianRepository;
 
 import edu.agh.zp.repositories.RoleRepository;
@@ -25,6 +26,8 @@ public class FunkcyjniController {
     public ModelAndView index(){
         ModelAndView model = new ModelAndView();
         model.addObject("sejm", parliamentarianRepository.findAllByChamberOfDeputies("Sejm"));
+//        ParliamentarianEntity v = new ParliamentarianEntity();
+//        v.getPoliticalGroup();
         model.addObject("senat", parliamentarianRepository.findAllByChamberOfDeputies("Senat"));
         model.addObject("prezydent", roleRepository.findByName("ROLE_PREZYDENT").get().getUsers());
         model.addObject("marszalek_sejm",parliamentarianRepository.findByPoliticianID_CitizenIDIn(roleRepository.findByName("ROLE_MARSZALEK_SEJMU").get().getUsers()));

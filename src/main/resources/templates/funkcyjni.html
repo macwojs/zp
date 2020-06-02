@@ -3,6 +3,7 @@
 <head>
     <title>ZP - Dodaj referednum</title>
     <div class="extraHead">
+        <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
         <style>
             .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
                 background-color: #ffeeee;
@@ -16,6 +17,8 @@
 <section id="tresc">
     <div class="contact-clean">
         <div class="list-group">
+            <h3>Prezydent:</h3>
+            <h3>Posłowie</h3><small >[<a id="hide_button1" style="color: blue" onclick="hideVoting('to_hide1','hide_button1')">Ukryj</a>]</small>
             <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -24,37 +27,38 @@
                     <th>Ugrupowanie</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>show.bs.tab</td>
-                    <td>This event fires on tab show, but before the new tab has been shown. Use
-                        <code>event.target</code> and <code>event.relatedTarget</code> to target the active tab and the
-                        previous active tab (if available) respectively.
-                    </td>
-                </tr>
-                <tr>
-                    <td>shown.bs.tab</td>
-                    <td>This event fires on tab show after a tab has been shown. Use <code>event.target</code> and
-                        <code>event.relatedTarget</code> to target the active tab and the previous active tab (if
-                        available) respectively.
-                    </td>
-                </tr>
-                <tr>
-                    <td>hide.bs.tab</td>
-                    <td>This event fires when a new tab is to be shown (and thus the previous active tab is to be
-                        hidden). Use <code>event.target</code> and <code>event.relatedTarget</code> to target the
-                        current active tab and the new soon-to-be-active tab, respectively.
-                    </td>
-                </tr>
-                <tr>
-                    <td>hidden.bs.tab</td>
-                    <td>This event fires after a new tab is shown (and thus the previous active tab is hidden). Use
-                        <code>event.target</code> and <code>event.relatedTarget</code> to target the previous active tab
-                        and the new active tab, respectively.
-                    </td>
-                </tr>
-                </tbody>
+                <div th:if="${sejm}!=null">
+                    <tbody th:each="person:${sejm}" class = "to_hide1">
+                    <tr>
+                        <td th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></td>
+                        <td th:text="${person.getPoliticianID().getCitizenID().getName()}"></td>
+                        <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
+                    </tr>
+                    </tbody>
+                </div>
             </table>
+            <br><br><br>
+            <h5>Marszałek sejmu:</h5>
+            <h3>Senatorzy</h3><small >[<a id="hide_button2" style="color: blue" onclick="hideVoting('to_hide2','hide_button2')">Ukryj</a>]</small>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Nazwisko</th>
+                    <th>Imie</th>
+                    <th>Ugrupowanie</th>
+                </tr>
+                </thead>
+                <div th:if="${senat}!=null">
+                    <tbody th:each="person:${senat}" class = "to_hide2">
+                    <tr>
+                        <td th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></td>
+                        <td th:text="${person.getPoliticianID().getCitizenID().getName()}"></td>
+                        <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
+                    </tr>
+                    </tbody>
+                </div>
+            </table>
+            <h5>Marszałek senatu:</h5>
         </div>
     </div>
 </section>
