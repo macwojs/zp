@@ -12,7 +12,7 @@
         <a class="nav-link" href="/parlament/documentForm" sec:authorize="hasAnyRole('SENATOR', 'ADMIN')">Dodawnie dokumentu</a>
         <a class="nav-link" href="/parlament/senat/voteAdd"sec:authorize="hasAnyRole('MARSZALEK_SENATU', 'ADMIN')">Dodawnie głosowania w senacie</a>
         <h3>najbliższe głosowania</h3>
-        <button id="hide_button" type="button" class="btn btn-info" onclick="hideVoting()">Ukryj nieaktywne glosowania</button>
+        <button id="hide_button" type="button" class="btn btn-info" onclick="hideVoting('close-voting',info1='Pokaż nieaktywne glosowania',info2='Ukryj nieaktywne glosowania')">Ukryj nieaktywne glosowania</button>
         <ul class="list-group" th:each="voting : ${VotingList}" th:switch="${Sign[votingStat.index]}">
             <li th:case="true"  class="list-group-item">
                 <div th:switch="${voting.getVotingDescription()}">
