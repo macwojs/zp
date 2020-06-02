@@ -1,0 +1,58 @@
+.main-div {
+  margin: auto;
+  margin-top: 36px;
+  margin-bottom: 36px;
+  max-width: 900px;
+  width: 80%;
+  background-color: #ffff;
+}
+
+body {
+  background-color: #fbf5f6;
+}
+
+.heading {
+  text-align: center;
+  padding: 16px;
+  font-weight: 600;
+}
+
+.desc-form {
+  text-align: center;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+.btn.btn-primary.sub-button {
+  background-color: rgb(212,33,61);
+  border-color: rgb(143,26,26);
+  margin: 16px;
+}
+
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #8f1a1a;
+  border-color: #8f1a1a;
+}
+
+.btn-primary.focus, .btn-primary:focus {
+  color: #fff;
+  background-color: #d4213d;
+  border-color: #8f1a1a;
+  box-shadow: 0 0 0 .2rem rgba(212,33,61,0.5);
+}
+
+.curr-desc-heading {
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.curr-desc {
+  margin-left: 24px;
+  margin-right: 24px;
+  padding-bottom: 16px;
+  text-align: justify;
+}
+

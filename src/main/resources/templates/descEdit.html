@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>Zmiana opisu</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/desc-edit.css}">
+    </div>
+</head>
+
+<body>
+<section id="tresc">
+    <div class="main-div">
+        <h3 class="heading">Zmiana opisu dokumentu</h3>
+        <p class="curr-desc-heading">Odecny opis:</p>
+        <p th:text="${currentDesc} ? ${currentDesc} : 'Brak bieżącego opisu' " class="curr-desc" style="margin-bottom: 8px;">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder
+            of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone
+            who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious
+            physical exercis</p>
+        <form method="POST" th:action="@{/ustawy/description/{id}(id=${id})}" enctype="multipart/form-data" th:object="${document}" class="desc-form">
+            <textarea  class="form-control form-control-sm desc-text" name="desc" placeholder="Wprowadź nowy opis" rows="8"></textarea>
+            <button class="btn btn-primary sub-button" type="submit">Zmień</button>
+        </form>
+    </div>
+</section>
+</body>
+</html>
