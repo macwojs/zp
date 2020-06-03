@@ -2,8 +2,10 @@ package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.DocumentStatusEntity;
+import edu.agh.zp.objects.DocumentTypeEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.DocumentStatusRepository;
+import edu.agh.zp.repositories.DocumentTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,9 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import javax.websocket.server.PathParam;
+import java.util.*;
 
 
 @Controller
@@ -24,6 +25,8 @@ public class UstawyController {
 
 	@Autowired
 	DocumentRepository documentRepository;
+	@Autowired
+	DocumentTypeRepository docTypeR;
 
 	@Autowired
 	DocumentStatusRepository documentStatusRepository;
@@ -84,8 +87,9 @@ public class UstawyController {
 	}
 
 
+
 	@GetMapping ( value = { "/dziennikUstaw" } )
-	public ModelAndView documentList( HttpServletRequest request ) {
+	public ModelAndView documentList( HttpServletRequest request, @RequestParam(name="docType", required = false) Long docType) {
 		ModelAndView modelAndView = new ModelAndView( );
 
 		int page = 0;
@@ -96,9 +100,30 @@ public class UstawyController {
 		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
 			size = Integer.parseInt( request.getParameter( "size" ) );
 		}
-		Page< DocumentEntity > documents = documentRepository.findAll( PageRequest.of( page, size ) );
+		Page< DocumentEntity > documents;// = documentRepository.findAll( PageRequest.of( page, size ) );
+
+		if(docType != null) {
+			documents = documentRepository.findAllByDocTypeID_DocTypeID(docType, PageRequest.of(page, size));
+		}else{
+			documents = documentRepository.findAll( PageRequest.of( page, size ) );
+		}
 		modelAndView.addObject( "documents", documents );
+		modelAndView.addObject("documentTypes", docTypeR.findAll());
+		modelAndView.addObject("documentStatus",
+				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Odrzucona")));
+		modelAndView.addObject("legislativeStage",
+				documentStatusRepository.findByDocStatusNameIn(Arrays.asList(
+																				"Zgłoszona",
+																				"Głosowanie w Sejmie",
+																				"Głosowanie w Senacie",
+																				"Do zatwierdzenia przez Prezydenta",
+																				"Do ponownego rozpatrzenia w Sejmie: Senat",
+																				"Do ponownego rozpatrzenia w Sejmie: Prezydent"
+				))
+		);
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
 	}
+
+
 }

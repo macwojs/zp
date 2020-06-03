@@ -25,19 +25,29 @@
                     Pokaż filtry
                 </a>
                 <div class="collapse" id="collapse-1">
-                    <form style="margin-top: 24px;margin-bottom: 8px;">
+                    <form style="margin-top: 24px;margin-bottom: 8px;" th:action="@{/ustawy/dziennikUstaw}" th:method="get">
                         <div class="form-row">
                             <div class="col-md-6">
                                 <div class="form-group d-md-flex align-items-md-center">
                                     <p style="margin-top: auto;margin-bottom: auto;margin-right: 8px;margin-left: 8px;">
                                         Status aktu</p>
-                                    <div style="margin-right: 8px;margin-left: 8px;"><select class="form-control">
-                                        <optgroup label="status">
-                                            <option value="1">Wszystkie</option>
-                                            <option value="2">Obowiązujący</option>
-                                            <option value="3">Wygasły</option>
-                                            <option value="4">W trakcie procesu legislacynjego</option>
+                                    <div style="margin-right: 8px;margin-left: 8px;"><select class="form-control" th:name="docStatus" >
+                                        <optgroup label="Status" >
+                                            <option th:each="status : ${documentStatus}"
+                                                    th:value="*{status.getDocStatusID()}"
+                                                    th:text="*{status.getDocStatusName()}">
+                                            </option>
                                         </optgroup>
+                                        <optgroup label="Etap legilacyjny">
+                                            <option th:each="stage : ${legislativeStage}"
+                                                    th:value="*{stage.getDocStatusID()}"
+                                                    th:text="*{stage.getDocStatusName()}">
+                                            </option>
+                                        </optgroup>
+                                        <optgroup label="Wszystko">
+                                            <option th:value="0" >Wszystko</option>
+                                        </optgroup>
+
                                     </select></div>
                                     <div></div>
                                 </div>
@@ -46,45 +56,32 @@
                                 <div class="form-group d-md-flex align-items-md-center">
                                     <p style="margin-top: auto;margin-bottom: auto;margin-right: 8px;margin-left: 8px;">
                                         Data wejścia w życie</p>
-                                    <div style="margin-right: 8px;margin-left: 8px;"><select class="form-control"
-                                                                                             style="margin-right: 8px;margin-left: 8px;">
-                                        <optgroup label="w dniu">
-                                            <option value="1">po</option>
-                                            <option value="2">przed</option>
-                                        </optgroup>
-                                    </select></div>
+                                    <div style="margin-right: 8px;margin-left: 8px;">
+                                        <select class="form-control" th:name="dateControl" style="margin-right: 8px;margin-left: 8px;">
+                                            <optgroup label="w dniu">
+                                                <option value="1">po</option>
+                                                <option value="2">przed</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
                                     <div><input class="form-control form-control-lg" type="date"
-                                                style="margin-right: 8px;margin-left: 8px;"></div>
+                                                style="margin-right: 8px;margin-left: 8px;" th:name="date"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-6">
                                 <div class="form-group d-md-flex align-items-md-center">
-                                    <p style="margin-top: auto;margin-bottom: auto;margin-right: 44px;margin-left: 8px;">
-                                        Etap legislacyjny</p>
-                                    <div style="margin-right: 8px;margin-left: 8px;"><select class="form-control">
-                                        <optgroup label="Etap">
-                                            <option value="0">Wszystkie</option>
-                                            <option value="1">W sejmie</option>
-                                            <option value="2">W senacie</option>
-                                            <option value="3">itd</option>
-                                        </optgroup>
-                                    </select></div>
-                                    <div></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group d-md-flex align-items-md-center">
                                     <p style="margin-top: auto;margin-bottom: auto;margin-right: 30px;margin-left: 8px;">
                                         Rodzaj dokumentu</p>
-                                    <div style="margin-right: 8px;margin-left: 8px;"><select class="form-control">
-                                        <optgroup label="Dokument">
-                                            <option value="0">Wszystkie</option>
-                                            <option value="1">Ustawa</option>
-                                            <option value="3">Rozporządzenie</option>
-                                            <option value="3">itd</option>
-                                        </optgroup>
+                                    <div style="margin-right: 8px;margin-left: 8px;" ><select class="form-control" th:name="docType">
+<!--                                        <optgroup label="Dokument">-->
+                                            <option th:each="type : ${documentTypes}"
+                                                    th:value="*{type.getDocTypeID()}"
+                                                    th:text="*{type.getDocTypeName()}">
+                                            </option>
+                                            <option th:value="0">Wszystkie</option>
+<!--                                        </optgroup>-->
                                     </select></div>
                                     <div></div>
                                 </div>
