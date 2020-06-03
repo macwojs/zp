@@ -18,7 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,7 @@ private CitizenService cS;
 
 	// custom login
 	@GetMapping (value = {"/signin"})
-	public ModelAndView index( RedirectAttributes attributes, HttpServletRequest request) {
+	public ModelAndView index(RedirectAttributes attributes, HttpServletRequest request, HttpServletResponse response) {
 
 		String viewName = "signin" ;
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -52,28 +54,28 @@ private CitizenService cS;
 		if(referrer!=null){
 			model.put("url_prior_login", referrer);
 		}
-
+		response.addCookie(new Cookie("OLD_URL_REDIRECT",request.getHeader("Referer")));
 		return new ModelAndView(viewName, model);
 	}
 
 	@RequestMapping(value = "/signin", method = RequestMethod.POST)
-	public ModelAndView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res) {
+	public RedirectView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res, @CookieValue(name = "OLD_URL_REDIRECT") String ref) {
 		UsernamePasswordAuthenticationToken authReq =
 				new UsernamePasswordAuthenticationToken(citizen.getEmail(), citizen.getPassword());
-		Authentication auth;
+		Authentication auth = null;
 		try {
 			auth = authManager.authenticate(authReq);
 		}catch(AuthenticationException e){
-			ModelAndView mv = new ModelAndView("signin");
-			mv.addObject("error", "Błędna nazwa użytkownika lub hasło");
+			RedirectView mv = new RedirectView("/signin");
+			mv.addStaticAttribute("error", "Błędna nazwa użytkownika lub hasło");
 			return mv;
 		}
 		SecurityContext sc = SecurityContextHolder.getContext();
 		sc.setAuthentication(auth);
 		HttpSession session = request.getSession(true);
 		session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
-
-		return new ModelAndView("index");
+		if (ref!=null) return new RedirectView(ref);
+		return new RedirectView("");
 	}
 
 	@GetMapping (value = {"/logout"})
