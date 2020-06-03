@@ -137,8 +137,8 @@ public class PopulateController {
                 PoliticianList.add(politician);
                 if (i % 5 < 2) {
                     String fun;
-                    if (rand.nextInt(2) == 0) fun = "Senator";
-                    else fun = "Poseł";
+                    if (rand.nextInt(2) == 0) fun = "Senat";
+                    else fun = "Sejm";
                     ParliamentarianList.add(new ParliamentarianEntity(
                             RandomString.make(10),
                             group.get(rand.nextInt(group.size())),
