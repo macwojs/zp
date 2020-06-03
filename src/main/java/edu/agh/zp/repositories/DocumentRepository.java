@@ -1,7 +1,9 @@
 package edu.agh.zp.repositories;
 
 import edu.agh.zp.objects.DocumentEntity;
+import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.DocumentTypeEntity;
+import org.dom4j.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,5 +31,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	void UpdateStatusByID(long id , long StatusId);
 
 	Page<DocumentEntity> findAllByDocTypeID_DocTypeID(long docType, Pageable page);
+
+	Page<DocumentEntity> findAllByDocStatusIDInAndDocTypeIDIn(Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Pageable page);
 
 }

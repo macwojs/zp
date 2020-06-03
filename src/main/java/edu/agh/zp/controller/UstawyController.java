@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.w3c.dom.DocumentType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
@@ -101,21 +102,8 @@ public class UstawyController {
 			size = Integer.parseInt( request.getParameter( "size" ) );
 		}
 		Page< DocumentEntity > documents = documentRepository.findAll( PageRequest.of( page, size ) );
-
 		modelAndView.addObject( "documents", documents );
-		modelAndView.addObject("documentTypes", docTypeR.findAll());
-		modelAndView.addObject("documentStatus",
-				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Odrzucona")));
-		modelAndView.addObject("legislativeStage",
-				documentStatusRepository.findByDocStatusNameIn(Arrays.asList(
-																				"Zgłoszona",
-																				"Głosowanie w Sejmie",
-																				"Głosowanie w Senacie",
-																				"Do zatwierdzenia przez Prezydenta",
-																				"Do ponownego rozpatrzenia w Sejmie: Senat",
-																				"Do ponownego rozpatrzenia w Sejmie: Prezydent"
-				))
-		);
+		setOptionsList(modelAndView);
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
 	}
@@ -127,8 +115,6 @@ public class UstawyController {
 											  @RequestParam(name="dateControl", required = false) Long dateControl) {
 		ModelAndView modelAndView = new ModelAndView( );
 
-		System.out.print("\n\n\n\n\n"+docType+"\n\n\n\n\n");
-
 		int page = 0;
 		int size = 10;
 		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
@@ -139,12 +125,25 @@ public class UstawyController {
 		}
 		Page< DocumentEntity > documents;// = documentRepository.findAll( PageRequest.of( page, size ) );
 
-		if(docType != 0) {
-			documents = documentRepository.findAllByDocTypeID_DocTypeID(docType, PageRequest.of(page, size));
-		}else{
-			documents = documentRepository.findAll( PageRequest.of( page, size ) );
-		}
+
+		List<DocumentStatusEntity> docStatuses =
+				(docStatus == 0 ) ? documentStatusRepository.findAll() : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Arrays.asList(docTypeR.findByDocTypeID(docType));
+
+
+		documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
+
+
+		setOptionsList(modelAndView);
 		modelAndView.addObject( "documents", documents );
+		modelAndView.addObject("selectedType", docType);
+		modelAndView.addObject("selectedStatus", docStatus);
+		modelAndView.addObject("selectedDateControl", dateControl);
+		modelAndView.setViewName( "documentList" );
+		return modelAndView;
+	}
+
+	private void setOptionsList(ModelAndView modelAndView){
 		modelAndView.addObject("documentTypes", docTypeR.findAll());
 		modelAndView.addObject("documentStatus",
 				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Odrzucona")));
@@ -158,12 +157,6 @@ public class UstawyController {
 						"Do ponownego rozpatrzenia w Sejmie: Prezydent"
 				))
 		);
-		modelAndView.addObject("selectedType", docType);
-		modelAndView.addObject("selectedStatus", docStatus);
-		modelAndView.addObject("selectedDateControl", dateControl);
-		modelAndView.setViewName( "documentList" );
-		return modelAndView;
 	}
-
 
 }

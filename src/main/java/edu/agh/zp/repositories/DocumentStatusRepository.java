@@ -11,4 +11,5 @@ public interface DocumentStatusRepository extends JpaRepository<DocumentStatusEn
     List<DocumentStatusEntity> findAll();
     List<DocumentStatusEntity> findByDocStatusNameIn(Collection<String> Names);
     List<DocumentStatusEntity> findByDocStatusIDIn(List<Long> ids);
+    DocumentStatusEntity findByDocStatusID(Long id);
 }
