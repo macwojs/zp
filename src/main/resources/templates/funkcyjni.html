@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Osoby funkcyjne</title>
+    <div class="extraHead">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" th:src="@{/js/Table-search.js}"></script>
+        <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
+        <style>
+            .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+                background-color: #ffeeee;
+            }
+        </style>
+    </div>
+</head>
+
+<body>
+<section id="tresc">
+    <div class="contact-clean" style="max-width: 75%;  margin-left: auto; margin-right: auto ">
+        <div class="list-group">
+            <h3>Prezydent:</h3>
+            <div th:if="${prezydent}!=null">
+                <p class="text" th:text="${prezydent.getSurname()} + ' ' +  ${prezydent.getName()}"></p>
+            </div>
+            <h3>Posłowie</h3><small>[<a id="hide_button1" style="color: blue"
+                                        onclick="hideVoting('to_hide1','hide_button1')">Ukryj</a>]</small>
+            <table class="table table-bordered table-striped sorted-table">
+                <thead>
+                <tr>
+                    <th>Nazwisko</th>
+                    <th>Imie</th>
+                    <th>Ugrupowanie</th>
+                </tr>
+                </thead>
+                <div th:if="${sejm}!=null">
+                    <tbody class="to_hide1">
+                    <tr th:each="person:${sejm}">
+                        <td th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></td>
+                        <td th:text="${person.getPoliticianID().getCitizenID().getName()}"></td>
+                        <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
+                    </tr>
+                    </tbody>
+                </div>
+            </table>
+            <br><br><br>
+            <h5>Marszałek sejmu:</h5>
+            <div th:if="${marszalek_sejm}!=null">
+                <p class="text"
+                   th:text="${marszalek_sejm.getPoliticianID().getCitizenID().getSurname()} + ' ' +  ${marszalek_sejm.getPoliticianID().getCitizenID().getName()} + ' partia ' + ${marszalek_sejm.getPoliticalGroup()}"></p>
+            </div>
+            <h3>Senatorzy</h3><small>[<a id="hide_button2" style="color: blue"
+                                         onclick="hideVoting('to_hide2','hide_button2')">Ukryj</a>]</small>
+            <table class="table table-bordered table-striped sorted-table">
+                <thead>
+                <tr>
+                    <th>Nazwisko</th>
+                    <th>Imie</th>
+                    <th>Ugrupowanie</th>
+                </tr>
+                </thead>
+                <div th:if="${senat}!=null">
+                    <tbody  class="to_hide2">
+                    <tr th:each="person:${senat}">
+                        <td th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></td>
+                        <td th:text="${person.getPoliticianID().getCitizenID().getName()}"></td>
+                        <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
+                    </tr>
+                    </tbody>
+                </div>
+            </table>
+            <h5>Marszałek senatu:</h5>
+            <div th:if="${marszalek_senat}!=null">
+                <p class="text"
+                   th:text="${marszalek_senat.getPoliticianID().getCitizenID().getSurname()} + ' ' + ${marszalek_senat.getPoliticianID().getCitizenID().getName()} + ' partia ' + ${marszalek_senat.getPoliticalGroup()}"></p>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

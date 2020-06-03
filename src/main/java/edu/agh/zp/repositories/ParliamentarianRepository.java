@@ -6,6 +6,8 @@ import edu.agh.zp.objects.PoliticianEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ public interface ParliamentarianRepository extends JpaRepository<Parliamentarian
     List<ParliamentarianEntity> findAllByChamberOfDeputies(String chamberOfDeputies);
     List<ParliamentarianEntity> findAllByChamberOfDeputiesAndPoliticalGroup(String chamberOfDeputies, String politicalGroup);
     List<ParliamentarianEntity> findAllByPoliticalGroup(String politicalGroup);
+    List<ParliamentarianEntity> findByPoliticianID_CitizenIDIn(Collection<@NotNull CitizenEntity> politicianID_citizenID);
     List<ParliamentarianEntity> findAll();
 	//Optional<ParliamentarianEntity> findByPoliticianID( PoliticianEntity politicianID);
 

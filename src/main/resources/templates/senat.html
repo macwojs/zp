@@ -16,7 +16,7 @@
                     <a class="nav-link" href="/parlament/senat/voteAdd"sec:authorize="hasAnyRole('MARSZALEK_SENATU', 'ADMIN')">Dodawnie głosowania w senacie</a>
                     <a class="nav-link" href="/parlament/senat/votingSchedule">Porządek obrad na dziś</a>
                     <h3>najbliższe głosowania</h3>
-                    <button id="hide_button" type="button" class="btn btn-info" style="background-color: rgb(212,33,61);" onclick="hideVoting()">Ukryj nieaktywne glosowania</button>
+                    <button id="hide_button" type="button" class="btn btn-info" style="background-color: rgb(212,33,61);" onclick="hideVoting('closed-voting','hide_button',info1='Pokaż nieaktywne glosowania',info2='Ukryj nieaktywne glosowania')">Ukryj nieaktywne glosowania</button>
                     <ul class="list-group shadow" th:each="voting : ${VotingList}" th:switch="${Sign[votingStat.index]}">
                         <li th:case="true" class="list-group-item">
                             <div class="media align-items-lg-center flex-column flex-lg-row p-3">
