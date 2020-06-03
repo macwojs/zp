@@ -25,28 +25,31 @@
                     Pokaż filtry
                 </a>
                 <div class="collapse" id="collapse-1">
-                    <form style="margin-top: 24px;margin-bottom: 8px;" th:action="@{/ustawy/dziennikUstaw}" th:method="get">
+                    <form style="margin-top: 24px;margin-bottom: 8px;" th:action="@{/ustawy/dziennikUstaw/filtr}" th:method="get">
                         <div class="form-row">
                             <div class="col-md-6">
                                 <div class="form-group d-md-flex align-items-md-center">
                                     <p style="margin-top: auto;margin-bottom: auto;margin-right: 8px;margin-left: 8px;">
                                         Status aktu</p>
                                     <div style="margin-right: 8px;margin-left: 8px;"><select class="form-control" th:name="docStatus" >
+                                        <optgroup label="Wszystko">
+                                            <option th:value="0">Wszystko</option>
+                                        </optgroup>
                                         <optgroup label="Status" >
                                             <option th:each="status : ${documentStatus}"
                                                     th:value="*{status.getDocStatusID()}"
-                                                    th:text="*{status.getDocStatusName()}">
+                                                    th:text="*{status.getDocStatusName()}"
+                                                    th:selected="${status.getDocStatusID()==selectedStatus}">
                                             </option>
                                         </optgroup>
                                         <optgroup label="Etap legilacyjny">
                                             <option th:each="stage : ${legislativeStage}"
                                                     th:value="*{stage.getDocStatusID()}"
-                                                    th:text="*{stage.getDocStatusName()}">
+                                                    th:text="*{stage.getDocStatusName()}"
+                                                    th:selected="${stage.getDocStatusID()==selectedStatus}">
                                             </option>
                                         </optgroup>
-                                        <optgroup label="Wszystko">
-                                            <option th:value="0" >Wszystko</option>
-                                        </optgroup>
+
 
                                     </select></div>
                                     <div></div>
@@ -59,8 +62,8 @@
                                     <div style="margin-right: 8px;margin-left: 8px;">
                                         <select class="form-control" th:name="dateControl" style="margin-right: 8px;margin-left: 8px;">
                                             <optgroup label="w dniu">
-                                                <option value="1">po</option>
-                                                <option value="2">przed</option>
+                                                <option value="1" th:selected="${selectedDateControl == 1}">po</option>
+                                                <option value="2" th:selected="${selectedDateControl == 2}">przed</option>
                                             </optgroup>
                                         </select>
                                     </div>
@@ -76,11 +79,12 @@
                                         Rodzaj dokumentu</p>
                                     <div style="margin-right: 8px;margin-left: 8px;" ><select class="form-control" th:name="docType">
 <!--                                        <optgroup label="Dokument">-->
-                                            <option th:each="type : ${documentTypes}"
+                                        <option th:value="0" >Wszystkie</option>
+                                        <option th:each="type : ${documentTypes}"
                                                     th:value="*{type.getDocTypeID()}"
-                                                    th:text="*{type.getDocTypeName()}">
-                                            </option>
-                                            <option th:value="0">Wszystkie</option>
+                                                    th:text="*{type.getDocTypeName()}"
+                                                    th:selected="${type.getDocTypeID()==selectedType}">
+                                        </option>
 <!--                                        </optgroup>-->
                                     </select></div>
                                     <div></div>

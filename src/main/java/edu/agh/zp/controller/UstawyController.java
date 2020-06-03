@@ -89,7 +89,7 @@ public class UstawyController {
 
 
 	@GetMapping ( value = { "/dziennikUstaw" } )
-	public ModelAndView documentList( HttpServletRequest request, @RequestParam(name="docType", required = false) Long docType) {
+	public ModelAndView documentList( HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView( );
 
 		int page = 0;
@@ -100,13 +100,8 @@ public class UstawyController {
 		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
 			size = Integer.parseInt( request.getParameter( "size" ) );
 		}
-		Page< DocumentEntity > documents;// = documentRepository.findAll( PageRequest.of( page, size ) );
+		Page< DocumentEntity > documents = documentRepository.findAll( PageRequest.of( page, size ) );
 
-		if(docType != null) {
-			documents = documentRepository.findAllByDocTypeID_DocTypeID(docType, PageRequest.of(page, size));
-		}else{
-			documents = documentRepository.findAll( PageRequest.of( page, size ) );
-		}
 		modelAndView.addObject( "documents", documents );
 		modelAndView.addObject("documentTypes", docTypeR.findAll());
 		modelAndView.addObject("documentStatus",
@@ -121,6 +116,51 @@ public class UstawyController {
 																				"Do ponownego rozpatrzenia w Sejmie: Prezydent"
 				))
 		);
+		modelAndView.setViewName( "documentList" );
+		return modelAndView;
+	}
+
+	@GetMapping ( value = { "/dziennikUstaw/filtr" } )
+	public ModelAndView documentFilteredList( HttpServletRequest request,
+											  @RequestParam(name="docType", required = false) Long docType,
+											  @RequestParam(name="docStatus", required = false) Long docStatus,
+											  @RequestParam(name="dateControl", required = false) Long dateControl) {
+		ModelAndView modelAndView = new ModelAndView( );
+
+		System.out.print("\n\n\n\n\n"+docType+"\n\n\n\n\n");
+
+		int page = 0;
+		int size = 10;
+		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
+			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
+		}
+		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
+			size = Integer.parseInt( request.getParameter( "size" ) );
+		}
+		Page< DocumentEntity > documents;// = documentRepository.findAll( PageRequest.of( page, size ) );
+
+		if(docType != 0) {
+			documents = documentRepository.findAllByDocTypeID_DocTypeID(docType, PageRequest.of(page, size));
+		}else{
+			documents = documentRepository.findAll( PageRequest.of( page, size ) );
+		}
+		modelAndView.addObject( "documents", documents );
+		modelAndView.addObject("documentTypes", docTypeR.findAll());
+		modelAndView.addObject("documentStatus",
+				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Odrzucona")));
+		modelAndView.addObject("legislativeStage",
+				documentStatusRepository.findByDocStatusNameIn(Arrays.asList(
+						"Zgłoszona",
+						"Głosowanie w Sejmie",
+						"Głosowanie w Senacie",
+						"Do zatwierdzenia przez Prezydenta",
+						"Do ponownego rozpatrzenia w Sejmie: Senat",
+						"Do ponownego rozpatrzenia w Sejmie: Prezydent"
+				))
+		);
+		modelAndView.addObject("selectedType", docType);
+		modelAndView.addObject("selectedStatus", docStatus);
+		modelAndView.addObject("selectedDateControl", dateControl);
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
 	}
