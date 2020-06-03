@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
-    <title>ZP - Dodaj referednum</title>
+    <title>ZP - Osoby funkcyjne</title>
     <div class="extraHead">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" th:src="@{/js/Table-search.js}"></script>
         <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
         <style>
             .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
@@ -12,10 +15,9 @@
     </div>
 </head>
 
-
 <body>
 <section id="tresc">
-    <div class="contact-clean">
+    <div class="contact-clean" style="max-width: 75%;  margin-left: auto; margin-right: auto ">
         <div class="list-group">
             <h3>Prezydent:</h3>
             <div th:if="${prezydent}!=null">
@@ -23,7 +25,7 @@
             </div>
             <h3>Posłowie</h3><small>[<a id="hide_button1" style="color: blue"
                                         onclick="hideVoting('to_hide1','hide_button1')">Ukryj</a>]</small>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped sorted-table">
                 <thead>
                 <tr>
                     <th>Nazwisko</th>
@@ -32,8 +34,8 @@
                 </tr>
                 </thead>
                 <div th:if="${sejm}!=null">
-                    <tbody th:each="person:${sejm}" class="to_hide1">
-                    <tr>
+                    <tbody class="to_hide1">
+                    <tr th:each="person:${sejm}">
                         <td th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></td>
                         <td th:text="${person.getPoliticianID().getCitizenID().getName()}"></td>
                         <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
@@ -49,7 +51,7 @@
             </div>
             <h3>Senatorzy</h3><small>[<a id="hide_button2" style="color: blue"
                                          onclick="hideVoting('to_hide2','hide_button2')">Ukryj</a>]</small>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped sorted-table">
                 <thead>
                 <tr>
                     <th>Nazwisko</th>
@@ -58,8 +60,8 @@
                 </tr>
                 </thead>
                 <div th:if="${senat}!=null">
-                    <tbody th:each="person:${senat}" class="to_hide2">
-                    <tr>
+                    <tbody  class="to_hide2">
+                    <tr th:each="person:${senat}">
                         <td th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></td>
                         <td th:text="${person.getPoliticianID().getCitizenID().getName()}"></td>
                         <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
