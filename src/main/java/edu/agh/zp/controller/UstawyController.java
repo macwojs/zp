@@ -13,10 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.w3c.dom.DocumentType;
-
+import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -112,7 +111,8 @@ public class UstawyController {
 	public ModelAndView documentFilteredList( HttpServletRequest request,
 											  @RequestParam(name="docType", required = false) Long docType,
 											  @RequestParam(name="docStatus", required = false) Long docStatus,
-											  @RequestParam(name="dateControl", required = false) Long dateControl) {
+											  @RequestParam(name="dateControl", required = false) Long dateControl,
+											  @RequestParam(name="date", required = false) String date) throws Exception {
 		ModelAndView modelAndView = new ModelAndView( );
 
 		int page = 0;
@@ -123,24 +123,35 @@ public class UstawyController {
 		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
 			size = Integer.parseInt( request.getParameter( "size" ) );
 		}
-		Page< DocumentEntity > documents;// = documentRepository.findAll( PageRequest.of( page, size ) );
-
+		Page< DocumentEntity > documents;
 
 		List<DocumentStatusEntity> docStatuses =
 				(docStatus == 0 ) ? documentStatusRepository.findAll() : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
 		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Arrays.asList(docTypeR.findByDocTypeID(docType));
 
-
-		documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
-
+		if(date.isEmpty()) {
+			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
+		}else{
+			Date temp = Date.valueOf(date);
+			if(dateControl == 1){
+				documents = documentRepository.findAllByStatusAndTypeAfter( docStatuses, docTypes, temp, PageRequest.of(page, size));
+			}else{
+				documents =documentRepository.findAllByStatusAndTypeBefore(docStatuses, docTypes, temp, PageRequest.of(page, size));
+			}
+		}
 
 		setOptionsList(modelAndView);
+		setSelected(modelAndView, docType, docStatus, dateControl, date);
 		modelAndView.addObject( "documents", documents );
-		modelAndView.addObject("selectedType", docType);
-		modelAndView.addObject("selectedStatus", docStatus);
-		modelAndView.addObject("selectedDateControl", dateControl);
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
+	}
+
+	private void setSelected(ModelAndView modelAndView, Long docType, Long docStatus, Long dateControl, String date){
+		modelAndView.addObject("selectedType", docType);
+		modelAndView.addObject("selectedStatus", docStatus);
+		modelAndView.addObject("selectedDate", date);
+		modelAndView.addObject("selectedDateControl", dateControl);
 	}
 
 	private void setOptionsList(ModelAndView modelAndView){
