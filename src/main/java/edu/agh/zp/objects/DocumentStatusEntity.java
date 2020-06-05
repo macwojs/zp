@@ -30,7 +30,6 @@ public class DocumentStatusEntity implements Serializable {
         this.docStatusName = name;
     }
 
-
     public void setDocStatusID( long docStatusID ) {
         this.docStatusID = docStatusID;
     }

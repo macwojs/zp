@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface DocumentTypeRepository extends JpaRepository<DocumentTypeEntity, Long> {
     List<DocumentTypeEntity> findByDocTypeName(String Name);
+    DocumentTypeEntity findByDocTypeID(long Name);
     List<DocumentTypeEntity> findAll();
 }
