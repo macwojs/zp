@@ -20,7 +20,11 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	Optional<DocumentEntity> findByDocID(long docID);
 
 	@Transactional
-	@Query(value="UPDATE document SET docstatusid=?2 where docid =?1", nativeQuery=true)
+	@Query(value="UPDATE document SET docstatusid=?2, lastedit=GETDATE() where docid =?1", nativeQuery=true)
 	void UpdateStatusByID(long id , long StatusId);
+
+	@Transactional
+	@Query(value="UPDATE document SET docstatusid=?2, lastedit=GETDATE(), validateddate=GETDATE() where docid =?1", nativeQuery=true)
+	void ActivateStatusByID(long id , long StatusId);
 
 }

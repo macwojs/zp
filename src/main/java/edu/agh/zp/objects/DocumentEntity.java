@@ -26,11 +26,14 @@ public class DocumentEntity implements Serializable {
     @Column(name="pdfFile")
     private String pdfFilePath;
 
-    @Column(name="validityFrom")
-    private Date validityFrom;
+    @Column(name="declaredDate")
+    private Date declaredDate;
 
-    @Column(name="validityTo")
-    private Date validityTo;
+    @Column(name="LastEdit")
+    private Date lastEdit;
+
+    @Column(name="validatedDate")
+    private Date validated;
 
     @ManyToOne
     @NotNull(message = "Musisz wybrać typ dokumentu.")
@@ -45,16 +48,18 @@ public class DocumentEntity implements Serializable {
     public DocumentEntity() {
     }
 
-    public DocumentEntity( long docID, @NotNull String docName, @NotNull String docDescription, String pdfFilePath, Date validityFrom, Date validityTo, @NotNull DocumentTypeEntity docTypeID, @NotNull DocumentStatusEntity docStatusID ) {
+    public DocumentEntity(long docID, @NotNull(message = "Wprowadź nazwę dokumentu.") String docName, @NotNull(message = "Wprowadź opis dokumentu.") String docDescription, String pdfFilePath, Date declaredDate, Date lastEdit, Date validated, @NotNull(message = "Musisz wybrać typ dokumentu.") DocumentTypeEntity docTypeID, @NotNull(message = "Musisz wybrać status dokumentu.") DocumentStatusEntity docStatusID) {
         this.docID = docID;
         this.docName = docName;
         this.docDescription = docDescription;
         this.pdfFilePath = pdfFilePath;
-        this.validityFrom = validityFrom;
-        this.validityTo = validityTo;
+        this.declaredDate = declaredDate;
+        this.lastEdit = lastEdit;
+        this.validated = validated;
         this.docTypeID = docTypeID;
         this.docStatusID = docStatusID;
     }
+
 
     public long getDocID() {
         return docID;
@@ -88,20 +93,20 @@ public class DocumentEntity implements Serializable {
         this.pdfFilePath = pdfFilePath;
     }
 
-    public Date getValidityFrom() {
-        return validityFrom;
+    public Date getLastEdit() {
+        return lastEdit;
     }
 
-    public void setValidityFrom( Date validityFrom ) {
-        this.validityFrom = validityFrom;
+    public void setLastEdit(Date validityFrom ) {
+        this.lastEdit = validityFrom;
     }
 
-    public Date getValidityTo() {
-        return validityTo;
+    public Date getValidated() {
+        return validated;
     }
 
-    public void setValidityTo( Date validityTo ) {
-        this.validityTo = validityTo;
+    public void setValidated(Date validityTo ) {
+        this.validated = validityTo;
     }
 
     public DocumentTypeEntity getDocTypeID() {
@@ -118,5 +123,13 @@ public class DocumentEntity implements Serializable {
 
     public void setDocStatusID( DocumentStatusEntity docStatusID ) {
         this.docStatusID = docStatusID;
+    }
+
+    public Date getDeclaredDate() {
+        return declaredDate;
+    }
+
+    public void setDeclaredDate(Date declaredDate) {
+        this.declaredDate = declaredDate;
     }
 }

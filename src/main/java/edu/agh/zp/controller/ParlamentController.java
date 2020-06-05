@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -154,7 +155,9 @@ public class ParlamentController {
 			String path = storageService.uploadFile( file );
 			document.setPdfFilePath( path );
 		}
-
+		Date now = Date.valueOf(LocalDate.now());
+		document.setDeclaredDate(now);
+		document.setLastEdit(now);
 		documentRepository.save( document );
 
 		RedirectView redirect = new RedirectView( );

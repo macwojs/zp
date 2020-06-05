@@ -67,6 +67,8 @@ public class UstawyController {
 			case "Do zatwierdzenia przez Prezydenta":
 				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Do ponownego rozpatrzenia w Sejmie: Senat"));
 				break;
+			case "Przyjęta":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Wygasła"));
 			default:
 				model.setViewName("finalStatus");
 				model.addObject("th_redirect","ustawy/"+id);
@@ -77,7 +79,8 @@ public class UstawyController {
 
 	@PostMapping(value = {"/status/{id}"})
 	public RedirectView statusListAdd(@PathVariable long id, @RequestParam("type") long type ) {
-		documentRepository.UpdateStatusByID(id,type);
+		if (type != 11) documentRepository.UpdateStatusByID(id,type);
+		else documentRepository.ActivateStatusByID(id,type);
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl("/ustawy/"+id);
 		return redirect;
