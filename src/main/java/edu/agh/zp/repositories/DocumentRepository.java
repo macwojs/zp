@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -30,11 +31,13 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	Optional<DocumentEntity> findByDocID(long docID);
 
 	@Transactional
-	@Query(value="UPDATE document SET docstatusid=?2, lastedit=GETDATE() where docid =?1", nativeQuery=true)
+	@Modifying
+	@Query(value="UPDATE document SET docstatusid=?2, lastedit=CURRENT_DATE where docid =?1", nativeQuery=true)
 	void UpdateStatusByID(long id , long StatusId);
 
 	@Transactional
-	@Query(value="UPDATE document SET docstatusid=?2, lastedit=GETDATE(), validateddate=GETDATE() where docid =?1", nativeQuery=true)
+	@Modifying
+	@Query(value="UPDATE document SET docstatusid=?2, lastedit=CURRENT_DATE, validateddate=CURRENT_DATE where docid =?1", nativeQuery=true)
 	void ActivateStatusByID(long id , long StatusId);
 
 	Page<DocumentEntity> findAllByDocTypeID_DocTypeID(long docType, Pageable page);

@@ -51,6 +51,7 @@ public class UstawyController {
 		}
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "ustawaPodglad" );
+		modelAndView.addObject("id",id);
 		modelAndView.addObject( "doc", document.get() );
 		return modelAndView;
 	}
@@ -66,7 +67,7 @@ public class UstawyController {
 		model.addObject("currentStatus",docStatus);
 		model.addObject("id",id);
 		String name = docStatus.getDocStatusName();
-		List<DocumentStatusEntity> statuses = null;
+		List<DocumentStatusEntity> statuses = new ArrayList<DocumentStatusEntity>();
 		model.setViewName("alterStatus");
 		switch (name) {
 			case "Zgłoszona":
@@ -81,14 +82,16 @@ public class UstawyController {
 				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Głosowanie w Senacie", "Odrzucona"));
 				break;
 			case "Głosowanie w Senacie":
+				statuses = documentStatusRepository.findByDocStatusNameIn(Collections.singletonList("Do ponownego rozpatrzenia w Sejmie: Senat"));
 			case "Do ponownego rozpatrzenia w Sejmie: Senat":
-				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Do zatwierdzenia przez Prezydenta", "Odrzucona"));
+				statuses.addAll(documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Do zatwierdzenia przez Prezydenta", "Odrzucona")));
 				break;
 			case "Do zatwierdzenia przez Prezydenta":
-				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Do ponownego rozpatrzenia w Sejmie: Senat"));
+				statuses =documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Do ponownego rozpatrzenia w Sejmie: Prezydent"));
 				break;
 			case "Przyjęta":
-				statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Wygasła"));
+				statuses = documentStatusRepository.findByDocStatusNameIn(Collections.singletonList("Wygasła"));
+				break;
 			default:
 				model.setViewName("finalStatus");
 				model.addObject("th_redirect","ustawy/"+id);

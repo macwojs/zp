@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/parlament/**").authenticated()
                 .antMatchers("/wyboryReferenda/**").authenticated()
                 .antMatchers( "/obywatel/**" ).authenticated()
+                .antMatchers("/ustawy/status/**").authenticated()
                 .and()
                 .exceptionHandling().accessDeniedPage("/error/accessdenied")
                 .and()

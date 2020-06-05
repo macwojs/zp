@@ -13,15 +13,19 @@
     <div class="contact-clean">
         <form method="POST" th:action="@{/ustawy/status/{id}(id=${id})}" enctype="multipart/form-data" th:object="${document}">
             <h2 class="text-center">Zmiana statusu dokumentu</h2>
-            <div class="text-center" ><h3>Poprzedni status: </h3><h3 th:text="currentStatus"></h3>></div>
+            <div class="text-center" ><h3>Poprzedni status: </h3><h3 th:text="${currentStatus.getDocStatusName()}"></h3></div>
+            <br><br>
+            <h4 class="text-center">Nowy status:</h4>
             <div class="form-group">
-                <select class="form-control" name="type">
-                    <option value="">Wybierz status</option>
-                    <option th:each="status: ${statuses}"
-                            th:value="${status.getDocStatusID()}"
-                            th:text="${status.getDocStatusName()}"></option>
-                </select>
-                <span class="text-danger"></span>
+                    <select required="required" class="form-control" name="type">
+                        <option value="">Wybierz status</option>
+                        <option th:each="status: ${statuses}"
+                                th:value="${status.getDocStatusID()}"
+                                th:text="${status.getDocStatusName()}"></option>
+                    </select>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit">Zatwierdź</button>
+                </div>
             </div>
         </form>
     </div>

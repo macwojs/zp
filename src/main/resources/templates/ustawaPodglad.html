@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
@@ -49,6 +50,10 @@
                         <img th:src="${doc.getPdfFilePath()} ? '/img/doc_icon.svg' : '/img/doc_icon_disable.svg' "
                              style="height: 30px;">
                     </a></td>
+                <tr sec:authorize="hasAnyRole('MARSZALEK_SEJMU', 'MARSZALEK_SENATU','ADMIN')">
+                    <td><a>Edytuj status:</a></td>
+                    <td><a class="nav-link" th:href="@{/ustawy/status/{id}(id=${id})}">Rozpocznij</a></td>
+                </tr>
                 </tr>
             </table>
         </form>
