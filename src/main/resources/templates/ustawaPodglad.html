@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+    </div>
+</head>
+<body>
+<div class="event">
+    <div class="contact-clean" style="padding-bottom: 40px;" th:object="${doc}">
+        <form>
+            <h2 class="text-center">Szczegóły ustawy</h2>
+            <table>
+                <tr th:if="*{docName}">
+                    <td><a>Nazwa dokumentu: </a></td>
+                    <td><a th:text="*{docName}" ></a></td>
+                </tr>
+                <tr th:if="*{docDescription}">
+                    <td><a>Opis dokumentu: </a></td>
+                    <td><a th:text="*{docDescription}" ></a></td>
+                </tr>
+                <tr th:if="*{docStatusID}">
+                    <td><a>Obecny status: </a></td>
+                    <td><a th:text="*{docStatusID.docStatusName}" ></a></td>
+                </tr>
+                <tr th:if="*{docTypeID}">
+                    <td><a>Typ dokumentu: </a></td>
+                    <td><a th:text="*{docTypeID.docTypeName}" ></a></td>
+                </tr>
+                <tr th:if="*{declaredDate}">
+                    <td><a>Zgłoszono: </a></td>
+                    <td><a style="text-align:right" th:text="*{declaredDate}" ></a></td>
+                </tr>
+                <tr th:if="*{lastEdit}">
+                    <td><a>Zmieniono status: </a></td>
+                    <td><a th:text="*{lastEdit}" ></a></td>
+                </tr>
+                <tr th:if="*{validated}">
+                    <td><a>Zatwierdzono: </a></td>
+                    <td><a th:text="*{validated}" ></a></td>
+                </tr>
+                <tr th:if="*{pdfFilePath}">
+                    <td><a>Pobierz dokument: </a></td>
+                    <td><a class="" th:href="@{/{doc}(doc=${doc.getPdfFilePath()})}" target="_blank"
+                           th:classappend="${doc.getPdfFilePath()} ? '' : 'btn-link disabled'">
+                        <img th:src="${doc.getPdfFilePath()} ? '/img/doc_icon.svg' : '/img/doc_icon_disable.svg' "
+                             style="height: 30px;">
+                    </a></td>
+                </tr>
+            </table>
+        </form>
+       </div>
+</div>
+</body>
+</html>
