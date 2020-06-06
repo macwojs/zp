@@ -8,10 +8,12 @@ import org.apache.catalina.startup.ListenerCreateRule;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface VoteRepository extends JpaRepository< VoteEntity, Long > {
 	Optional< VoteEntity > findByCitizenID_CitizenIDAndVotingID_VotingID(long voting, long citizen );
 
