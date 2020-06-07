@@ -43,8 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/obywatel/**" ).authenticated()
                 .antMatchers("/ustawy/status/**").authenticated()
                 .and()
-                .exceptionHandling().accessDeniedPage("/error/accessdenied")
-                .and()
                 .formLogin()
                 .loginPage("/signin")
                 .loginProcessingUrl("signin.html")
