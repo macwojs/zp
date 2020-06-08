@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - zmiana daty - prezydent</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/date-change-form.css}">
+    </div>
+</head>
+
+
+<body>
+<section id="tresc" >
+    <div class="main-block">
+        <h1 class="heading-form">Zmiana terminu głosowania</h1>
+        <p>Głosowanie: Nazwa głosowania</p>
+        <p>Obecny termin:
+            <span th:text="${currentDate}">24.09.1996</span> <span th:text="${timeFrom}">12:00:00</span> - <span th:text="${timeTo}">12:00:00</span>
+        </p>
+        <h4>Zmień termin</h4>
+        <form id="form" method="GET">
+            <div class="form-group d-md-flex align-items-md-center">
+                <p class="text-form">Data:</p>
+                <input class="form-control date-form-ob" type="date" id="dateForm" name="dateForm" value="dateForm">
+            </div>
+            <div class="form-group d-md-flex align-items-md-center">
+                <p class="text-form">Godziny:</p>
+                <input class="form-control time-form" type="time"  step="1"  id="timeFormOd" name="timeFormOd" value="timeFormOd">
+                <input class="form-control time-form-s" type="time"   step="1" id="timeFormDo" name="timeFormDo" value="timeFormDo">
+            </div>
+            <p class="error" th:text="${error} ? ${error} : ''"></p>
+            <button class="btn btn-primary button-form" type="submit">Zmień</button>
+        </form>
+    </div>
+</section>
+</body>
+
+</html>
