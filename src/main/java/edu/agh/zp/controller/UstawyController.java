@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import java.sql.Date;
@@ -60,8 +61,7 @@ public class UstawyController {
 	public ModelAndView statusList(ModelAndView model, @PathVariable long id){
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
 		if (document.isEmpty()){
-			model.setViewName("404 NOT_FOUND");
-			return model;
+			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Document not found" );
 		}
 		DocumentStatusEntity docStatus = document.get().getDocStatusID();
 		model.addObject("currentStatus",docStatus);
@@ -132,8 +132,7 @@ public class UstawyController {
 	public ModelAndView descriptionEdit(ModelAndView model, @PathVariable long id){
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
 		if (document.isEmpty()){
-			model.setViewName("404 NOT_FOUND");
-			return model;
+			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Document not found" );
 		}
 		String docDesc = document.get().getDocDescription();
 

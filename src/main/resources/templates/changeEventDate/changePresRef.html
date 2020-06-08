@@ -11,21 +11,13 @@
 <body>
 <section id="tresc" >
     <div class="main-block">
-        <h1 class="heading-form">Zmiana terminu głosowania</h1>
-        <p>Głosowanie: Nazwa głosowania</p>
-        <p>Obecny termin:
-            <span th:text="${currentDate}">24.09.1996</span> <span th:text="${timeFrom}">12:00:00</span> - <span th:text="${timeTo}">12:00:00</span>
-        </p>
-        <h4>Zmień termin</h4>
+        <h1 class="heading-form" th:text="${heading}">wyborów</h1>
+        <p th:text="${name}">Wybory na prezydenta</p>
+        <p>Obecny termin: <span th:text="${currentDate}">12.06.2019</span></p>
         <form id="form" method="GET">
             <div class="form-group d-md-flex align-items-md-center">
-                <p class="text-form">Data:</p>
+                <h4 class="text-form">Zmień termin</h4>
                 <input class="form-control date-form-ob" type="date" id="dateForm" name="dateForm" value="dateForm">
-            </div>
-            <div class="form-group d-md-flex align-items-md-center">
-                <p class="text-form">Godziny:</p>
-                <input class="form-control time-form" type="time"  step="1"  id="timeFormOd" name="timeFormOd" value="timeFormOd">
-                <input class="form-control time-form-s" type="time"   step="1" id="timeFormDo" name="timeFormDo" value="timeFormDo">
             </div>
             <p class="error" th:text="${error} ? ${error} : ''"></p>
             <button class="btn btn-primary button-form" type="submit">Zmień</button>

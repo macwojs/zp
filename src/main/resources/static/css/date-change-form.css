@@ -35,6 +35,13 @@ body {
   max-width: 200px;
   margin: auto;
   margin-left: 16px;
+  margin-right: 16px;
+}
+
+.time-form-s {
+  max-width: 200px;
+  margin: auto;
+  margin-left: 16px;
   margin-right: auto;
 }
 
@@ -47,7 +54,7 @@ body {
 .form-group.d-md-flex.align-items-md-center {
   margin: auto;
   padding-top: 8px;
-  padding-bottom: 8pxpx;
+  padding-bottom: 8px;
 }
 
 .btn.btn-primary.button-form {
