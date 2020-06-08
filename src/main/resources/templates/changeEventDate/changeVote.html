@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - zmiana daty - prezydent</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/date-change-form.css}">
+    </div>
+</head>
+
+
+<body>
+<section id="tresc" >
+    <div class="main-block">
+        <h1 class="heading-form">Zmiana terminu głosowania</h1>
+        <p>Głosowanie: Nazwa głosowania</p>
+        <p>Obecny termin: 24.06.2019 15:40:40 - 16:40:40</p>
+        <h4>Zmień termin</h4>
+        <form>
+            <div class="form-group d-md-flex align-items-md-center">
+                <p class="text-form">Od:</p><input class="form-control date-form" type="date"><input class="form-control time-form" type="time"></div>
+            <div class="form-group d-md-flex align-items-md-center">
+                <p class="text-form">Do:</p><input class="form-control date-form" type="date"><input class="form-control time-form" type="time"></div><button class="btn btn-primary button-form" type="submit">Zmień</button></form>
+    </div>
+</section>
+</body>
+
+</html>
