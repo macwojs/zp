@@ -18,12 +18,16 @@ public class TimeAfterNowValidator implements ConstraintValidator<TimeAfterNow, 
 		if (voting.getVotingType()== VotingEntity.TypeOfVoting.PREZYDENT || voting.getVotingType()== VotingEntity.TypeOfVoting.REFERENDUM) return true;
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime provided = null;
-		try {
-			provided = LocalDateTime.parse( voting.getVotingDate() + "T" + new Time(formatter.parse(voting.getClose()).getTime()));
-		} catch ( ParseException e ) {
-			e.printStackTrace( );
-			return false;
+		LocalDateTime provided;
+		if( voting.getClose() != null) {
+			try {
+				provided = LocalDateTime.parse(voting.getVotingDate() + "T" + new Time(formatter.parse(voting.getClose()).getTime()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}else{
+			provided =dateAndTimeToLocalDateTime(voting.getVotingDate(), voting.getCloseVoting());
 		}
 		return provided.isAfter( now );
 	}

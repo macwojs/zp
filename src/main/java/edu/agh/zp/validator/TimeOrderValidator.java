@@ -18,18 +18,22 @@ public class TimeOrderValidator implements ConstraintValidator<TimeOrder, Voting
 
 		Time timeValueOpen;
 		Time timeValueClose;
-
-		try {
-			timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
-		} catch ( ParseException e ) {
-			e.printStackTrace( );
-			return false;
-		}
-		try {
-			timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
-		} catch ( ParseException e ) {
-			e.printStackTrace( );
-			return false;
+		if(voting.getOpen() != null ) {
+			try {
+				timeValueOpen = new Time(formatter.parse(voting.getOpen()).getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return false;
+			}
+			try {
+				timeValueClose = new Time(formatter.parse(voting.getClose()).getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}else{
+			timeValueOpen = voting.getOpenVoting();
+			timeValueClose = voting.getCloseVoting();
 		}
 
 		return timeValueClose.after( timeValueOpen );

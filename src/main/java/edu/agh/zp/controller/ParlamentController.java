@@ -266,14 +266,18 @@ public class ParlamentController {
 
 		//Wyslano zadanie zmiany daty, nie ma errora, zmieniamy
 		if ( error == null && dateForm != null && timeFormOd != null && timeFormDo != null ) {
+			System.out.print(dateForm.toString()+"\n\n");
 			voting.setVotingDate( dateForm );
 
 			DateFormat formatter = new SimpleDateFormat( "HH:mm:ss" );
 			Time open = new Time( formatter.parse( timeFormOd.toString() ).getTime() );
 			Time close = new Time( formatter.parse( timeFormDo.toString() ).getTime() );
-
+			System.out.print(open.toString()+"\n\n");
+			System.out.print(close.toString()+"\n\n");
 			voting.setOpenVoting( open );
 			voting.setCloseVoting( close );
+
+
 			votingRepository.save( voting );
 
 			RedirectView redirect = new RedirectView( );
