@@ -4,12 +4,14 @@ import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
@@ -17,11 +19,14 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 
@@ -109,12 +114,6 @@ public class ParlamentController {
 	@Autowired
 	private VotingRepository votingRepository;
 
-	@Autowired
-	private PoliticianRepository politicianRepository;
-
-	@Autowired
-	private ParliamentarianRepository parliamentarianRepository;
-
 
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
@@ -155,9 +154,9 @@ public class ParlamentController {
 			String path = storageService.uploadFile( file );
 			document.setPdfFilePath( path );
 		}
-		Date now = Date.valueOf(LocalDate.now());
-		document.setDeclaredDate(now);
-		document.setLastEdit(now);
+		Date now = Date.valueOf( LocalDate.now( ) );
+		document.setDeclaredDate( now );
+		document.setLastEdit( now );
 		documentRepository.save( document );
 
 		RedirectView redirect = new RedirectView( );
@@ -197,7 +196,7 @@ public class ParlamentController {
 		LocalTime time = LocalTime.now( );
 		LocalDate date = LocalDate.now( );
 		VotingEntity voting = vote.getVotingID( );
-		Optional< VoteEntity > voteControl = voteRepository.findByCitizenIdVotingId(  id,vote.getCitizenID().getCitizenID());
+		Optional< VoteEntity > voteControl = voteRepository.findByCitizenIdVotingId( id, vote.getCitizenID( ).getCitizenID( ) );
 		if ( voteControl.isPresent( ) ) {
 			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
 				model.addObject( "th_redirect", "/parlament/sejm" );
@@ -222,6 +221,85 @@ public class ParlamentController {
 		else
 			redirect.setUrl( "/parlament/senat" );
 		return new ModelAndView( redirect );
+	}
+
+	@GetMapping ( value = { "/vote/zmianaDaty/{id}" } )
+	public Object votingDateChange( @PathVariable long id, @RequestParam ( value = "dateForm", required = false ) Date dateForm, @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd, @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo ) {
+		VotingEntity voting = votingRepository.findByVotingID( id );
+
+		Time timeSec = java.sql.Time.valueOf( LocalTime.now( ) );
+		java.util.Date dateSec = java.sql.Date.valueOf( LocalDate.now( ) );
+		boolean ended = ( voting.getVotingDate( ).before( dateSec ) || ( voting.getVotingDate( ).equals( dateSec ) && voting.getCloseVoting( ).before( timeSec ) ) );
+		boolean during = ( voting.getVotingDate( ).equals( dateSec ) && voting.getOpenVoting( ).before( timeSec ) && voting.getCloseVoting( ).after( timeSec ) );
+		if ( ended || during ) {
+			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting is ongoing or has ended" );
+		}
+
+		Authentication authentication = SecurityContextHolder.getContext( ).getAuthentication( );
+		boolean hasUserRoleAdmin = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_ADMIN" ) );
+		boolean hasUserRoleSejm = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SEJMU" ) );
+		boolean hasUserRoleSenat = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SENATU" ) );
+
+		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SEJM )
+			if ( !( hasUserRoleAdmin || hasUserRoleSejm ) ) {
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+			}
+
+		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SENAT )
+			if ( !( hasUserRoleAdmin || hasUserRoleSenat ) ) {
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+			}
+
+		if ( voting == null ) {
+			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Voting not found" );
+		}
+		if ( voting.getVotingType( ) != VotingEntity.TypeOfVoting.SEJM && voting.getVotingType( ) != VotingEntity.TypeOfVoting.SENAT ) {
+			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Wrong voting type" );
+		}
+
+		ModelAndView model = new ModelAndView( );
+
+		//validacja
+		String error = null;
+		if ( dateForm != null && timeFormOd != null && timeFormDo != null ) {
+			LocalDateTime nowLDT = LocalDateTime.now( );
+			String odDT = dateForm + "T" + timeFormOd;
+			String doDT = dateForm + "T" + timeFormDo;
+			LocalDateTime odLDT = LocalDateTime.parse( odDT );
+			LocalDateTime doLDT = LocalDateTime.parse( doDT );
+
+			if ( odLDT.isBefore( nowLDT ) )
+				error = "Czas rozpoczecia głosowania nie może być z przeszłości";
+			if ( doLDT.isBefore( odLDT ) )
+				error = "Czas zakończenia wcześniej niż rozpoczęcia ";
+
+			model.addObject( "error", error );
+		}
+
+		//Wyslano zadanie zmiany daty, nie ma errora, zmieniamy
+		if ( error == null && dateForm != null && timeFormOd != null && timeFormDo != null ) {
+			voting.setVotingDate( dateForm );
+			voting.setOpenVoting( timeFormOd );
+			voting.setCloseVoting( timeFormDo );
+
+			votingRepository.save( voting );
+
+			RedirectView redirect = new RedirectView( );
+			redirect.setUrl( "/kalendarz/wydarzenie/" + id );
+			return redirect;
+		}
+
+		Date date = voting.getVotingDate( );
+		String pattern = "dd MMMMM yyyy";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
+		String formattedDate = simpleDateFormat.format( date );
+
+		model.addObject( "currentDate", formattedDate );
+		model.addObject( "timeFrom", voting.getOpenVoting( ) );
+		model.addObject( "timeTo", voting.getCloseVoting( ) );
+		model.addObject( "refName", voting.getDocumentID( ).getDocName( ) );
+		model.setViewName( "changeEventDate/changeVote" );
+		return model;
 	}
 }
 

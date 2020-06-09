@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU", "ADMIN")
                 .antMatchers("/parlament/sejm/vote").hasAnyRole("POSEL", "ADMIN")
                 .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
+                .antMatchers("/parlament/vote/zmianaDaty/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU", "ADMIN")
                 .antMatchers("/parlament/**").authenticated()
                 .antMatchers("/wyboryReferenda/**").authenticated()
                 .antMatchers( "/obywatel/**" ).authenticated()

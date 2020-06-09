@@ -1,13 +1,10 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.*;
+import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.ParliamentarianService;
 import edu.agh.zp.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +17,9 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 class Event {
 	public long id;
@@ -87,15 +86,11 @@ public class KalendarzController {
 		return parseVotingsToEvents( );
 	}
 
-	public List<Event> parseVotingsToEvents(){
-		List<VotingEntity> votings = vr.findAll();
-		List<Event> events = new ArrayList<>();
-		for( VotingEntity i : votings) {
-			events.add(new Event(i.getVotingID(),
-					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getOpenVoting()),
-					dateAndTimeToLocalDateTime(i.getVotingDate(),i.getCloseVoting()),
-					i.getDocumentID() != null ? i.getDocumentID().getDocName() :
-							i.getVotingDescription() != null ? i.getVotingDescription() : i.getVotingType().toString(), "/kalendarz/wydarzenie/"+i.getVotingID()));
+	public List< Event > parseVotingsToEvents() {
+		List< VotingEntity > votings = vr.findAll( );
+		List< Event > events = new ArrayList<>( );
+		for ( VotingEntity i : votings ) {
+			events.add( new Event( i.getVotingID( ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getOpenVoting( ) ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getCloseVoting( ) ), i.getDocumentID( ) != null ? i.getDocumentID( ).getDocName( ) : i.getVotingDescription( ) != null ? i.getVotingDescription( ) : i.getVotingType( ).toString( ), "/kalendarz/wydarzenie/" + i.getVotingID( ) ) );
 		}
 		return events;
 	}
@@ -130,6 +125,8 @@ public class KalendarzController {
 		modelAndView.addObject( "visibility", vs );
 		boolean ended = ( voting.getVotingDate( ).before( date ) || ( voting.getVotingDate( ).equals( date ) && voting.getCloseVoting( ).before( time ) ) );
 		modelAndView.addObject( "ended", ended );
+		boolean during = ( voting.getVotingDate( ).equals( date ) && voting.getOpenVoting( ).before( time ) && voting.getCloseVoting( ).after( time ) );
+		modelAndView.addObject( "during", during );
 		return modelAndView;
 	}
 
