@@ -49,6 +49,34 @@
         <div th:if="${voting.votingType.toString() == 'SEJM'&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('POSEL','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
         <div th:if="${voting.votingType.toString() == 'SENAT'&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('SENATOR','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
         <div th:if="${ended}" style="max-width: 600px; width: 90%; margin: 0 auto;"><a style="text-decoration: none;" th:href="'/kalendarz/wydarzenie/'+*{votingID}+'/wyniki'"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Wyniki</button></a></div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'SEJM' }"
+             sec:authorize="hasAnyRole('MARSZALEK_SEJMU','ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/parlament/vote/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'SENAT' }"
+             sec:authorize="hasAnyRole('MARSZALEK_SENATU','ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/parlament/vote/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'PREZYDENT' }"
+             sec:authorize="hasAnyRole('MARSZALEK_SEJMU','ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/glosowania/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'REFERENDUM' }"
+             sec:authorize="hasAnyRole('PREZYDENT', 'MARSZALEK_SEJMU', 'ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/glosowania/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
     </div>
 </div>
 </body>

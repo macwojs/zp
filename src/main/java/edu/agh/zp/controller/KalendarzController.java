@@ -130,6 +130,8 @@ public class KalendarzController {
 		modelAndView.addObject( "visibility", vs );
 		boolean ended = ( voting.getVotingDate( ).before( date ) || ( voting.getVotingDate( ).equals( date ) && voting.getCloseVoting( ).before( time ) ) );
 		modelAndView.addObject( "ended", ended );
+		boolean during = ( voting.getVotingDate( ).equals( date ) && voting.getOpenVoting( ).before( time ) && voting.getCloseVoting( ).after( time ) );
+		modelAndView.addObject( "during", during );
 		return modelAndView;
 	}
 
