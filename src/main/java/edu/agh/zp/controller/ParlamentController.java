@@ -21,8 +21,6 @@ import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -115,12 +113,6 @@ public class ParlamentController {
 
 	@Autowired
 	private VotingRepository votingRepository;
-
-	@Autowired
-	private PoliticianRepository politicianRepository;
-
-	@Autowired
-	private ParliamentarianRepository parliamentarianRepository;
 
 
 	@GetMapping ( value = { "" } )
@@ -235,7 +227,7 @@ public class ParlamentController {
 	public Object votingDateChange( @PathVariable long id,
 	                                    @RequestParam ( value = "dateForm", required = false ) Date dateForm,
 	                                    @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd,
-	                                    @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo) throws ParseException {
+	                                    @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
 
 		if ( voting == null ) {
@@ -266,17 +258,9 @@ public class ParlamentController {
 
 		//Wyslano zadanie zmiany daty, nie ma errora, zmieniamy
 		if ( error == null && dateForm != null && timeFormOd != null && timeFormDo != null ) {
-			System.out.print(dateForm.toString()+"\n\n");
 			voting.setVotingDate( dateForm );
-
-			DateFormat formatter = new SimpleDateFormat( "HH:mm:ss" );
-			Time open = new Time( formatter.parse( timeFormOd.toString() ).getTime() );
-			Time close = new Time( formatter.parse( timeFormDo.toString() ).getTime() );
-			System.out.print(open.toString()+"\n\n");
-			System.out.print(close.toString()+"\n\n");
-			voting.setOpenVoting( open );
-			voting.setCloseVoting( close );
-
+			voting.setOpenVoting( timeFormOd );
+			voting.setCloseVoting( timeFormDo );
 
 			votingRepository.save( voting );
 
