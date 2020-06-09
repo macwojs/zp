@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/wyboryReferenda/**").authenticated()
                 .antMatchers( "/obywatel/**" ).authenticated()
                 .antMatchers("/ustawy/status/**").authenticated()
+                .antMatchers("/ustawy/description/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN", "SENATOR", "POSEL")
                 .and()
                 .formLogin()
                 .loginPage("/signin")
