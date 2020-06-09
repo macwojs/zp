@@ -4,6 +4,8 @@ import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -151,8 +154,34 @@ public class GlosowaniaController {
 	}
 
 	@GetMapping ( value = { "/zmianaDaty/{id}" } )
-	public Object referendumDateChange( @RequestParam ( value = "dateForm", required = false ) Date dateForm, @PathVariable long id ) {
+	public Object votingDateChange( @RequestParam ( value = "dateForm", required = false ) Date dateForm, @PathVariable long id ) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
+
+		Time timeSec = java.sql.Time.valueOf( LocalTime.now( ) );
+		java.util.Date dateSec = java.sql.Date.valueOf( LocalDate.now( ) );
+		boolean ended = ( voting.getVotingDate( ).before( dateSec ) || ( voting.getVotingDate( ).equals( dateSec ) && voting.getCloseVoting( ).before( timeSec ) ) );
+		boolean during = ( voting.getVotingDate( ).equals( dateSec ) && voting.getOpenVoting( ).before( timeSec ) && voting.getCloseVoting( ).after( timeSec ) );
+		if ( ended || during){
+			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting is ongoing or has ended" );
+		}
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
+				.anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+		boolean hasUserRoleSejm = authentication.getAuthorities().stream()
+				.anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SEJMU"));
+		boolean hasUserRolePresident = authentication.getAuthorities().stream()
+				.anyMatch(r -> r.getAuthority().equals("ROLE_PREZYDENT"));
+
+		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.REFERENDUM )
+			if ( !(hasUserRoleAdmin || hasUserRoleSejm || hasUserRolePresident ) ){
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+		}
+
+		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.PREZYDENT )
+			if ( !( hasUserRoleAdmin || hasUserRoleSejm) ){
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Senatu can change voting date" );
+		}
 
 		if ( voting == null ) {
 			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Voting not found" );

@@ -230,6 +230,32 @@ public class ParlamentController {
 	                                    @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
 
+		Time timeSec = java.sql.Time.valueOf( LocalTime.now( ) );
+		java.util.Date dateSec = java.sql.Date.valueOf( LocalDate.now( ) );
+		boolean ended = ( voting.getVotingDate( ).before( dateSec ) || ( voting.getVotingDate( ).equals( dateSec ) && voting.getCloseVoting( ).before( timeSec ) ) );
+		boolean during = ( voting.getVotingDate( ).equals( dateSec ) && voting.getOpenVoting( ).before( timeSec ) && voting.getCloseVoting( ).after( timeSec ) );
+		if ( ended || during){
+			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting is ongoing or has ended" );
+		}
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
+				.anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+		boolean hasUserRoleSejm = authentication.getAuthorities().stream()
+				.anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SEJMU"));
+		boolean hasUserRoleSenat = authentication.getAuthorities().stream()
+				.anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SENATU"));
+
+		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SEJM )
+			if ( !(hasUserRoleAdmin || hasUserRoleSejm ) ){
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+			}
+
+		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SENAT )
+			if ( !(hasUserRoleAdmin || hasUserRoleSenat ) ){
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+			}
+
 		if ( voting == null ) {
 			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Voting not found" );
 		}
