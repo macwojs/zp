@@ -154,9 +154,9 @@ public class ParlamentController {
 			String path = storageService.uploadFile( file );
 			document.setPdfFilePath( path );
 		}
-		Date now = Date.valueOf(LocalDate.now());
-		document.setDeclaredDate(now);
-		document.setLastEdit(now);
+		Date now = Date.valueOf( LocalDate.now( ) );
+		document.setDeclaredDate( now );
+		document.setLastEdit( now );
 		documentRepository.save( document );
 
 		RedirectView redirect = new RedirectView( );
@@ -196,7 +196,7 @@ public class ParlamentController {
 		LocalTime time = LocalTime.now( );
 		LocalDate date = LocalDate.now( );
 		VotingEntity voting = vote.getVotingID( );
-		Optional< VoteEntity > voteControl = voteRepository.findByCitizenIdVotingId(  id,vote.getCitizenID().getCitizenID());
+		Optional< VoteEntity > voteControl = voteRepository.findByCitizenIdVotingId( id, vote.getCitizenID( ).getCitizenID( ) );
 		if ( voteControl.isPresent( ) ) {
 			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
 				model.addObject( "th_redirect", "/parlament/sejm" );
@@ -224,35 +224,29 @@ public class ParlamentController {
 	}
 
 	@GetMapping ( value = { "/vote/zmianaDaty/{id}" } )
-	public Object votingDateChange( @PathVariable long id,
-	                                    @RequestParam ( value = "dateForm", required = false ) Date dateForm,
-	                                    @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd,
-	                                    @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo) {
+	public Object votingDateChange( @PathVariable long id, @RequestParam ( value = "dateForm", required = false ) Date dateForm, @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd, @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo ) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
 
 		Time timeSec = java.sql.Time.valueOf( LocalTime.now( ) );
 		java.util.Date dateSec = java.sql.Date.valueOf( LocalDate.now( ) );
 		boolean ended = ( voting.getVotingDate( ).before( dateSec ) || ( voting.getVotingDate( ).equals( dateSec ) && voting.getCloseVoting( ).before( timeSec ) ) );
 		boolean during = ( voting.getVotingDate( ).equals( dateSec ) && voting.getOpenVoting( ).before( timeSec ) && voting.getCloseVoting( ).after( timeSec ) );
-		if ( ended || during){
+		if ( ended || during ) {
 			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting is ongoing or has ended" );
 		}
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-		boolean hasUserRoleSejm = authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SEJMU"));
-		boolean hasUserRoleSenat = authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SENATU"));
+		Authentication authentication = SecurityContextHolder.getContext( ).getAuthentication( );
+		boolean hasUserRoleAdmin = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_ADMIN" ) );
+		boolean hasUserRoleSejm = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SEJMU" ) );
+		boolean hasUserRoleSenat = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SENATU" ) );
 
-		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SEJM )
-			if ( !(hasUserRoleAdmin || hasUserRoleSejm ) ){
+		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SEJM )
+			if ( !( hasUserRoleAdmin || hasUserRoleSejm ) ) {
 				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
 			}
 
-		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SENAT )
-			if ( !(hasUserRoleAdmin || hasUserRoleSenat ) ){
+		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SENAT )
+			if ( !( hasUserRoleAdmin || hasUserRoleSenat ) ) {
 				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
 			}
 
@@ -268,15 +262,15 @@ public class ParlamentController {
 		//validacja
 		String error = null;
 		if ( dateForm != null && timeFormOd != null && timeFormDo != null ) {
-			LocalDateTime nowLDT = LocalDateTime.now();
+			LocalDateTime nowLDT = LocalDateTime.now( );
 			String odDT = dateForm + "T" + timeFormOd;
 			String doDT = dateForm + "T" + timeFormDo;
 			LocalDateTime odLDT = LocalDateTime.parse( odDT );
 			LocalDateTime doLDT = LocalDateTime.parse( doDT );
 
-			if ( odLDT.isBefore( nowLDT ))
+			if ( odLDT.isBefore( nowLDT ) )
 				error = "Czas rozpoczecia głosowania nie może być z przeszłości";
-			if(doLDT.isBefore( odLDT ))
+			if ( doLDT.isBefore( odLDT ) )
 				error = "Czas zakończenia wcześniej niż rozpoczęcia ";
 
 			model.addObject( "error", error );
@@ -301,9 +295,9 @@ public class ParlamentController {
 		String formattedDate = simpleDateFormat.format( date );
 
 		model.addObject( "currentDate", formattedDate );
-		model.addObject( "timeFrom", voting.getOpenVoting() );
-		model.addObject( "timeTo", voting.getCloseVoting() );
-		model.addObject( "refName", voting.getDocumentID().getDocName() );
+		model.addObject( "timeFrom", voting.getOpenVoting( ) );
+		model.addObject( "timeTo", voting.getCloseVoting( ) );
+		model.addObject( "refName", voting.getDocumentID( ).getDocName( ) );
 		model.setViewName( "changeEventDate/changeVote" );
 		return model;
 	}

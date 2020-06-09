@@ -161,27 +161,24 @@ public class GlosowaniaController {
 		java.util.Date dateSec = java.sql.Date.valueOf( LocalDate.now( ) );
 		boolean ended = ( voting.getVotingDate( ).before( dateSec ) || ( voting.getVotingDate( ).equals( dateSec ) && voting.getCloseVoting( ).before( timeSec ) ) );
 		boolean during = ( voting.getVotingDate( ).equals( dateSec ) && voting.getOpenVoting( ).before( timeSec ) && voting.getCloseVoting( ).after( timeSec ) );
-		if ( ended || during){
+		if ( ended || during ) {
 			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting is ongoing or has ended" );
 		}
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		boolean hasUserRoleAdmin = authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-		boolean hasUserRoleSejm = authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SEJMU"));
-		boolean hasUserRolePresident = authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("ROLE_PREZYDENT"));
+		Authentication authentication = SecurityContextHolder.getContext( ).getAuthentication( );
+		boolean hasUserRoleAdmin = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_ADMIN" ) );
+		boolean hasUserRoleSejm = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SEJMU" ) );
+		boolean hasUserRolePresident = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_PREZYDENT" ) );
 
-		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.REFERENDUM )
-			if ( !(hasUserRoleAdmin || hasUserRoleSejm || hasUserRolePresident ) ){
+		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.REFERENDUM )
+			if ( !( hasUserRoleAdmin || hasUserRoleSejm || hasUserRolePresident ) ) {
 				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
-		}
+			}
 
-		if( voting.getVotingType( ) == VotingEntity.TypeOfVoting.PREZYDENT )
-			if ( !( hasUserRoleAdmin || hasUserRoleSejm) ){
+		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.PREZYDENT )
+			if ( !( hasUserRoleAdmin || hasUserRoleSejm ) ) {
 				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Senatu can change voting date" );
-		}
+			}
 
 		if ( voting == null ) {
 			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Voting not found" );
@@ -203,9 +200,9 @@ public class GlosowaniaController {
 
 		String error = null;
 		if ( dateForm != null ) {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -7);
-			java.util.Date dateNow = cal.getTime();
+			Calendar cal = Calendar.getInstance( );
+			cal.add( Calendar.DATE, -7 );
+			java.util.Date dateNow = cal.getTime( );
 
 			if ( dateForm.before( dateNow ) )
 				error = "Głosowanie może być najwcześniej za 7 dni";
