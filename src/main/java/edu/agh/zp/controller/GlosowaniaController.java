@@ -15,10 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping ( value = { "/glosowania" } )
@@ -177,7 +174,9 @@ public class GlosowaniaController {
 
 		String error = null;
 		if ( dateForm != null ) {
-			java.util.Date dateNow = new java.util.Date( );
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -7);
+			java.util.Date dateNow = cal.getTime();
 
 			if ( dateForm.before( dateNow ) )
 				error = "Głosowanie może być najwcześniej za 7 dni";
