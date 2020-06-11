@@ -129,6 +129,8 @@ public class PopulateController {
                     name + "." + lastName + (rand.nextInt(100) + 1) + "@example.com",
                     name,
                     lastName,
+                    faker.address().city(),
+                    faker.address().streetAddress(),
                     GeneratePesel(),
                     genID());
             CitizenList.add(citizen);
