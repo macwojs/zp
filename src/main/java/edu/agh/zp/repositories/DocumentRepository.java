@@ -48,17 +48,17 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 
 	Page<DocumentEntity> findAllByDocStatusIDInAndDocTypeIDIn(Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Pageable page);
 
-	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND ( lastedit >= ?3 OR (  lastedit < ?3 AND (lastedit >= ?3 OR lastedit IS NULL)))", nativeQuery = true)
+	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND  lastedit >= ?3 ", nativeQuery = true)
 	Page<DocumentEntity> findAllByStatusAndTypeLastEditAfter( Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Date date, Pageable page);
 
 	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND lastedit < ?3", nativeQuery = true)
 	Page<DocumentEntity> findAllByStatusAndTypeLastEditBefore( Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Date date, Pageable page);
 
 
-	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND ( lastedit >= ?3 OR (  lastedit < ?3 AND (lastedit >= ?3 OR lastedit IS NULL)))", nativeQuery = true)
+	@Query( value = "SELECT * FROM document WHERE doctypeid IN ?2 AND ( ( docstatusid IN ?1 AND  declareddate >= ?3) OR ( '11' IN ?1 AND declareddate < ?3 AND lastedit >= ?3 ) OR  ( docstatusid != '11' AND declareddate < ?3 AND lastedit < ?3 ))", nativeQuery = true)
 	Page<DocumentEntity> findAllByStatusAndTypeAfter( Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Date date, Pageable page);
 
-	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND lastedit < ?3", nativeQuery = true)
+	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND declareddate < ?3", nativeQuery = true)
 	Page<DocumentEntity> findAllByStatusAndTypeBefore( Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Date date, Pageable page);
 
 }

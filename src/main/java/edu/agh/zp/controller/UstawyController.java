@@ -201,7 +201,7 @@ public class UstawyController {
 						"Do ponownego rozpatrzenia w Sejmie: Senat",
 						"Do ponownego rozpatrzenia w Sejmie: Prezydent",
 						"Odrzucona"
-				)) : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
+				)) : Collections.singletonList(documentStatusRepository.findByDocStatusID(docStatus));
 		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
 
 		if(date.isEmpty()) {
