@@ -67,7 +67,7 @@ public class UstawyController {
 		model.addObject("currentStatus",docStatus);
 		model.addObject("id",id);
 		String name = docStatus.getDocStatusName();
-		List<DocumentStatusEntity> statuses = new ArrayList<DocumentStatusEntity>();
+		List<DocumentStatusEntity> statuses = new ArrayList<>();
 		model.setViewName("alterStatus");
 		switch (name) {
 			case "Zgłoszona":
@@ -109,25 +109,6 @@ public class UstawyController {
 		return redirect;
 	}
 
-	@GetMapping ( value = { "/dziennikUstaw" } )
-	public ModelAndView documentList( HttpServletRequest request ) {
-		ModelAndView modelAndView = new ModelAndView( );
-
-		int page = 0;
-		int size = 10;
-		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
-			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
-		}
-		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
-			size = Integer.parseInt( request.getParameter( "size" ) );
-		}
-		Page< DocumentEntity > documents = documentRepository.findAll( PageRequest.of( page, size ) );
-		modelAndView.addObject( "documents", documents );
-		setOptionsList(modelAndView);
-		modelAndView.setViewName( "documentList" );
-		return modelAndView;
-	}
-
 	@GetMapping(value = {"/description/{id}"})
 	public ModelAndView descriptionEdit(ModelAndView model, @PathVariable long id){
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
@@ -153,12 +134,52 @@ public class UstawyController {
 		return redirect;
 	}
 
-	@GetMapping ( value = { "/dziennikUstaw/filtr" } )
-	public ModelAndView documentFilteredList( HttpServletRequest request,
-											  @RequestParam(name="docType", required = false) Long docType,
-											  @RequestParam(name="docStatus", required = false) Long docStatus,
-											  @RequestParam(name="dateControl", required = false) Long dateControl,
-											  @RequestParam(name="date", required = false) String date) throws Exception {
+	@GetMapping ( value = { "/dziennikUstaw" } )
+	public ModelAndView documentList( HttpServletRequest request,
+									  @RequestParam(name="docType", required = false, defaultValue = "0") Long docType,
+									  @RequestParam(name="docStatus", required = false, defaultValue = "0") Long docStatus,
+									  @RequestParam(name="dateControl", required = false, defaultValue = "") Long dateControl,
+									  @RequestParam(name="date", required = false, defaultValue ="") String date)  {
+		ModelAndView modelAndView = new ModelAndView( );
+
+		int page = 0;
+		int size = 10;
+		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
+			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
+		}
+		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
+			size = Integer.parseInt( request.getParameter( "size" ) );
+		}
+		Page< DocumentEntity > documents;
+		List<DocumentStatusEntity> docStatuses =
+				(docStatus == 0) ? documentStatusRepository.findAllByDocStatusIDIn(Arrays.asList((long)3, (long)11)) : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
+
+		if(date.isEmpty() ) {
+			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
+		}else{
+			Date temp = Date.valueOf(date);
+			if(dateControl == 1){
+				documents = documentRepository.findAllByStatusAndTypeAfter( docStatuses, docTypes, temp, PageRequest.of(page, size));
+			}else{
+				documents =documentRepository.findAllByStatusAndTypeBefore(docStatuses, docTypes, temp, PageRequest.of(page, size));
+			}
+		}
+
+
+		modelAndView.addObject( "documents", documents );
+		setOptionsListForDocumentList(modelAndView);
+		setSelected(modelAndView, docType, docStatus, dateControl, date);
+		modelAndView.setViewName( "documentList" );
+		return modelAndView;
+	}
+
+	@GetMapping ( value = { "/listaUstaw" } )
+	public ModelAndView documentListInProgress( HttpServletRequest request,
+												@RequestParam(name="docType", required = false, defaultValue = "0") Long docType,
+												@RequestParam(name="docStatus", required = false, defaultValue = "0") Long docStatus,
+												@RequestParam(name="dateControl", required = false, defaultValue = "") Long dateControl,
+												@RequestParam(name="date", required = false, defaultValue = "") String date)  {
 		ModelAndView modelAndView = new ModelAndView( );
 
 		int page = 0;
@@ -171,9 +192,17 @@ public class UstawyController {
 		}
 		Page< DocumentEntity > documents;
 
-		List<DocumentStatusEntity> docStatuses =
-				(docStatus == 0 ) ? documentStatusRepository.findAll() : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
-		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Arrays.asList(docTypeR.findByDocTypeID(docType));
+		List<DocumentStatusEntity> docStatuses = (docStatus == 0 ) ?
+						documentStatusRepository.findByDocStatusNameIn(Arrays.asList(
+						"Zgłoszona",
+						"Głosowanie w Sejmie",
+						"Głosowanie w Senacie",
+						"Do zatwierdzenia przez Prezydenta",
+						"Do ponownego rozpatrzenia w Sejmie: Senat",
+						"Do ponownego rozpatrzenia w Sejmie: Prezydent",
+						"Odrzucona"
+				)) : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
 
 		if(date.isEmpty()) {
 			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
@@ -186,9 +215,9 @@ public class UstawyController {
 			}
 		}
 
-		setOptionsList(modelAndView);
-		setSelected(modelAndView, docType, docStatus, dateControl, date);
 		modelAndView.addObject( "documents", documents );
+		setOptionsListForDocumentListInProgress(modelAndView);
+		setSelected(modelAndView, docType, docStatus, dateControl, date);
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
 	}
@@ -200,20 +229,24 @@ public class UstawyController {
 		modelAndView.addObject("selectedDateControl", dateControl);
 	}
 
-	private void setOptionsList(ModelAndView modelAndView){
+	private void setOptionsListForDocumentList(ModelAndView modelAndView){
 		modelAndView.addObject("documentTypes", docTypeR.findAll());
 		modelAndView.addObject("documentStatus",
-				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Odrzucona")));
-		modelAndView.addObject("legislativeStage",
+				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Wygasła")));
+	}
+
+	private void setOptionsListForDocumentListInProgress(ModelAndView modelAndView) {
+		modelAndView.addObject("documentTypes", docTypeR.findAll());
+		modelAndView.addObject("documentStatus",
 				documentStatusRepository.findByDocStatusNameIn(Arrays.asList(
 						"Zgłoszona",
 						"Głosowanie w Sejmie",
 						"Głosowanie w Senacie",
 						"Do zatwierdzenia przez Prezydenta",
 						"Do ponownego rozpatrzenia w Sejmie: Senat",
-						"Do ponownego rozpatrzenia w Sejmie: Prezydent"
+						"Do ponownego rozpatrzenia w Sejmie: Prezydent",
+						"Odrzucona"
 				))
 		);
 	}
-
 }

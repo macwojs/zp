@@ -25,7 +25,7 @@
                     Pokaż filtry
                 </a>
                 <div class="collapse" id="collapse-1">
-                    <form style="margin-top: 24px;margin-bottom: 8px;" th:action="@{/ustawy/dziennikUstaw/filtr}" th:method="get">
+                    <form style="margin-top: 24px;margin-bottom: 8px;" action="" th:method="get">
                         <div class="form-row">
                             <div class="col-md-6">
                                 <div class="form-group d-md-flex align-items-md-center">
@@ -42,13 +42,13 @@
                                                     th:selected="${status.getDocStatusID()==selectedStatus}">
                                             </option>
                                         </optgroup>
-                                        <optgroup label="Etap legilacyjny">
-                                            <option th:each="stage : ${legislativeStage}"
-                                                    th:value="*{stage.getDocStatusID()}"
-                                                    th:text="*{stage.getDocStatusName()}"
-                                                    th:selected="${stage.getDocStatusID()==selectedStatus}">
-                                            </option>
-                                        </optgroup>
+<!--                                        <optgroup label="Etap legilacyjny">-->
+<!--                                            <option th:each="stage : ${legislativeStage}"-->
+<!--                                                    th:value="*{stage.getDocStatusID()}"-->
+<!--                                                    th:text="*{stage.getDocStatusName()}"-->
+<!--                                                    th:selected="${stage.getDocStatusID()==selectedStatus}">-->
+<!--                                            </option>-->
+<!--                                        </optgroup>-->
 
 
                                     </select></div>

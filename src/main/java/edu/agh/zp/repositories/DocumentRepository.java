@@ -40,6 +40,10 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	@Query(value="UPDATE document SET docstatusid=?2, lastedit=CURRENT_DATE, validateddate=CURRENT_DATE where docid =?1", nativeQuery=true)
 	void ActivateStatusByID(long id , long StatusId);
 
+	Page<DocumentEntity> findAllByDocStatusID_DocStatusIDIn(Collection<Long> docStatus, Pageable page);
+
+	Page<DocumentEntity> findAllByDocStatusID_DocStatusID(long docStatus, Pageable page);
+
 	Page<DocumentEntity> findAllByDocTypeID_DocTypeID(long docType, Pageable page);
 
 	Page<DocumentEntity> findAllByDocStatusIDInAndDocTypeIDIn(Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Pageable page);

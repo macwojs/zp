@@ -12,7 +12,7 @@ import java.util.List;
 public interface DocumentStatusRepository extends JpaRepository<DocumentStatusEntity, Long> {
     List<DocumentStatusEntity> findByDocStatusName(String Name);
     List<DocumentStatusEntity> findAll();
-
+    List<DocumentStatusEntity> findAllByDocStatusIDIn(Collection<Long> ids);
     List<DocumentStatusEntity> findByDocStatusNameIn(Collection<String> Names);
     List<DocumentStatusEntity> findByDocStatusIDIn(List<Long> ids);
     DocumentStatusEntity findByDocStatusID(Long id);
