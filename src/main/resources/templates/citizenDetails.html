@@ -34,10 +34,26 @@
             </div>
             <div class="row" style="margin: 0px 24px;">
                 <div class="col-md-6">
+                    <h5 style="margin: 16px;">Miasto:</h5>
+                </div>
+                <div class="col-md-6">
+                    <h5 th:text="${citizen.town}" style="margin: 16px;">Katowice</h5>
+                </div>
+            </div>
+            <div class="row" style="margin: 0px 24px;">
+                <div class="col-md-6">
+                    <h5 style="margin: 16px;">Ulica i numer domu:</h5>
+                </div>
+                <div class="col-md-6">
+                    <h5 th:text="${citizen.address}" style="margin: 16px;"></h5>
+                </div>
+            </div>
+            <div class="row" style="margin: 0px 24px;">
+                <div class="col-md-6">
                     <h5 style="margin: 16px;">Pesel:</h5>
                 </div>
                 <div class="col-md-6">
-                    <h5 th:text="${citizen.idNumber}" style="margin: 16px;">98672408872</h5>
+                    <h5 th:text="${citizen.pesel}" style="margin: 16px;">98672408872</h5>
                 </div>
             </div>
             <div class="row" style="margin: 0px 24px;margin-bottom: 8px;">
@@ -45,7 +61,7 @@
                     <h5 style="margin: 16px;">Numer dowodu osobistego:</h5>
                 </div>
                 <div class="col-md-6">
-                    <h5 th:text="${citizen.pesel}" style="margin: 16px;">AYD982839</h5>
+                    <h5 th:text="${citizen.idNumber}" style="margin: 16px;">AYD982839</h5>
                 </div>
             </div>
             <div class="row" style="margin: 0px 24px;margin-bottom: 8px;">
