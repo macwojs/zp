@@ -3,7 +3,6 @@ package edu.agh.zp.controller;
 import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.DocumentTypeEntity;
-import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.DocumentStatusRepository;
 import edu.agh.zp.repositories.DocumentTypeRepository;
@@ -17,10 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
 

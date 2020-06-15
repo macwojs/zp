@@ -30,62 +30,62 @@ import java.util.Optional;
 //@RequestMapping (value={"/signin"})
 public class SignInController {
 
-@Autowired
-private CitizenService cS;
+    @Autowired
+    private CitizenService cS;
 
 
-	private AuthenticationManager authManager;
+    private final AuthenticationManager authManager;
 
-	public SignInController(AuthenticationManager authManager) {
-		this.authManager = authManager;
-	}
+    public SignInController(AuthenticationManager authManager) {
+        this.authManager = authManager;
+    }
 
-	// API
+    // API
 
-	// custom login
-	@GetMapping (value = {"/signin"})
-	public ModelAndView index(RedirectAttributes attributes, HttpServletRequest request, HttpServletResponse response) {
+    // custom login
+    @GetMapping(value = {"/signin"})
+    public ModelAndView index(RedirectAttributes attributes, HttpServletRequest request, HttpServletResponse response) {
 
-		String viewName = "signin" ;
-		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("user", new CitizenEntity());
+        String viewName = "signin";
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("user", new CitizenEntity());
 
-		String referrer = request.getHeader("Referer");
-		if(referrer!=null){
-			model.put("url_prior_login", referrer);
-		}
-		response.addCookie(new Cookie("OLD_URL_REDIRECT",request.getHeader("Referer")));
-		return new ModelAndView(viewName, model);
-	}
+        String referrer = request.getHeader("Referer");
+        if (referrer != null) {
+            model.put("url_prior_login", referrer);
+        }
+        response.addCookie(new Cookie("OLD_URL_REDIRECT", request.getHeader("Referer")));
+        return new ModelAndView(viewName, model);
+    }
 
-	@RequestMapping(value = "/signin", method = RequestMethod.POST)
-	public RedirectView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res, @CookieValue(name = "OLD_URL_REDIRECT") String ref) {
-		UsernamePasswordAuthenticationToken authReq =
-				new UsernamePasswordAuthenticationToken(citizen.getEmail(), citizen.getPassword());
-		Authentication auth = null;
-		try {
-			auth = authManager.authenticate(authReq);
-		}catch(AuthenticationException e){
-			RedirectView mv = new RedirectView("/signin");
-			mv.addStaticAttribute("error", "Błędna nazwa użytkownika lub hasło");
-			return mv;
-		}
-		SecurityContext sc = SecurityContextHolder.getContext();
-		sc.setAuthentication(auth);
-		HttpSession session = request.getSession(true);
-		session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
-		if (ref!=null) return new RedirectView(ref);
-		return new RedirectView("");
-	}
+    @RequestMapping(value = "/signin", method = RequestMethod.POST)
+    public RedirectView login(@ModelAttribute("user") CitizenEntity citizen, Model model, final HttpServletRequest request, BindingResult res, @CookieValue(name = "OLD_URL_REDIRECT") String ref) {
+        UsernamePasswordAuthenticationToken authReq =
+                new UsernamePasswordAuthenticationToken(citizen.getEmail(), citizen.getPassword());
+        Authentication auth = null;
+        try {
+            auth = authManager.authenticate(authReq);
+        } catch (AuthenticationException e) {
+            RedirectView mv = new RedirectView("/signin");
+            mv.addStaticAttribute("error", "Błędna nazwa użytkownika lub hasło");
+            return mv;
+        }
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
+        if (ref != null) return new RedirectView(ref);
+        return new RedirectView("");
+    }
 
-	@GetMapping (value = {"/logout"})
-	public ModelAndView logout(final HttpServletRequest request) throws ServletException {
-		request.logout();
-		RedirectView redirect = new RedirectView();
-		redirect.setUrl("");
-		return new ModelAndView(redirect);
-	}
+    @GetMapping(value = {"/logout"})
+    public ModelAndView logout(final HttpServletRequest request) throws ServletException {
+        request.logout();
+        RedirectView redirect = new RedirectView();
+        redirect.setUrl("");
+        return new ModelAndView(redirect);
+    }
 
-	}
+}
 
 
