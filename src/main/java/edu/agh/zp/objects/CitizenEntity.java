@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +44,16 @@ public class CitizenEntity implements Serializable {
     @NotBlank (message = "Musisz podać imię.")
     @Column(name="name")
     private String name;
+
+    @NotNull
+    @NotBlank (message = "Musisz podać miasto zamieszkania.")
+    @Column(name="town")
+    private String town;
+
+    @NotNull
+    @NotBlank (message = "Musisz podać adres.")
+    @Column(name="adress")
+    private String address;
 
     @NotNull
     @NotBlank (message = "Musisz podać nazwisko.")
@@ -89,7 +98,7 @@ public class CitizenEntity implements Serializable {
     }
     public CitizenEntity() {}
 
-    public CitizenEntity(String password, String rp, String email, String name, String surname, String pesel, String idNumber) {
+    public CitizenEntity(String password, String rp, String email, String name, String surname, String town, String address, String pesel, String idNumber) {
         this.password = password;
         this.email = email;
         this.name = name;
@@ -97,6 +106,8 @@ public class CitizenEntity implements Serializable {
         this.pesel = pesel;
         this.idNumber = idNumber;
         this.repeatPassword = rp;
+        this.town = town;
+        this.address = address;
     }
 
     public String getRepeatPassword() {
@@ -185,6 +196,22 @@ public class CitizenEntity implements Serializable {
                 ", idNumber='" + idNumber + '\'' +
                 ", repeatPassword='" + repeatPassword + '\'' +
                 '}';
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String adress) {
+        this.address = adress;
     }
 }
 

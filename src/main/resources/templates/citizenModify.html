@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+
+<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Zmień dane</title>
+    <div th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
+    </div>
+</head>
+
+<section>
+    <div class="register-photo">
+        <div class="form-container">
+            <form method="post" th:action="@{/obywatel/dane/modify/{scenario}(scenario=${scenario})}" >
+                <div class="form-group">
+                    <div th:switch="${scenario}">
+                        <h6 th:case="adr">Miasto</h6>
+                        <h6 th:case="mail">Mail</h6>
+                        <h6 th:case="pass">Hasło</h6>
+                    </div>
+                    <label>
+                        <input th:if="${sceanario}=='adr'"  class="form-control" type="text" name="field1" placeholder="Miasto" required="required">
+                        <input th:if="${sceanario}=='mail'"  class="form-control" type="email" name="field1" placeholder="Mail" required="required">
+                        <input th:if="${sceanario}=='pass'"  class="form-control" type="password" name="field1" placeholder="Hasło" required="required">
+                        <span th:if="${err}!=null" class="text-danger" th:text="${err}"></span>
+                    </label>
+                </div>
+                <div th:if="${sceanario}=='adr'" class="form-group">
+                    <h6>Ulica i numer domu</h6>
+                    <label>
+                        <input  class="form-control" type="text" name="field2" placeholder="ulica i numer domu" required="required">
+                    </label>
+                </div>
+                <div th:if="${sceanario}=='pass'" class="form-group">
+                    <h6>Powtórz hasło</h6>
+                    <label>
+                        <input  class="form-control" type="password" name="field2" placeholder="Powtórz hasło" required="required">
+                    </label>
+                </div>
+                <div th:if="${sceanario}=='mail'" hidden="hidden" class="form-group">
+                    <input hidden="hidden" class="form-control" type="email" name="field2" value="" placeholder="Powtórz hasło">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Zmień&nbsp;</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</html>
