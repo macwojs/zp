@@ -1,8 +1,6 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.DocumentEntity;
-import edu.agh.zp.objects.DocumentStatusEntity;
-import edu.agh.zp.objects.DocumentTypeEntity;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.DocumentStatusRepository;
 import edu.agh.zp.repositories.DocumentTypeRepository;
