@@ -6,6 +6,8 @@ import edu.agh.zp.objects.DocumentTypeEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.DocumentStatusRepository;
 import edu.agh.zp.repositories.DocumentTypeRepository;
+import edu.agh.zp.repositories.LogRepository;
+import edu.agh.zp.services.CitizenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +33,12 @@ public class UstawyController {
 
 	@Autowired
 	DocumentStatusRepository documentStatusRepository;
+
+	@Autowired
+	CitizenService cS;
+
+	@Autowired
+	LogRepository logR;
 
 	@GetMapping ( value = { "" } )
 	public RedirectView index() {
@@ -96,18 +104,28 @@ public class UstawyController {
 	}
 
 	@PostMapping(value = {"/status/{id}"})
-	public RedirectView statusListAdd(@PathVariable long id, @RequestParam("type") long type ) {
+	public RedirectView statusListAdd(@PathVariable long id, @RequestParam("type") long type,  final HttpServletRequest request  ) throws Exception {
+		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
+		Optional<DocumentEntity> doc = documentRepository.findByDocID(id);
+		if( doc.isEmpty()){
+			logR.save(new Log(Log.Operation.EDIT, "Failed to edit document status - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
+			throw new Exception("Document not found");
+		}
+
 		if (type != 11) documentRepository.UpdateStatusByID(id,type);
 		else documentRepository.ActivateStatusByID(id,type);
+		logR.save(new Log(Log.Operation.EDIT, "Edit document status successfully", Log.ElementType.DOCUMENT, doc.get().getDocID(), citizen, Log.Status.SUCCESS));
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl("/ustawy/"+id);
 		return redirect;
 	}
 
 	@GetMapping(value = {"/description/{id}"})
-	public ModelAndView descriptionEdit(ModelAndView model, @PathVariable long id){
+	public ModelAndView descriptionEdit(ModelAndView model, @PathVariable long id,  final HttpServletRequest request ) throws Exception {
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
+		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(()->new Exception("Citizen not found"));
 		if (document.isEmpty()){
+			logR.save(new Log(Log.Operation.EDIT, "Edit document description failure - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
 			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Document not found" );
 		}
 		String docDesc = document.get().getDocDescription();
@@ -119,11 +137,13 @@ public class UstawyController {
 	}
 
 	@PostMapping(value = {"/description/{id}"})
-	public RedirectView descriptionEditPost(@PathVariable long id, @RequestParam("desc") String desc ) {
+	public RedirectView descriptionEditPost(@PathVariable long id, @RequestParam("desc") String desc,  final HttpServletRequest request ) throws Exception {
 		DocumentEntity doc = documentRepository.getOne( id );
+		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
+
 		doc.setDocDescription( desc );
 		documentRepository.save( doc );
-
+		logR.save(new Log(Log.Operation.EDIT, "Edit document description successfully", Log.ElementType.DOCUMENT, doc.getDocID(), citizen, Log.Status.SUCCESS));
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl("/ustawy/"+id);
 		return redirect;
@@ -147,7 +167,7 @@ public class UstawyController {
 		}
 		Page< DocumentEntity > documents;
 		List<DocumentStatusEntity> docStatuses =
-				(docStatus == 0) ? documentStatusRepository.findAllByDocStatusIDIn(Arrays.asList((long)3, (long)11)) : Arrays.asList(documentStatusRepository.findByDocStatusID(docStatus));
+				(docStatus == 0) ? documentStatusRepository.findAllByDocStatusIDIn(Arrays.asList((long)3, (long)11)) : Collections.singletonList(documentStatusRepository.findByDocStatusID(docStatus));
 		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
 
 		if(date.isEmpty() ) {

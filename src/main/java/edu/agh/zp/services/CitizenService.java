@@ -14,8 +14,8 @@ public class CitizenService {
     @Autowired
     private CitizenRepository cR;
 
-    public CitizenEntity create(CitizenEntity citizen){
-        return cR.save(citizen);
+    public Optional<CitizenEntity> create(CitizenEntity citizen){
+        return Optional.of(cR.save(citizen));
     }
 
     public ArrayList<CitizenEntity> findAll(){
@@ -38,5 +38,5 @@ public class CitizenService {
 
     public long countEntitledToVote(){
         return cR.count();
-    };
+    }
 }
