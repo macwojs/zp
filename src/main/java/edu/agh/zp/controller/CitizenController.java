@@ -22,10 +22,7 @@ public class CitizenController {
 	public ModelAndView citizenDetails( Principal principal ) {
 		ModelAndView model = new ModelAndView( );
 		Optional< CitizenEntity > currentCitizen = citizenRepository.findByEmail( principal.getName( ) );
-	    if (currentCitizen.isPresent())
-	    {
-	    	model.addObject( "citizen", currentCitizen.get() );
-	    }
+		currentCitizen.ifPresent(citizenEntity -> model.addObject("citizen", citizenEntity));
 	    model.setViewName( "citizenDetails" );
 		return model;
 	}

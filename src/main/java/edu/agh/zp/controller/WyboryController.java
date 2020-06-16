@@ -47,6 +47,8 @@ public class WyboryController {
     @Autowired
     VoteRepository voteSession;
 
+    @Autowired
+    LogRepository logR;
 
     @GetMapping(value = {""})
     public ModelAndView index() {
@@ -78,7 +80,7 @@ public class WyboryController {
 
         model.setViewName("wyboryReferendaVoting");
         List<OptionSetEntity> list = optionSetSession.findBySetIDcolumn(voting.getSetID_column());
-        ArrayList<OptionEntity> options = new ArrayList<OptionEntity>();
+        ArrayList<OptionEntity> options = new ArrayList<>();
         for (OptionSetEntity optionSet : list) {
             options.add(optionSet.getOptionID());
             model.addObject("options", options);
@@ -87,9 +89,9 @@ public class WyboryController {
     }
 
     @PostMapping(value = {"/{id}"})
-    public ModelAndView referendumVoteSubmit(@PathVariable long id, @RequestParam("votingRadio") long radio, Principal principal) {
+    public ModelAndView referendumVoteSubmit(@PathVariable long id, @RequestParam("votingRadio") long radio, Principal principal) throws Exception {
         VoteEntity vote = new VoteEntity();
-        vote.setOptionID(optionSession.findById(radio).get());
+        vote.setOptionID(optionSession.findById(radio).orElseThrow(() -> new Exception( "Option Not Found" )));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         vote.setVotingID(votingSession.findByVotingID(id));
@@ -97,22 +99,27 @@ public class WyboryController {
         LocalDate date = LocalDate.now();
         VotingEntity voting = vote.getVotingID();
         Optional<CitizenEntity> optCurUser = citizenSession.findByEmail(principal.getName());
-        Optional<VotingControlEntity> votingControl = votingControlSession.findByCitizenIDAndVotingID(optCurUser.get(), voting);
-        if (votingControl.isPresent()) {
-            ModelAndView model = new ModelAndView();
-            model.addObject("th_redirect", "/wyboryReferenda");
-            model.setViewName("418_REPEAT_VOTE");
-            return model;
+        if(optCurUser.isPresent()) {
+            Optional<VotingControlEntity> votingControl = votingControlSession.findByCitizenIDAndVotingID(optCurUser.get(), voting);
+            if (votingControl.isPresent()) {
+                ModelAndView model = new ModelAndView();
+                model.addObject("th_redirect", "/wyboryReferenda");
+                model.setViewName("418_REPEAT_VOTE");
+                logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - vote already exists", voting, optCurUser.get()));
+                return model;
+            }
+            if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
+                ModelAndView model = new ModelAndView();
+                model.setViewName("timeOut");
+                model.addObject("type", "/wyboryReferenda");
+                logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - timeout", voting, optCurUser.get()));
+                return model;
+            }
+            vote.setVoteTimestamp(new Timestamp(System.currentTimeMillis()));
+            voteSession.save(vote);
+            votingControlSession.save(new VotingControlEntity(citizenSession.findByEmail(auth.getName()).orElseThrow(() -> new Exception( "Citizen Not Found" )), voting));
+            logR.save(Log.successAddVoteCitizen("Add vote to citizen voting.", voting, optCurUser.orElseThrow(() -> new Exception( "Citizen Not Found" ))));
         }
-        if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
-            ModelAndView model = new ModelAndView();
-            model.setViewName("timeOut");
-            model.addObject("type", "/wyboryReferenda");
-            return model;
-        }
-        vote.setVoteTimestamp(new Timestamp(System.currentTimeMillis()));
-        voteSession.save(vote);
-        votingControlSession.save(new VotingControlEntity(citizenSession.findByEmail(auth.getName()).get(), voting));
         RedirectView redirect = new RedirectView();
         redirect.setUrl("/wyboryReferenda");
         return new ModelAndView(redirect);
