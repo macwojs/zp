@@ -83,7 +83,7 @@ public class SignInController {
 
 		Optional<CitizenEntity> citizenCopy = cS.findByEmail(citizen.getEmail());
 		// log
-		citizenCopy.ifPresent(citizenEntity -> lR.save(Log.acceptSignInOrSignUp(Log.Operation.LOGIN, "Sign In", citizenEntity)));
+		citizenCopy.ifPresent(citizenEntity -> lR.save(Log.successSignInOrSignUp(Log.Operation.LOGIN, "Sign In", citizenEntity)));
 
 		if (ref!=null) return new RedirectView(ref);
 		return new RedirectView("");
@@ -96,7 +96,7 @@ public class SignInController {
 		if(citizen.isPresent()) {
 			request.logout();
 			if(cS.findByEmail( request.getRemoteUser()).isEmpty()){
-				lR.save(new Log(Log.Operation.LOGIN, "Correct logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.ACCEPT));
+				lR.save(new Log(Log.Operation.LOGIN, "Correct logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.SUCCESS));
 			}else{
 				lR.save(new Log(Log.Operation.LOGIN, "Failed logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.FAILED));
 			}

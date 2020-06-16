@@ -2,18 +2,12 @@ package edu.agh.zp.objects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import static edu.agh.zp.objects.Log.Status.ACCEPT;
-import static edu.agh.zp.objects.Log.Status.FAILED;
 
 
 @Entity
 public class Log{
-    public enum Status{ ACCEPT, FAILED}
+    public enum Status{ SUCCESS, FAILED}
     public enum Operation{ ADD, EDIT, LOGIN}
     public enum ElementType{ DOCUMENT, VOTING, USER }
 
@@ -77,8 +71,8 @@ public class Log{
         return new Log(operation, logDescription, ElementType.USER, Status.FAILED);
     }
 
-    static public Log acceptSignInOrSignUp(Operation operation, @NotEmpty String logDescription, CitizenEntity user){
-        return new Log(operation, logDescription, ElementType.USER, user.getCitizenID(), user, Status.ACCEPT);
+    static public Log successSignInOrSignUp(Operation operation, @NotEmpty String logDescription, CitizenEntity user){
+        return new Log(operation, logDescription, ElementType.USER, user.getCitizenID(), user, Status.SUCCESS);
     }
 
     public long getId() {
