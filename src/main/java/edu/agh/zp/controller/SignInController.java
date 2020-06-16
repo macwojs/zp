@@ -98,7 +98,7 @@ public class SignInController {
 			if(cS.findByEmail( request.getRemoteUser()).isEmpty()){
 				lR.save(new Log(Log.Operation.LOGIN, "Correct logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.SUCCESS));
 			}else{
-				lR.save(new Log(Log.Operation.LOGIN, "Failed logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.FAILED));
+				lR.save(new Log(Log.Operation.LOGIN, "Failed logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.FAILURE));
 			}
 		}
 		RedirectView redirect = new RedirectView();

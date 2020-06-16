@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Log{
-    public enum Status{ SUCCESS, FAILED}
+    public enum Status{ SUCCESS, FAILURE}
     public enum Operation{ ADD, EDIT, LOGIN}
     public enum ElementType{ DOCUMENT, VOTING, USER }
 
@@ -67,12 +67,37 @@ public class Log{
         this.time = LocalDateTime.now();
     }
 
+    public Log(Operation operation, @NotEmpty String logDescription, ElementType elementType, CitizenEntity user, Status status) {
+        this.operation = operation.toString();
+        this.logDescription = logDescription;
+        this.elementType = elementType.toString();
+        this.user = user;
+        this.status = status.toString();
+        this.time = LocalDateTime.now();
+    }
+
     static public Log failedSignInOrSignUp(Operation operation, @NotEmpty String logDescription){
-        return new Log(operation, logDescription, ElementType.USER, Status.FAILED);
+        return new Log(operation, logDescription, ElementType.USER, Status.FAILURE);
     }
 
     static public Log successSignInOrSignUp(Operation operation, @NotEmpty String logDescription, CitizenEntity user){
         return new Log(operation, logDescription, ElementType.USER, user.getCitizenID(), user, Status.SUCCESS);
+    }
+
+    static public Log successAddVoting(@NotEmpty String logDescription, VotingEntity voting, CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTING, voting.getVotingID(), user, Status.SUCCESS);
+    }
+
+    static public Log failedAddVoting(@NotEmpty String logDescription, CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTING, user, Status.FAILURE);
+    }
+
+    static public Log successEditVoting(@NotEmpty String logDescription, VotingEntity voting, CitizenEntity user){
+        return new Log(Operation.EDIT, logDescription, ElementType.VOTING, voting.getVotingID(), user, Status.SUCCESS);
+    }
+
+    static public Log failedEditVoting(@NotEmpty String logDescription,  VotingEntity voting, CitizenEntity user){
+        return new Log(Operation.EDIT, logDescription, ElementType.VOTING, voting.getVotingID(), user, Status.FAILURE);
     }
 
     public long getId() {
