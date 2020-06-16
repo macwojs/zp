@@ -16,7 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
@@ -114,6 +116,8 @@ public class ParlamentController {
 	@Autowired
 	private VotingRepository votingRepository;
 
+	@Autowired
+	private LogRepository logR;
 
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
@@ -145,20 +149,26 @@ public class ParlamentController {
 	}
 
 	@PostMapping ( value = { "/documentForm" }, consumes = { "multipart/form-data" } )
-	public ModelAndView documentFormSubmit( @RequestParam ( "file" ) MultipartFile file, RedirectAttributes redirectAttributes, @Valid @ModelAttribute ( "document" ) DocumentEntity document, BindingResult res ) {
-		if ( res.hasErrors( ) ) {
-			return new ModelAndView( "documentForm" );
-		}
+	public ModelAndView documentFormSubmit( @RequestParam ( "file" ) MultipartFile file, RedirectAttributes redirectAttributes, @Valid @ModelAttribute ( "document" ) DocumentEntity document, BindingResult res, final HttpServletRequest request ) {
+		Optional<CitizenEntity> citizen = citizenRepository.findByEmail(request.getRemoteUser());
+		if(citizen.isPresent()) {
+			if (res.hasErrors()) {
+				logR.save(new Log(Log.Operation.ADD, "Failed to add document", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.FAILURE));
+				return new ModelAndView("documentForm");
+			}
 
-		if ( !file.isEmpty( ) ) {
-			String path = storageService.uploadFile( file );
-			document.setPdfFilePath( path );
+			if (!file.isEmpty()) {
+				String path = storageService.uploadFile(file);
+				document.setPdfFilePath(path);
+			}
+			Date now = Date.valueOf(LocalDate.now());
+			document.setDeclaredDate(now);
+			document.setLastEdit(now);
+			DocumentEntity check = documentRepository.save(document);
+			if(documentRepository.findByDocID(check.getDocID()).isPresent()) {
+				logR.save(new Log(Log.Operation.ADD, "Add document successfully", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.SUCCESS));
+			}
 		}
-		Date now = Date.valueOf( LocalDate.now( ) );
-		document.setDeclaredDate( now );
-		document.setLastEdit( now );
-		documentRepository.save( document );
-
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl( "/parlament" );
 		return new ModelAndView( redirect );
@@ -186,7 +196,7 @@ public class ParlamentController {
 	}
 
 	@PostMapping ( value = { "/vote/{id}" } )
-	public ModelAndView parlamentVoteSubmit( @PathVariable long id, @RequestParam ( "votingRadio" ) long radio ) {
+	public ModelAndView parlamentVoteSubmit( @PathVariable long id, @RequestParam ( "votingRadio" ) long radio, final HttpServletRequest request ) {
 		ModelAndView model = new ModelAndView( );
 		VoteEntity vote = new VoteEntity( );
 		vote.setOptionID( optionRepository.findByOptionID( radio ).get( ) );
@@ -197,24 +207,37 @@ public class ParlamentController {
 		LocalDate date = LocalDate.now( );
 		VotingEntity voting = vote.getVotingID( );
 		Optional< VoteEntity > voteControl = voteRepository.findByCitizenIdVotingId( id, vote.getCitizenID( ).getCitizenID( ) );
-		if ( voteControl.isPresent( ) ) {
-			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
-				model.addObject( "th_redirect", "/parlament/sejm" );
+		Optional<CitizenEntity> citizen = citizenRepository.findByEmail(request.getRemoteUser());
+		if(citizen.isPresent()) {
+			if (voteControl.isPresent()) {
+				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) {
+					model.addObject("th_redirect", "/parlament/sejm");
+					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - vote already exists", citizen.get()));
+				}else {
+					model.addObject("th_redirect", "/parlament/senat");
+					logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - vote already exists", citizen.get()));
+				}
+				model.setViewName("418_REPEAT_VOTE");
+				return model;
+			}
+			if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
+				model.setViewName("timeOut");
+				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) {
+					model.addObject("type", "/parlament/sejm");
+					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - time out", citizen.get()));
+				} else {
+					model.addObject("type", "/parlament/senat");
+					logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - time out", citizen.get()));
+				}
+				return model;
+			}
+			vote.setVoteTimestamp(new Timestamp(System.currentTimeMillis()));
+			VoteEntity check = voteRepository.save(vote);
+			if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM))
+				logR.save(Log.successAddVoteParlam("Add Sejm vote successfully", check));
 			else
-				model.addObject( "th_redirect", "/parlament/senat" );
-			model.setViewName( "418_REPEAT_VOTE" );
-			return model;
+				logR.save(Log.successAddVoteParlam("Add Senat vote successfully", check));
 		}
-		if ( voting.getCloseVoting( ).before( java.sql.Time.valueOf( time ) ) || !voting.getVotingDate( ).equals( java.sql.Date.valueOf( date ) ) ) {
-			model.setViewName( "timeOut" );
-			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
-				model.addObject( "type", "/parlament/sejm" );
-			else
-				model.addObject( "type", "/parlament/senat" );
-			return model;
-		}
-		vote.setVoteTimestamp( new Timestamp( System.currentTimeMillis( ) ) );
-		voteRepository.save( vote );
 		RedirectView redirect = new RedirectView( );
 		if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
 			redirect.setUrl( "/parlament/sejm" );
@@ -224,69 +247,75 @@ public class ParlamentController {
 	}
 
 	@GetMapping ( value = { "/vote/zmianaDaty/{id}" } )
-	public Object votingDateChange( @PathVariable long id, @RequestParam ( value = "dateForm", required = false ) Date dateForm, @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd, @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo ) {
+	public Object votingDateChange( @PathVariable long id, @RequestParam ( value = "dateForm", required = false ) Date dateForm, @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd, @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo, final HttpServletRequest request ) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
-
-		Time timeSec = java.sql.Time.valueOf( LocalTime.now( ) );
-		java.util.Date dateSec = java.sql.Date.valueOf( LocalDate.now( ) );
-		boolean ended = ( voting.getVotingDate( ).before( dateSec ) || ( voting.getVotingDate( ).equals( dateSec ) && voting.getCloseVoting( ).before( timeSec ) ) );
-		boolean during = ( voting.getVotingDate( ).equals( dateSec ) && voting.getOpenVoting( ).before( timeSec ) && voting.getCloseVoting( ).after( timeSec ) );
-		if ( ended || during ) {
-			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting is ongoing or has ended" );
-		}
-
-		Authentication authentication = SecurityContextHolder.getContext( ).getAuthentication( );
-		boolean hasUserRoleAdmin = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_ADMIN" ) );
-		boolean hasUserRoleSejm = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SEJMU" ) );
-		boolean hasUserRoleSenat = authentication.getAuthorities( ).stream( ).anyMatch( r -> r.getAuthority( ).equals( "ROLE_MARSZALEK_SENATU" ) );
-
-		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SEJM )
-			if ( !( hasUserRoleAdmin || hasUserRoleSejm ) ) {
-				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+		ModelAndView model = new ModelAndView();
+		Optional<CitizenEntity> citizen = citizenRepository.findByEmail(request.getRemoteUser());
+		if(citizen.isPresent()) {
+			Time timeSec = java.sql.Time.valueOf(LocalTime.now());
+			java.util.Date dateSec = java.sql.Date.valueOf(LocalDate.now());
+			boolean ended = (voting.getVotingDate().before(dateSec) || (voting.getVotingDate().equals(dateSec) && voting.getCloseVoting().before(timeSec)));
+			boolean during = (voting.getVotingDate().equals(dateSec) && voting.getOpenVoting().before(timeSec) && voting.getCloseVoting().after(timeSec));
+			if (ended || during) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Voting is ongoing or has ended");
 			}
 
-		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SENAT )
-			if ( !( hasUserRoleAdmin || hasUserRoleSenat ) ) {
-				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date" );
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			boolean hasUserRoleAdmin = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+			boolean hasUserRoleSejm = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SEJMU"));
+			boolean hasUserRoleSenat = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_MARSZALEK_SENATU"));
+
+			if (voting.getVotingType() == VotingEntity.TypeOfVoting.SEJM)
+				if (!(hasUserRoleAdmin || hasUserRoleSejm)) {
+					logR.save(Log.failedEditVoting("Edition of sejm voting failure - forbidden for rule other than admin, Marszalek Sejmu or Prezydent", voting, citizen.get()));
+					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin or Marszalek Sejmu or Prezydent can change voting date");
+				}
+
+			if (voting.getVotingType() == VotingEntity.TypeOfVoting.SENAT)
+				if (!(hasUserRoleAdmin || hasUserRoleSenat)) {
+					logR.save(Log.failedEditVoting("Edition of senat voting failure - forbidden for rule other than admin, Marszalek Senatu or Prezydent", voting, citizen.get()));
+					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin or Marszalek Senatu or Prezydent can change voting date");
+				}
+
+			if (voting == null) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
+			}
+			if (voting.getVotingType() != VotingEntity.TypeOfVoting.SEJM && voting.getVotingType() != VotingEntity.TypeOfVoting.SENAT) {
+				logR.save(Log.failedEditVoting("Edition of voting failure - wrong voting type", voting, citizen.get()));
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong voting type");
 			}
 
-		if ( voting == null ) {
-			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Voting not found" );
-		}
-		if ( voting.getVotingType( ) != VotingEntity.TypeOfVoting.SEJM && voting.getVotingType( ) != VotingEntity.TypeOfVoting.SENAT ) {
-			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Wrong voting type" );
-		}
+			//validacja
+			String error = null;
+			if (dateForm != null && timeFormOd != null && timeFormDo != null) {
+				LocalDateTime nowLDT = LocalDateTime.now();
+				String odDT = dateForm + "T" + timeFormOd;
+				String doDT = dateForm + "T" + timeFormDo;
+				LocalDateTime odLDT = LocalDateTime.parse(odDT);
+				LocalDateTime doLDT = LocalDateTime.parse(doDT);
 
-		ModelAndView model = new ModelAndView( );
+				if (odLDT.isBefore(nowLDT))
+					error = "Czas rozpoczecia głosowania nie może być z przeszłości";
+				if (doLDT.isBefore(odLDT))
+					error = "Czas zakończenia wcześniej niż rozpoczęcia ";
+			   logR.save(Log.failedEditVoting("Edition of voting failure - wrong time or date", voting, citizen.get()));
+				model.addObject("error", error);
+			}
 
-		//validacja
-		String error = null;
-		if ( dateForm != null && timeFormOd != null && timeFormDo != null ) {
-			LocalDateTime nowLDT = LocalDateTime.now( );
-			String odDT = dateForm + "T" + timeFormOd;
-			String doDT = dateForm + "T" + timeFormDo;
-			LocalDateTime odLDT = LocalDateTime.parse( odDT );
-			LocalDateTime doLDT = LocalDateTime.parse( doDT );
+			//Wyslano zadanie zmiany daty, nie ma errora, zmieniamy
+			if (error == null && dateForm != null && timeFormOd != null && timeFormDo != null) {
+				voting.setVotingDate(dateForm);
+				voting.setOpenVoting(timeFormOd);
+				voting.setCloseVoting(timeFormDo);
 
-			if ( odLDT.isBefore( nowLDT ) )
-				error = "Czas rozpoczecia głosowania nie może być z przeszłości";
-			if ( doLDT.isBefore( odLDT ) )
-				error = "Czas zakończenia wcześniej niż rozpoczęcia ";
-
-			model.addObject( "error", error );
-		}
-
-		//Wyslano zadanie zmiany daty, nie ma errora, zmieniamy
-		if ( error == null && dateForm != null && timeFormOd != null && timeFormDo != null ) {
-			voting.setVotingDate( dateForm );
-			voting.setOpenVoting( timeFormOd );
-			voting.setCloseVoting( timeFormDo );
-
-			votingRepository.save( voting );
-
-			RedirectView redirect = new RedirectView( );
-			redirect.setUrl( "/kalendarz/wydarzenie/" + id );
-			return redirect;
+				VotingEntity check = votingRepository.save(voting);
+				if (votingRepository.findById(check.getVotingID()).isPresent()) {
+					logR.save(Log.successEditVoting("Edit voting successfully", check, citizen.get()));
+				}
+				RedirectView redirect = new RedirectView();
+				redirect.setUrl("/kalendarz/wydarzenie/" + id);
+				return redirect;
+			}
 		}
 
 		Date date = voting.getVotingDate( );

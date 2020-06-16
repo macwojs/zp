@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Log{
     public enum Status{ SUCCESS, FAILURE}
     public enum Operation{ ADD, EDIT, LOGIN}
-    public enum ElementType{ DOCUMENT, VOTING, USER }
+    public enum ElementType{ DOCUMENT, VOTING, VOTE, USER }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -98,6 +98,22 @@ public class Log{
 
     static public Log failedEditVoting(@NotEmpty String logDescription,  VotingEntity voting, CitizenEntity user){
         return new Log(Operation.EDIT, logDescription, ElementType.VOTING, voting.getVotingID(), user, Status.FAILURE);
+    }
+
+    static public Log successAddVoteParlam(@NotEmpty String logDescription, VoteEntity vote){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTE, vote.getVoteID(), vote.getCitizenID(), Status.SUCCESS);
+    }
+
+    static public Log failedAddVoteParlam(@NotEmpty String logDescription, CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTE, user, Status.FAILURE);
+    }
+
+    static public Log successAddVoteCitizen(@NotEmpty String logDescription, CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTE, user, Status.SUCCESS);
+    }
+
+    static public Log failedAddVoteCitizen(@NotEmpty String logDescription, CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTE, user, Status.FAILURE);
     }
 
     public long getId() {

@@ -233,7 +233,6 @@ public class GlosowaniaController {
 					error = "Głosowanie może być najwcześniej za 7 dni";
 				model.addObject("error", error);
 				logR.save(Log.failedEditVoting("Edition of voting failure - date shorten than 7 days", voting, citizen.get()));
-
 			}
 
 			//Wyslano zadanie zmiany daty, nie ma errora, zmieniamy
