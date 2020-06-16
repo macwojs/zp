@@ -108,12 +108,12 @@ public class Log{
         return new Log(Operation.ADD, logDescription, ElementType.VOTE, user, Status.FAILURE);
     }
 
-    static public Log successAddVoteCitizen(@NotEmpty String logDescription, CitizenEntity user){
-        return new Log(Operation.ADD, logDescription, ElementType.VOTE, user, Status.SUCCESS);
+    static public Log successAddVoteCitizen(@NotEmpty String logDescription, VotingEntity voting,  CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTING, voting.getVotingID(), user, Status.SUCCESS);
     }
 
-    static public Log failedAddVoteCitizen(@NotEmpty String logDescription, CitizenEntity user){
-        return new Log(Operation.ADD, logDescription, ElementType.VOTE, user, Status.FAILURE);
+    static public Log failedAddVoteCitizen(@NotEmpty String logDescription, VotingEntity voting, CitizenEntity user){
+        return new Log(Operation.ADD, logDescription, ElementType.VOTING,  voting.getVotingID(), user, Status.FAILURE);
     }
 
     public long getId() {
