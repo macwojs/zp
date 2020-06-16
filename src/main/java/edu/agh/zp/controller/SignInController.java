@@ -1,6 +1,8 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.CitizenEntity;
+import edu.agh.zp.objects.Log;
+import edu.agh.zp.repositories.LogRepository;
 import edu.agh.zp.services.CitizenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,17 +24,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 //@RequestMapping (value={"/signin"})
 public class SignInController {
 
-@Autowired
-private CitizenService cS;
-
+	@Autowired
+	private CitizenService cS;
+	@Autowired
+	private LogRepository lR;
 
 	private AuthenticationManager authManager;
 
@@ -47,7 +48,7 @@ private CitizenService cS;
 	public ModelAndView index(RedirectAttributes attributes, HttpServletRequest request, HttpServletResponse response) {
 
 		String viewName = "signin" ;
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("user", new CitizenEntity());
 
 		String referrer = request.getHeader("Referer");
@@ -62,27 +63,47 @@ private CitizenService cS;
 	public RedirectView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res, @CookieValue(name = "OLD_URL_REDIRECT") String ref) {
 		UsernamePasswordAuthenticationToken authReq =
 				new UsernamePasswordAuthenticationToken(citizen.getEmail(), citizen.getPassword());
-		Authentication auth = null;
+		Authentication auth;
 		try {
 			auth = authManager.authenticate(authReq);
 		}catch(AuthenticationException e){
 			RedirectView mv = new RedirectView("/signin");
 			mv.addStaticAttribute("error", "Błędna nazwa użytkownika lub hasło");
+			if(cS.findByEmail(citizen.getEmail()).isEmpty()){
+				lR.save(Log.failedSignInOrSignUp(Log.Operation.LOGIN, "Sign In - Wrong username"));
+			}else {
+				lR.save(Log.failedSignInOrSignUp(Log.Operation.LOGIN, "Sign In - Wrong password"));
+			}
 			return mv;
 		}
 		SecurityContext sc = SecurityContextHolder.getContext();
 		sc.setAuthentication(auth);
 		HttpSession session = request.getSession(true);
 		session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
+
+		Optional<CitizenEntity> citizenCopy = cS.findByEmail(citizen.getEmail());
+		// log
+		citizenCopy.ifPresent(citizenEntity -> lR.save(Log.acceptSignInOrSignUp(Log.Operation.LOGIN, "Sign In", citizenEntity)));
+
 		if (ref!=null) return new RedirectView(ref);
 		return new RedirectView("");
 	}
 
 	@GetMapping (value = {"/logout"})
 	public ModelAndView logout(final HttpServletRequest request) throws ServletException {
-		request.logout();
+
+		Optional<CitizenEntity> citizen = cS.findByEmail( request.getRemoteUser());
+		if(citizen.isPresent()) {
+			request.logout();
+			if(cS.findByEmail( request.getRemoteUser()).isEmpty()){
+				lR.save(new Log(Log.Operation.LOGIN, "Correct logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.ACCEPT));
+			}else{
+				lR.save(new Log(Log.Operation.LOGIN, "Failed logout", Log.ElementType.USER, citizen.get().getCitizenID(), citizen.get(), Log.Status.FAILED));
+			}
+		}
 		RedirectView redirect = new RedirectView();
 		redirect.setUrl("");
+
 		return new ModelAndView(redirect);
 	}
 
