@@ -104,7 +104,7 @@ public class KalendarzController {
 	public ModelAndView index( @PathVariable Long num ) {
 		VotingEntity voting = vr.findByVotingID( num );
 		if ( voting == null ) {
-			return new ModelAndView( String.valueOf( HttpStatus.NOT_FOUND ) );
+			return new ModelAndView( "error/404" );
 		}
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "wydarzenie" );
