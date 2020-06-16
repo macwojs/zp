@@ -1,12 +1,11 @@
 package edu.agh.zp.controller;
 
-import edu.agh.zp.objects.DocumentEntity;
-import edu.agh.zp.objects.SetEntity;
-import edu.agh.zp.objects.VotingEntity;
-import edu.agh.zp.objects.createVotingList;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.DocumentRepository;
+import edu.agh.zp.repositories.LogRepository;
 import edu.agh.zp.repositories.SetRepository;
 import edu.agh.zp.repositories.VotingRepository;
+import edu.agh.zp.services.CitizenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -36,6 +35,12 @@ public class SenatController {
 	@Autowired
 	private VotingRepository votingRepository;
 
+	@Autowired
+	private LogRepository logR;
+
+	@Autowired
+	private CitizenService cS;
+
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
@@ -57,7 +62,8 @@ public class SenatController {
 	}
 
 	@PostMapping ( value = { "/voteAdd" } )
-	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res ) throws ParseException {
+	public ModelAndView documentFormSubmit( @Valid @ModelAttribute ( "voting" ) VotingEntity voting, BindingResult res, final HttpServletRequest request ) throws Exception {
+		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(()-> new Exception("Citizen not found"));
 		if ( res.hasErrors( ) ) {
 			for ( Object i : res.getAllErrors( ) ) {
 				System.out.print( "\n" + i.toString( ) + "\n" );
@@ -68,6 +74,7 @@ public class SenatController {
 			List< DocumentEntity > documents = documentRepository.findByDocForSenat( );
 			model.addObject( "documents", documents );
 			model.setViewName( "senatVotingAdd" );
+			logR.save(Log.failedAddVoting("Failed to Add Sejm voting - validation problems", citizen));
 			return model;
 		}
 		Optional< SetEntity > set = setRepository.findById( (long) 2 );
@@ -81,7 +88,8 @@ public class SenatController {
 			voting.setOpenVoting( timeValueOpen );
 
 			voting.setVotingType( VotingEntity.TypeOfVoting.SENAT );
-			votingRepository.save( voting );
+			VotingEntity check = votingRepository.save( voting );
+			logR.save( Log.successAddVoting("Add Senat voting", voting, citizen));
 		}
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl( "/parlament/senat" );
