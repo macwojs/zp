@@ -8,6 +8,7 @@
             <ul class="nav navbar-nav mr-auto">
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/kalendarz">Kalendarz</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK')">Zarządzanie</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/prezydent" sec:authorize="hasAnyRole('ADMIN', 'PREZYDENT')">Zatwierdź ustawę</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/wyboryReferenda" sec:authorize="isAuthenticated()">Wybory i referenda</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
                 <li class="nav-item dropdown">

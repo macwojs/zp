@@ -58,6 +58,62 @@ public class UstawyController {
 		return modelAndView;
 	}
 
+	@GetMapping ( "/prezydent" )
+	public ModelAndView documentListToSign( HttpServletRequest request,
+									  @RequestParam(name="docType", required = false, defaultValue = "0") Long docType,
+									  @RequestParam(name="dateControl", required = false, defaultValue = "") Long dateControl,
+									  @RequestParam(name="date", required = false, defaultValue ="") String date)  {
+		ModelAndView modelAndView = new ModelAndView( );
+		int page = 0;
+		int size = 10;
+		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
+			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
+		}
+		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
+			size = Integer.parseInt( request.getParameter( "size" ) );
+		}
+		Page< DocumentEntity > documents;
+
+		List<DocumentStatusEntity> docStatuses =
+				documentStatusRepository.findByDocStatusNameIn(Collections.singletonList(
+						"Do zatwierdzenia przez Prezydenta"
+				));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
+
+		if(date.isEmpty()) {
+			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
+		}else{
+			Date temp = Date.valueOf(date);
+			if(dateControl == 1){
+				documents = documentRepository.findAllByStatusAndTypeLastEditAfter( docStatuses, docTypes, temp, PageRequest.of(page, size));
+			}else{
+				documents =documentRepository.findAllByStatusAndTypeLastEditBefore(docStatuses, docTypes, temp, PageRequest.of(page, size));
+			}
+		}
+
+		modelAndView.addObject( "documents", documents );
+		setOptionsListForDocumentListInProgress(modelAndView);
+		setSelected(modelAndView, docType, null, dateControl, date);
+		modelAndView.setViewName( "documentToSign" );
+		return modelAndView;
+	}
+
+	@GetMapping ( "/prezydent/{fun}/{id}" )
+	public RedirectView Signin(HttpServletRequest request,@PathVariable long id, @PathVariable int fun  ) throws Exception {
+		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
+		Optional<DocumentEntity> doc = documentRepository.findByDocID(id);
+		if( doc.isEmpty()){
+			logR.save(new Log(Log.Operation.EDIT, "Failed to edit document status - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
+			throw new Exception("Document not found");
+		}
+		if (fun==1) documentRepository.UpdateStatusByID(id,3);
+		else documentRepository.ActivateStatusByID(id,9);
+		logR.save(new Log(Log.Operation.EDIT, "Edit document status successfully", Log.ElementType.DOCUMENT, doc.get().getDocID(), citizen, Log.Status.SUCCESS));
+		RedirectView redirect = new RedirectView( );
+		redirect.setUrl("/ustawy/prezydent");
+		return redirect;
+	}
+
 	@GetMapping(value = {"/status/{id}"})
 	public ModelAndView statusList(ModelAndView model, @PathVariable long id){
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
@@ -86,9 +142,6 @@ public class UstawyController {
 				statuses = documentStatusRepository.findByDocStatusNameIn(Collections.singletonList("Do ponownego rozpatrzenia w Sejmie: Senat"));
 			case "Do ponownego rozpatrzenia w Sejmie: Senat":
 				statuses.addAll(documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Do zatwierdzenia przez Prezydenta", "Odrzucona")));
-				break;
-			case "Do zatwierdzenia przez Prezydenta":
-				statuses =documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Do ponownego rozpatrzenia w Sejmie: Prezydent"));
 				break;
 			case "Przyjęta":
 				statuses = documentStatusRepository.findByDocStatusNameIn(Collections.singletonList("Wygasła"));
