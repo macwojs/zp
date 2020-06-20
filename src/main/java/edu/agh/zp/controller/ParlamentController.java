@@ -79,14 +79,6 @@ public class ParlamentController {
 		return modelAndView;
 	}
 
-
-	@GetMapping ( value = { "/ustawy" } )
-	public ModelAndView ustawy() {
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "ustawy" );
-		return modelAndView;
-	}
-
 	@GetMapping ( value = { "/documentForm" } )
 	public ModelAndView documentForm( ModelAndView model ) {
 		List< DocumentTypeEntity > types = documentTypeRepository.findAllByDocTypeIDNotIn(Arrays.asList(6L,7L));
@@ -284,7 +276,6 @@ public class ParlamentController {
 		return model;
 	}
 
-
 	@GetMapping(value = {"/funkcyjni"})
 	public ModelAndView function(){
 		ModelAndView model = new ModelAndView();
@@ -308,7 +299,7 @@ public class ParlamentController {
 		}
 		Optional<ParliamentarianEntity> a = parliamentarianRepository.findById(id);
 		if ( a.isEmpty() ) {
-			return new ModelAndView( "error/404" );
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person doesn't exist");
 		}
 		ModelAndView model = new ModelAndView();
 		model.addObject("politician",a.get());
