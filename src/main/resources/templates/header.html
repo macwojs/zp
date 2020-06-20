@@ -21,29 +21,45 @@
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Prezydent</a>
                     <div class="dropdown-menu" role="menu">
                         <a class="dropdown-item" role="presentation" href="/prezydent/podpisz">Podpisz ustawy</a>
-                        <a class="dropdown-item" role="presentation" href="/glosowania//referendum/plan">Zarządź referendum</a>
+                        <a class="dropdown-item" role="presentation" href="/glosowania/referendum/plan">Zarządź referendum</a>
                     </div>
                 </li>
                 <!--                DZIENNIK USTAW-->
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/dziennikUstaw">Dziennik Ustaw</a></li>
 
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/obywatel" sec:authorize="isAuthenticated()">Obywatel</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK')">Zarządzanie</a></li>
+                <!--                MENU MARSZALEK SEJMU-->
+                <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK_SEJMU')">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Marszałek</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/glosowania/prezydenckie/plan">Ogłoś wybory</a>
+                        <a class="dropdown-item" role="presentation" href="/glosowania/referendum/plan">Zarządź referendum</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/documentForm">Dodaj dokument</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/sejm/voteAdd">Dodaj głosowanie sejmowe</a>
+                    </div>
+                </li>
+
+                <!--                MENU MARSZALEK SENATU-->
+                <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK_SENATU')">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Marszałek</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/parlament/documentForm">Dodaj dokument</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/senat/voteAdd">Dodaj głosowanie W SENACIE</a>
+                    </div>
+                </li>
+
+                <!--                MENU PARLAMENT-->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="/parlament">Parlament</a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ><a class="dropdown-item" role="presentation" href="/parlament/sejm/votingSchedule">Porządek obrad Sejm</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/parlament/senat/votingSchedule">Porządek obrad Senat</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/ustawy/listaUstaw">Procedowane ustawy</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/parlament/przeszleGlosowania">Przeszłe głosowania</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/parlament/funkcyjni">Osoby funkcyjne</a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
-                <li class="nav-item dropdown">
-                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Info</a>
-                    <div class="dropdown-menu" role="menu">
-                        <a class="dropdown-item" role="presentation" href="/historia">Historia</a>
-                        <a class="dropdown-item" role="presentation" href="/funkcyjni">Osoby funkcyjne</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="/parlament">Parlament</a>
-                    <div class="dropdown-menu" role="menu">
-                        <a class="dropdown-item" role="presentation" href="/parlament/sejm">Sejm</a>
-                        <a class="dropdown-item" role="presentation" href="/parlament/senat">Senat</a>
-                    </div>
-                </li>
             </ul>
                 <span class="navbar-text actions">
                     <a class="login" href="/signin" sec:authorize="isAnonymous()">Zaloguj</a>

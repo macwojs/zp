@@ -19,15 +19,4 @@ public class IndexController {
 		modelAndView.setViewName( "index" );
 		return modelAndView;
 	}
-
-	@GetMapping (value = {"/hello"} )
-	public ModelAndView hello(@RequestParam (value = "name", defaultValue = "World") String name) {
-
-		String viewName = "hello";
-		Map<String, Object> model = new HashMap<String, Object>();
-
-		model.put("name", name);
-
-		return new ModelAndView(viewName , model);
-	}
 }
