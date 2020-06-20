@@ -13,7 +13,7 @@
                 <div class="col-lg-8 mx-auto">
                     <p style="font-size: 43px;text-align: center;"><br>Senat</p>
                     <a class="nav-link" href="/parlament/documentForm" sec:authorize="hasAnyRole('SENATOR', 'ADMIN')">Dodawnie dokumentu</a>
-                    <a class="nav-link" href="/parlament/senat/voteAdd"sec:authorize="hasAnyRole('MARSZALEK_SENATU', 'ADMIN')">Dodawnie głosowania w senacie</a>
+                    <a class="nav-link" href="/parlament/senat/voteAdd" sec:authorize="hasAnyRole('MARSZALEK_SENATU', 'ADMIN')">Dodawnie głosowania w senacie</a>
                     <a class="nav-link" href="/parlament/senat/votingSchedule">Porządek obrad na dziś</a>
                     <h3>najbliższe głosowania</h3>
                     <button id="hide_button" type="button" class="btn btn-info" style="background-color: rgb(212,33,61);" onclick="hideVoting('closed-voting','hide_button',info1='Pokaż nieaktywne glosowania',info2='Ukryj nieaktywne glosowania')">Ukryj nieaktywne glosowania</button>

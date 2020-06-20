@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Time;
@@ -67,7 +68,7 @@ public class EventController {
 	public ModelAndView index( @PathVariable Long num ) {
 		VotingEntity voting = vr.findByVotingID( num );
 		if ( voting == null ) {
-			return new ModelAndView( "error/404" );
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
 		}
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "wydarzenie" );
