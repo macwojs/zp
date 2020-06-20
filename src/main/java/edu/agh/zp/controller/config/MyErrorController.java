@@ -1,4 +1,4 @@
-package edu.agh.zp.controller;
+package edu.agh.zp.controller.config;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;

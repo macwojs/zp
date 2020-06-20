@@ -27,7 +27,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping ( value = { "/wydarzenie" } )
-public class KalendarzController {
+public class EventController {
 
 
 	@Autowired
