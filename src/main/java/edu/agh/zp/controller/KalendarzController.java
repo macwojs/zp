@@ -1,5 +1,6 @@
 package edu.agh.zp.controller;
 
+import edu.agh.zp.classes.Event;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.ParliamentarianService;
@@ -21,21 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class Event {
-	public long id;
-	public LocalDateTime start;
-	public LocalDateTime end;
-	public String title;
-	public String url;
-
-	public Event( long id, LocalDateTime start, LocalDateTime end, String title, String url ) {
-		this.id = id;
-		this.start = start;
-		this.end = end;
-		this.title = title;
-		this.url = url;
-	}
-}
 
 
 @Controller

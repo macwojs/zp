@@ -19,7 +19,7 @@
                     <li th:case="true" class="list-group-item">
                         <div class="media align-items-lg-center flex-column flex-lg-row p-3">
                             <div class="media-body order-2 order-lg-1">
-                                <a th:href="'/wyboryReferenda/'+${voting.getVotingID()}" sec:authorize="hasAnyRole('USER','ADMIN','MARSZALEK_SEJMU','MARSZALEK_SENATU','POSEL','SENATOR','PREZYDENT')">
+                                <a th:href="'/obywatel/wyboryReferenda/'+${voting.getVotingID()}" sec:authorize="hasAnyRole('USER','ADMIN','MARSZALEK_SEJMU','MARSZALEK_SENATU','POSEL','SENATOR','PREZYDENT')">
                                     <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getVotingDescription().substring(0, min.run(voting.getVotingDescription().length(), 31))}"></h5>
                                 </a>
                                 <p th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}" class="font-italic text-muted mb-0 small"></p>

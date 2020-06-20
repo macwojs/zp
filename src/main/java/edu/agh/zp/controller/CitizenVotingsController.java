@@ -24,7 +24,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping ( value = { "/glosowania" } )
-public class GlosowaniaController {
+public class CitizenVotingsController {
 	@Autowired
 	VotingRepository votingRepository;
 

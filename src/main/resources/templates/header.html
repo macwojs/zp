@@ -7,9 +7,28 @@
                 class="collapse navbar-collapse" id="navcol-1">
             <ul class="nav navbar-nav mr-auto">
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/kalendarz">Kalendarz</a></li>
+                <!--                MENU OBYWATEL-->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Obywatel</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/obywatel/dane">Dane</a>
+                        <a class="dropdown-item" role="presentation" href="/obywatel/wyboryReferenda">Wybory i referenda</a>
+                        <a class="dropdown-item" role="presentation" href="/obywatel/przeszleGlosowania">Przeszłe głosowania</a>
+                    </div>
+                </li>
+                <!--                MENU PREZYDENT-->
+                <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'PREZYDENT')">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Prezydent</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/prezydent/podpisz">Podpisz ustawy</a>
+                        <a class="dropdown-item" role="presentation" href="/glosowania//referendum/plan">Zarządź referendum</a>
+                    </div>
+                </li>
+                <!--                DZIENNIK USTAW-->
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/dziennikUstaw">Dziennik Ustaw</a></li>
+
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/obywatel" sec:authorize="isAuthenticated()">Obywatel</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK')">Zarządzanie</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/prezydent" sec:authorize="hasAnyRole('ADMIN', 'PREZYDENT')">Zatwierdź ustawę</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/wyboryReferenda" sec:authorize="isAuthenticated()">Wybory i referenda</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
                 <li class="nav-item dropdown">
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Info</a>

@@ -52,7 +52,7 @@ public class UstawyController {
 	@GetMapping ( value = { "" } )
 	public RedirectView index() {
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl("ustawy/dziennikUstaw/");
+		redirect.setUrl("ustawy/listaUstaw/");
 		return redirect;
 	}
 

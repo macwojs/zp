@@ -13,7 +13,7 @@
 <body>
 <section id="tresc">
     <div class="login-clean">
-        <form id="voting-form" method="POST" style="max-width: 520px;" th:object="${vote}" th:action="@{/wyboryReferenda/{id}(id=${id})}" >
+        <form id="voting-form" method="POST" style="max-width: 520px;" th:object="${vote}" th:action="@{/obywatel/wyboryReferenda/{id}(id=${id})}" >
             <h1 class="text-center" style="margin-bottom: 24px;">Głosowanie</h1>
             <hr style="background-color: #D4213D;margin: 32px;margin-right: 64px;margin-left: 64px;margin-top: 8px;">
             <div class="container" style="margin-bottom: 15px;margin-top: 15px;">
