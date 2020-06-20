@@ -266,7 +266,7 @@ public class ParlamentController {
 					logR.save(Log.successEditVoting("Edit voting successfully", check, citizen.get()));
 				}
 				RedirectView redirect = new RedirectView();
-				redirect.setUrl("/kalendarz/wydarzenie/" + id);
+				redirect.setUrl("/wydarzenie/" + id);
 				return redirect;
 			}
 		}

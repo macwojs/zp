@@ -26,7 +26,7 @@
                     editable: false,
                     eventLimit: true, // allow "more" link when too many events
                     // events: {
-                    //     url: 'kalendarz/allevents',
+                    //     url: 'wydarzenie/allevents',
                     //     type: 'GET',
                     //     error: function() {
                     //         alert('there was an error while fetching events!');
@@ -61,11 +61,6 @@
 
 <body>
     <div class="calendarclass" id="calendar" th:id="calendar">
-
-        <div class="d-sm-flex justify-content-sm-center" style="margin-top: 16px; margin-bottom: 16px;" sec:authorize="hasAnyRole('MARSZALEK_SEJMU','MARSZALEK_SENATU', 'ADMIN')">
-            <a href="/kalendarz/addevent"><button class="btn btn-primary border-white" style="background-color: rgb(212,33,61);">Dodaj wydarzenie do kalendarza</button></a></div>
-        </div>
-<!--        <div class="form-group" sec:authorize="hasAnyRole('MARSZALEK_SEJMU','MARSZALEK_SENATU', 'ADMIN')"><a style="text-decoration: none;" href="/kalendarz/addevent"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Dodaj wydarzenie do kalendarza</button></a></div>-->
     </div>
 
 </body>

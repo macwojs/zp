@@ -54,7 +54,7 @@
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${votes.number eq 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/kalendarz/wydarzenie/{voteid}/votesList?page={id}(id=${votes.number - 3 < 1 ? 1 : votes.number - 3}, voteid=${vote_id})}"
+                               th:href="@{/wydarzenie/{voteid}/votesList?page={id}(id=${votes.number - 3 < 1 ? 1 : votes.number - 3}, voteid=${vote_id})}"
                                aria-label="Previous">
                                 <span aria-hidden="true">«</span>
                             </a>
@@ -66,7 +66,7 @@
                         </li>
                         <li class="page-item" th:classappend="${i eq votes.number + 1} ? 'active'"
                             th:each="i : ${#numbers.sequence( votes.number - 2 < 1 ? 1 : votes.number - 2, votes.totalPages > 10 ? (votes.number + 4 > votes.totalPages ? votes.totalPages : votes.number + 4) : votes.totalPages, 1)}">
-                            <a class="page-link" th:href="@{/kalendarz/wydarzenie/{voteid}/votesList?page={id}(id=${i}, voteid=${vote_id})}" th:text="${i}"
+                            <a class="page-link" th:href="@{/wydarzenie/{voteid}/votesList?page={id}(id=${i}, voteid=${vote_id})}" th:text="${i}"
                                th:title="${'Page '+ i}"></a>
                         </li>
                         <li class="page-item disabled" th:if="${votes.number + 4 < votes.totalPages and votes.totalPages < 6}">
@@ -77,7 +77,7 @@
                         <li class="page-item"
                             th:classappend="${votes.number + 1 eq votes.totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{/kalendarz/wydarzenie/{voteid}/votesList?page={id}(id=${votes.number + 5 < votes.totalPages ? votes.number + 5 : votes.totalPages}, voteid=${vote_id})}"
+                               th:href="@{/wydarzenie/{voteid}/votesList?page={id}(id=${votes.number + 5 < votes.totalPages ? votes.number + 5 : votes.totalPages}, voteid=${vote_id})}"
                                aria-label="Next">
                                 <span aria-hidden="true">»</span>
                             </a>

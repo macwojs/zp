@@ -6,7 +6,9 @@
         <div
                 class="collapse navbar-collapse" id="navcol-1">
             <ul class="nav navbar-nav mr-auto">
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/kalendarz">Kalendarz</a></li>
+                <!--                MENU KALENDARZ-->
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/wydarzenie/kalendarz">Kalendarz</a></li>
+
                 <!--                MENU OBYWATEL-->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Obywatel</a>
@@ -16,6 +18,7 @@
                         <a class="dropdown-item" role="presentation" href="/obywatel/przeszleGlosowania">Przeszłe głosowania</a>
                     </div>
                 </li>
+
                 <!--                MENU PREZYDENT-->
                 <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'PREZYDENT')">
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Prezydent</a>
@@ -24,6 +27,7 @@
                         <a class="dropdown-item" role="presentation" href="/glosowania/referendum/plan">Zarządź referendum</a>
                     </div>
                 </li>
+
                 <!--                DZIENNIK USTAW-->
                 <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/dziennikUstaw">Dziennik Ustaw</a></li>
 
@@ -43,7 +47,7 @@
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Marszałek</a>
                     <div class="dropdown-menu" role="menu">
                         <a class="dropdown-item" role="presentation" href="/parlament/documentForm">Dodaj dokument</a>
-                        <a class="dropdown-item" role="presentation" href="/parlament/senat/voteAdd">Dodaj głosowanie W SENACIE</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/senat/voteAdd">Dodaj głosowanie w senacie</a>
                     </div>
                 </li>
 
@@ -59,7 +63,6 @@
                     </ul>
                 </li>
 
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
             </ul>
                 <span class="navbar-text actions">
                     <a class="login" href="/signin" sec:authorize="isAnonymous()">Zaloguj</a>

@@ -15,10 +15,10 @@
                         <li class="list-group-item">
                             <div class="media align-items-lg-center flex-column flex-lg-row p-3">
                                 <div th:switch="${voting.getVotingDescription()}" class="media-body order-2 order-lg-1">
-                                    <a th:case="null" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}">
+                                    <a th:case="null" th:href="'/wydarzenie/'+${voting.getVotingID()}">
                                         <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getDocumentID().getDocDescription()}"></h5>
                                     </a>
-                                    <a th:case="*" th:href="'/kalendarz/wydarzenie/'+${voting.getVotingID()}">
+                                    <a th:case="*" th:href="'/wydarzenie/'+${voting.getVotingID()}">
                                         <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getVotingDescription()}"></h5>
                                     </a>
                                     <p th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}" class="font-italic text-muted mb-0 small"></p>

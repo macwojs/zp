@@ -1,8 +1,9 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.classes.Event;
-import edu.agh.zp.objects.VotingEntity;
+import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
+import edu.agh.zp.services.CitizenService;
 import edu.agh.zp.services.ParliamentarianService;
 import edu.agh.zp.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Controller
-@RequestMapping ( value = { "/kalendarz" } )
+@RequestMapping ( value = { "/wydarzenie" } )
 public class KalendarzController {
 
 
@@ -39,10 +40,7 @@ public class KalendarzController {
 	private ParliamentarianService parlS;
 
 	@Autowired
-	private ParliamentarianRepository parliamentarianRepository;
-
-	@Autowired
-	private PoliticianRepository politicianRepository;
+	private CitizenService cS;
 
 	@Autowired
 	private OptionSetRepository osR;
@@ -51,7 +49,7 @@ public class KalendarzController {
 	private OptionRepository oR;
 
 
-	@GetMapping ( value = { "" } )
+	@GetMapping ( value = "/kalendarz" )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "kalendarz" );
@@ -60,33 +58,12 @@ public class KalendarzController {
 		return modelAndView;
 	}
 
-	@GetMapping ( value = { "addevent" } )
-	public String addEvent() {
-//		ModelAndView modelAndView = new ModelAndView( );
-//		modelAndView.setViewName( "kalendarz" );
-		return "addevent";
-	}
-
 	@RequestMapping ( value = "/allevents", method = RequestMethod.GET )
 	public List< Event > allEvents() {
 		return parseVotingsToEvents( );
 	}
 
-	public List< Event > parseVotingsToEvents() {
-		List< VotingEntity > votings = vr.findAll( );
-		List< Event > events = new ArrayList<>( );
-		for ( VotingEntity i : votings ) {
-			events.add( new Event( i.getVotingID( ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getOpenVoting( ) ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getCloseVoting( ) ), i.getDocumentID( ) != null ? i.getDocumentID( ).getDocName( ) : i.getVotingDescription( ) != null ? i.getVotingDescription( ) : i.getVotingType( ).toString( ), "/kalendarz/wydarzenie/" + i.getVotingID( ) ) );
-		}
-		return events;
-	}
-
-	public LocalDateTime dateAndTimeToLocalDateTime( Date date, Time time ) {
-		String myDate = date + "T" + time;
-		return LocalDateTime.parse( myDate );
-	}
-
-	@GetMapping ( "/wydarzenie/{num}" )
+	@GetMapping ( "/{num}" )
 	public ModelAndView index( @PathVariable Long num ) {
 		VotingEntity voting = vr.findByVotingID( num );
 		if ( voting == null ) {
@@ -114,6 +91,75 @@ public class KalendarzController {
 		boolean during = ( voting.getVotingDate( ).equals( date ) && voting.getOpenVoting( ).before( time ) && voting.getCloseVoting( ).after( time ) );
 		modelAndView.addObject( "during", during );
 		return modelAndView;
+	}
+
+	@GetMapping("/{num}/wyniki")
+	public ModelAndView results(@PathVariable Long num) {
+		VotingEntity voting = vr.findByVotingID(num);
+		if(voting==null) {
+			return new ModelAndView(String.valueOf(HttpStatus.NOT_FOUND));
+		}
+		Statistics stats = new Statistics();
+		Chart pieChart = new Chart( "Rozkład głosów");
+		List<Chart> multiChart = new ArrayList<>();
+		List<String> politicalGroups = parlS.findPoliticalGroups();
+		if(voting.getVotingType() == VotingEntity.TypeOfVoting.SEJM ||  voting.getVotingType() == VotingEntity.TypeOfVoting.SENAT  ) {
+			for (String group : politicalGroups) {
+				multiChart.add(new Chart(group));
+			}
+		}
+		List< OptionSetEntity > tempOptions = osR.findAllBySetIDcolumn( voting.getSetID_column() );
+		for( OptionSetEntity i : tempOptions ){
+			Optional< OptionEntity > temp = oR.findByOptionID( i.getOptionID().getOptionID() );
+			if(temp.isPresent()){
+				OptionEntity option = temp.get(); // option
+				if(voting.getVotingType() == VotingEntity.TypeOfVoting.SEJM ||  voting.getVotingType() == VotingEntity.TypeOfVoting.SENAT  ) {
+					for (int j = 0; j < politicalGroups.size(); ++j) { // iterate through political groups to get information about votes in each of them
+						Long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
+						multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
+					}
+				}
+				Long voteCount = voteS.countByVotingAndOption(voting, option);
+				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
+			}
+		}
+		ModelAndView modelAndView = new ModelAndView( );
+		switch(voting.getVotingType()){
+			case SEJM:
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSejm(), pieChart, VotingEntity.TypeOfVoting.SEJM);
+				modelAndView.addObject("multichart",  multiChart);
+				break;
+			case SENAT:
+				stats = new Statistics(voteS.countAllByVoting(voting), parlS.countMemberOfSenat(), pieChart, VotingEntity.TypeOfVoting.SENAT);
+				modelAndView.addObject("multichart",  multiChart);
+				break;
+			case PREZYDENT:
+			case REFERENDUM:
+				stats = new Statistics(voteS.countAllByVoting(voting), cS.countEntitledToVote(), pieChart, VotingEntity.TypeOfVoting.REFERENDUM);
+				break;
+		}
+
+		modelAndView.setViewName( "votingResults" );
+		modelAndView.addObject("voting", voting);
+		modelAndView.addObject("statistics",  stats);
+
+		return modelAndView;
+	}
+
+
+//	ADDITIONAL METHODS
+	public List< Event > parseVotingsToEvents() {
+		List< VotingEntity > votings = vr.findAll( );
+		List< Event > events = new ArrayList<>( );
+		for ( VotingEntity i : votings ) {
+			events.add( new Event( i.getVotingID( ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getOpenVoting( ) ), dateAndTimeToLocalDateTime( i.getVotingDate( ), i.getCloseVoting( ) ), i.getDocumentID( ) != null ? i.getDocumentID( ).getDocName( ) : i.getVotingDescription( ) != null ? i.getVotingDescription( ) : i.getVotingType( ).toString( ), "/wydarzenie/" + i.getVotingID( ) ) );
+		}
+		return events;
+	}
+
+	public LocalDateTime dateAndTimeToLocalDateTime( Date date, Time time ) {
+		String myDate = date + "T" + time;
+		return LocalDateTime.parse( myDate );
 	}
 
 }

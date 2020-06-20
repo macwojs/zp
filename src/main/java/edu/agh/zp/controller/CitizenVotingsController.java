@@ -67,13 +67,14 @@ public class CitizenVotingsController {
 	}
 
 	@PostMapping ( value = { "/prezydenckie/planAdd" } )
-	public ModelAndView prezydentSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) throws ParseException {
+	public Object prezydentSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) throws ParseException {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "glosowania" );
+		modelAndView.setViewName( "kalendarz" );
 		String data = reqParameters.remove( "date" );
 		SetEntity set = new SetEntity( "Wybory Prezydenckie " + data );
 		LocalDate time = timeVerify( data, 7 );
 		Optional<CitizenEntity> citizen = cS.findByEmail(request.getRemoteUser());
+		VotingEntity voting = null;
 		if(citizen.isPresent()) {
 			if (time == null || reqParameters.size() < 3 || reqParameters.containsValue("")) {
 				ArrayList<String> errors = errorsMsg(time, 7, reqParameters);
@@ -83,7 +84,7 @@ public class CitizenVotingsController {
 				return modelAndView;
 			}
 			setSession.save(set);
-			VotingEntity voting = new VotingEntity(java.sql.Date.valueOf(time), java.sql.Time.valueOf(LocalTime.parse("06:00:00")), java.sql.Time.valueOf(LocalTime.parse("21:00:00")), set, null, VotingEntity.TypeOfVoting.PREZYDENT, "Wybory Prezydenckie " + data);
+			voting = new VotingEntity(java.sql.Date.valueOf(time), java.sql.Time.valueOf(LocalTime.parse("06:00:00")), java.sql.Time.valueOf(LocalTime.parse("21:00:00")), set, null, VotingEntity.TypeOfVoting.PREZYDENT, "Wybory Prezydenckie " + data);
 			VotingEntity check = votingRepository.save(voting);
 			if (votingRepository.findById(check.getVotingID()).isPresent()) {
 				logR.save(Log.successAddVoting("Add new presidential voting", check, citizen.get()));
@@ -97,7 +98,11 @@ public class CitizenVotingsController {
 				optionSetSession.save(new OptionSetEntity(option, set));
 			}
 		}
-		return modelAndView;
+
+		RedirectView redirect = new RedirectView();
+		assert voting != null;
+		redirect.setUrl("/wydarzenie/" + voting.getVotingID());
+		return redirect;
 	}
 
 	@GetMapping ( value = { "/referendum/plan" } )
@@ -110,13 +115,13 @@ public class CitizenVotingsController {
 	}
 
 	@PostMapping ( value = { "/referendum/planAdd" } )
-	public ModelAndView referendumSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) throws ParseException {
+	public Object referendumSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) throws ParseException {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "glosowania" );
 		String data = reqParameters.remove( "date" );
 		LocalDate time = timeVerify( data, 7 );
 		String desc = reqParameters.remove( "desc" );
 		Optional<CitizenEntity> citizen = cS.findByEmail(request.getRemoteUser());
+		VotingEntity voting = null;
 		if(citizen.isPresent()) {
 			if ( time == null || desc.isEmpty( ) ) {
 				ArrayList< String > errors = new ArrayList<>( );
@@ -129,14 +134,18 @@ public class CitizenVotingsController {
 				logR.save(Log.failedAddVoting("Failed to add new referendum - wrong time or question is empty", citizen.get()));
 				return modelAndView;
 			}
-			VotingEntity voting = new VotingEntity( java.sql.Date.valueOf( time ), java.sql.Time.valueOf( LocalTime.parse( "06:00:00" ) ), java.sql.Time.valueOf( LocalTime.parse( "21:00:00" ) ), setSession.findById( 1L ).get( ), null, VotingEntity.TypeOfVoting.REFERENDUM, desc );
+			voting = new VotingEntity( java.sql.Date.valueOf( time ), java.sql.Time.valueOf( LocalTime.parse( "06:00:00" ) ), java.sql.Time.valueOf( LocalTime.parse( "21:00:00" ) ), setSession.findById( 1L ).get( ), null, VotingEntity.TypeOfVoting.REFERENDUM, desc );
 			VotingEntity check = votingRepository.save( voting );
 			if( votingRepository.findById(check.getVotingID()).isPresent()){
 				logR.save(Log.successAddVoting("Add new referendum voting",  check, citizen.get()));
 			}
 			votingTimerSession.save( new VotingTimerEntity( voting.getVotingID( ), java.sql.Date.valueOf( time ) ) );
 		}
-		return modelAndView;
+
+		RedirectView redirect = new RedirectView();
+		assert voting != null;
+		redirect.setUrl("/wydarzenie/" + voting.getVotingID());
+		return redirect;
 	}
 
 	public LocalDate timeVerify( String time, int delay ) {
@@ -226,7 +235,7 @@ public class CitizenVotingsController {
 			String error = null;
 			if (dateForm != null) {
 				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.DATE, -7);
+				cal.add(Calendar.DATE, +7);
 				java.util.Date dateNow = cal.getTime();
 
 				if (dateForm.before(dateNow))
@@ -243,7 +252,7 @@ public class CitizenVotingsController {
 					logR.save(Log.successEditVoting("Edit voting successfully", check, citizen.get()));
 				}
 				RedirectView redirect = new RedirectView();
-				redirect.setUrl("/kalendarz/wydarzenie/" + id);
+				redirect.setUrl("/wydarzenie/" + id);
 				return redirect;
 			}
 		}
