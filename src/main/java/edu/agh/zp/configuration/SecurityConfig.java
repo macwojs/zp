@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import javax.sql.DataSource;
 
-/** @SecutityConfig
+/** SecutityConfig
  * @apiNote Password encrypting, User authentication
  * Example: https://reflectoring.io/spring-security-password-handling/
  */
@@ -52,9 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/ustawy/status/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU")
                 .antMatchers("/ustawy/description/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU", "SENATOR", "POSEL")
-
                 .antMatchers("/ustawy/annotation/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN", "SENATOR", "POSEL")
-                .antMatchers("/ustawy/prezydent/**").hasAnyRole("PREZYDENT","ADMIN")
+
                 .and()
                 .formLogin()
                 .loginPage("/signin")

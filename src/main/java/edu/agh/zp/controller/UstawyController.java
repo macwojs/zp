@@ -269,11 +269,12 @@ public class UstawyController {
 		return modelAndView;
 	}
 
-
-//	ADDITIONAL METHODS
 	@GetMapping(value = {"/annotation/{id}"})
 	public ModelAndView annotation(ModelAndView model, @PathVariable long id) {
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
+		if (document.isEmpty()){
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong document id");
+		}
 		DocumentEntity doc = document.get();
 		setObjects(model,doc);
 		return model;
@@ -285,8 +286,11 @@ public class UstawyController {
 		if(citizen.isPresent()) {
 			if (res.hasErrors()) {
 				ModelAndView model = new ModelAndView();
-				logR.save(new Log(Log.Operation.ADD, "Failed to add document", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.FAILURE));
+				logRepository.save(new Log(Log.Operation.ADD, "Failed to add document", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.FAILURE));
 				Optional<DocumentEntity> document_temp = documentRepository.findByDocID(id);
+				if(document_temp.isEmpty()){
+					throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong document_temp id");
+				}
 				DocumentEntity doc = document_temp.get();
 				setObjects(model,doc);
 				return model;
@@ -302,12 +306,13 @@ public class UstawyController {
 			document.setAnnotation(documentRepository.findByDocID(id).get());
 			DocumentEntity check = documentRepository.save(document);
 			if(documentRepository.findByDocID(check.getDocID()).isPresent()) {
-				logR.save(new Log(Log.Operation.ADD, "Add document successfully", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.SUCCESS));
+				logRepository.save(new Log(Log.Operation.ADD, "Add document successfully", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.SUCCESS));
 			}
 		}
 		return index(id);
 	}
 
+	//	ADDITIONAL METHODS
 	private void setObjects(ModelAndView model, DocumentEntity doc){
 		model.setViewName("poprawkaForm");
 		model.addObject("doc", doc);
