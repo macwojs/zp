@@ -27,6 +27,8 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	@Query (value="Select * from document WHERE (doctypeid=1 or doctypeid=4 or doctypeid=5 or doctypeid=6 or doctypeid=7) and (docstatusid=2)", nativeQuery=true)
 	List<DocumentEntity> findByDocForSenat( );
 
+	List<DocumentEntity> findAllByAnnotation(DocumentEntity annotation);
+
 
 	Optional<DocumentEntity> findByDocID(long docID);
 

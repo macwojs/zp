@@ -79,6 +79,13 @@ public class UstawyController {
 		else{
 			modelAndView.addObject("mutable", null);
 		}
+		List<DocumentEntity> corrections = documentRepository.findAllByAnnotation(doc);
+		if (corrections.isEmpty()){
+			modelAndView.addObject("corrections", null);
+		}
+		else{
+			modelAndView.addObject("corrections", corrections);
+		}
 		modelAndView.addObject( "doc", doc );
 		return modelAndView;
 	}

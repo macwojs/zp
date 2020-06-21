@@ -7,6 +7,15 @@
     <title>zp</title>
     <div th:remove="tag" class="extraHead">
         <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" th:src="@{/js/Table-search.js}"></script>
+        <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
+        <style>
+            .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+                background-color: #ffeeee;
+            }
+        </style>
     </div>
 </head>
 <body>
@@ -62,9 +71,32 @@
                     <td><a>Zgłoś poprawkę:</a></td>
                     <td><a class="nav-link" th:href="@{/ustawy/annotation/{id}(id=${id})}">Rozpocznij</a></td>
                 </tr>
-
+                <tr th:if="*{annotation}" >
+                    <td><a>Poprawiana ustawa:</a></td>
+                    <td><a class="nav-link" th:href="@{/ustawy/{id}(id=*{annotation.getDocID()})}" th:text="*{annotation.getDocName()}">Rozpocznij</a></td>
                 </tr>
             </table>
+            <div th:if="${corrections}!=null">
+                <h2 class="text-center">Poprawki do tej ustawy</h2>
+                <div>
+                    <table class="table table-bordered table-striped sorted-table">
+                        <thead>
+                        <tr>
+                            <th>Poprawka</th>
+                            <th>Zgłoszono</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                            <tbody class="to_hide1">
+                            <tr th:each="correction:${corrections}" th:object="${correction}">
+                                <td><a class="nav-link" th:href="'/ustawy/'+*{docID}" th:text="*{docName}"></a></td>
+                                <td th:text="*{declaredDate}"></td>
+                                <td th:text="*{docStatusID.getDocStatusName()}"></td>
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
         </form>
        </div>
 </div>
