@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ustawy/status/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN")
                 .antMatchers("/ustawy/prezydent/**").hasAnyRole("PREZYDENT","ADMIN")
                 .antMatchers("/ustawy/description/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN", "SENATOR", "POSEL")
+                .antMatchers("/ustawy/annotation/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN", "SENATOR", "POSEL")
                 .and()
                 .formLogin()
                 .loginPage("/signin")

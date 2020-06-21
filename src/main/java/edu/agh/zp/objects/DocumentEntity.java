@@ -41,6 +41,10 @@ public class DocumentEntity implements Serializable {
     private DocumentTypeEntity docTypeID;
 
     @ManyToOne
+    @JoinColumn(name="annotation")
+    private DocumentEntity annotation;
+
+    @ManyToOne
     @NotNull(message = "Musisz wybrać status dokumentu.")
     @JoinColumn(name="docStatusID")
     private DocumentStatusEntity docStatusID;
@@ -131,5 +135,13 @@ public class DocumentEntity implements Serializable {
 
     public void setDeclaredDate(Date declaredDate) {
         this.declaredDate = declaredDate;
+    }
+
+    public DocumentEntity getAnnotation() {
+        return annotation;
+    }
+
+    public void setAnnotation(DocumentEntity annotation) {
+        this.annotation = annotation;
     }
 }

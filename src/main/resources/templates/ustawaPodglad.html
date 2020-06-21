@@ -58,6 +58,10 @@
                     <td><a>Edytuj opis:</a></td>
                     <td><a class="nav-link" th:href="@{/ustawy/description/{id}(id=${id})}">Rozpocznij</a></td>
                 </tr>
+                <tr th:if="${mutable}!=null" sec:authorize="hasAnyRole('MARSZALEK_SEJMU', 'MARSZALEK_SENATU','ADMIN', 'SENATOR', 'POSEL')">
+                    <td><a>Zgłoś poprawkę:</a></td>
+                    <td><a class="nav-link" th:href="@{/ustawy/annotation/{id}(id=${id})}">Rozpocznij</a></td>
+                </tr>
 
                 </tr>
             </table>

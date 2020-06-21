@@ -1,22 +1,25 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.objects.*;
-import edu.agh.zp.repositories.DocumentRepository;
-import edu.agh.zp.repositories.DocumentStatusRepository;
-import edu.agh.zp.repositories.DocumentTypeRepository;
-import edu.agh.zp.repositories.LogRepository;
+import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.CitizenService;
+import edu.agh.zp.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -26,6 +29,14 @@ public class UstawyController {
 
 	@Autowired
 	DocumentRepository documentRepository;
+
+	@Autowired
+	private CitizenRepository citizenRepository;
+
+	@Autowired
+	private StorageService storageService;
+
+
 	@Autowired
 	DocumentTypeRepository docTypeR;
 
@@ -54,7 +65,21 @@ public class UstawyController {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "ustawaPodglad" );
 		modelAndView.addObject("id",id);
-		modelAndView.addObject( "doc", document.get() );
+		DocumentEntity doc = document.get();
+		String status = doc.getDocStatusID().getDocStatusName();
+		String type = doc.getDocTypeID().getDocTypeName();
+		if (!status.equals("Przyjęta") &&
+			!status.equals("Odrzucona") &&
+			!status.equals("Do zatwierdzenia przez Prezydenta") &&
+			!status.equals("Wygasła") &&
+			( type.equals("Ustawa") || type.equals("Uchwała")))
+		{
+			modelAndView.addObject("mutable",1);
+		}
+		else{
+			modelAndView.addObject("mutable", null);
+		}
+		modelAndView.addObject( "doc", doc );
 		return modelAndView;
 	}
 
@@ -286,6 +311,53 @@ public class UstawyController {
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
 		modelAndView.setViewName( "documentList" );
 		return modelAndView;
+	}
+
+	@GetMapping(value = {"/annotation/{id}"})
+	public ModelAndView annotation(ModelAndView model, @PathVariable long id) {
+		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
+		DocumentEntity doc = document.get();
+		setObjects(model,doc);
+		return model;
+	}
+
+	@PostMapping ( value = { "/annotation/{id}" }, consumes = { "multipart/form-data" } )
+	public ModelAndView annotationSubmit(@RequestParam ( "file" ) MultipartFile file, RedirectAttributes redirectAttributes, @Valid @ModelAttribute ( "document" ) DocumentEntity document, BindingResult res, final HttpServletRequest request, @PathVariable long id ) {
+		Optional<CitizenEntity> citizen = citizenRepository.findByEmail(request.getRemoteUser());
+		if(citizen.isPresent()) {
+			if (res.hasErrors()) {
+				ModelAndView model = new ModelAndView();
+				logR.save(new Log(Log.Operation.ADD, "Failed to add document", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.FAILURE));
+				Optional<DocumentEntity> document_temp = documentRepository.findByDocID(id);
+				DocumentEntity doc = document_temp.get();
+				setObjects(model,doc);
+				return model;
+			}
+
+			if (!file.isEmpty()) {
+				String path = storageService.uploadFile(file);
+				document.setPdfFilePath(path);
+			}
+			Date now = Date.valueOf(LocalDate.now());
+			document.setDeclaredDate(now);
+			document.setLastEdit(now);
+			document.setAnnotation(documentRepository.findByDocID(id).get());
+			DocumentEntity check = documentRepository.save(document);
+			if(documentRepository.findByDocID(check.getDocID()).isPresent()) {
+				logR.save(new Log(Log.Operation.ADD, "Add document successfully", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.SUCCESS));
+			}
+		}
+		return index(id);
+	}
+
+	private void setObjects(ModelAndView model, DocumentEntity doc){
+		model.setViewName("poprawkaForm");
+		model.addObject("doc", doc);
+		model.addObject( "document", new DocumentEntity( ) );
+		List< DocumentStatusEntity > statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Zgłoszona"));
+		model.addObject("statuses",statuses);
+		if (doc.getDocTypeID().getDocTypeName().equals("Ustawa")) model.addObject("type",6);
+		else model.addObject("type",7);
 	}
 
 	private void setSelected(ModelAndView modelAndView, Long docType, Long docStatus, Long dateControl, String date){
