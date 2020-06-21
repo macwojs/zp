@@ -28,66 +28,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 
-class Votes {
-	String surname;
-	String name;
-	String party;
-	String voteValue;
-	long politicID;
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname( String surname ) {
-		this.surname = surname;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName( String name ) {
-		this.name = name;
-	}
-
-	public String getParty() {
-		return party;
-	}
-
-	public void setParty( String party ) {
-		this.party = party;
-	}
-
-	public String getVoteValue() {
-		return voteValue;
-	}
-
-	public void setVoteValue( String voteValue ) {
-		this.voteValue = voteValue;
-	}
-
-	public long getPoliticID() {
-		return politicID;
-	}
-
-	public void setPoliticID( long politicID ) {
-		this.politicID = politicID;
-	}
-
-	public Votes( String surname, String name, String party, String voteValue, long politicID ) {
-		this.surname = surname;
-		this.name = name;
-		this.party = party;
-		this.voteValue = voteValue;
-		this.politicID = politicID;
-	}
-}
 
 @Controller
 @RequestMapping ( value = { "/parlament" } )
@@ -118,20 +64,18 @@ public class ParlamentController {
 	private VotingRepository votingRepository;
 
 	@Autowired
+	RoleRepository roleRepository;
+
+	@Autowired
+	ParliamentarianRepository parliamentarianRepository;
+
+	@Autowired
 	private LogRepository logR;
 
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "parlament" );
-		return modelAndView;
-	}
-
-
-	@GetMapping ( value = { "/ustawy" } )
-	public ModelAndView ustawy() {
-		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "ustawy" );
 		return modelAndView;
 	}
 
@@ -314,7 +258,7 @@ public class ParlamentController {
 					logR.save(Log.successEditVoting("Edit voting successfully", check, citizen.get()));
 				}
 				RedirectView redirect = new RedirectView();
-				redirect.setUrl("/kalendarz/wydarzenie/" + id);
+				redirect.setUrl("/wydarzenie/" + id);
 				return redirect;
 			}
 		}
@@ -330,6 +274,61 @@ public class ParlamentController {
 		model.addObject( "refName", voting.getDocumentID( ).getDocName( ) );
 		model.setViewName( "changeEventDate/changeVote" );
 		return model;
+	}
+
+	@GetMapping(value = {"/funkcyjni"})
+	public ModelAndView function(){
+		ModelAndView model = new ModelAndView();
+		model.addObject("sejm", parliamentarianRepository.findAllByChamberOfDeputies("Sejm"));
+		model.addObject("senat", parliamentarianRepository.findAllByChamberOfDeputies("Senat"));
+		model.addObject("prezydent", roleRepository.findByName("ROLE_PREZYDENT").get().getUsers().get(0));
+		model.addObject("marszalek_sejm",parliamentarianRepository.findByPoliticianID_CitizenIDIn(roleRepository.findByName("ROLE_MARSZALEK_SEJMU").get().getUsers()).get(0));
+		model.addObject("marszalek_senat",parliamentarianRepository.findByPoliticianID_CitizenIDIn(roleRepository.findByName("ROLE_MARSZALEK_SENATU").get().getUsers()).get(0));
+		model.setViewName("funkcyjni");
+		return model;
+	}
+
+	@GetMapping(value = {"/funkcyjni/{id}"})
+	public ModelAndView functionID(@PathVariable Long id){
+		if (id == 0){
+			ModelAndView model = new ModelAndView();
+			model.addObject("president",roleRepository.findByName("ROLE_PREZYDENT").get().getUsers().get(0));
+			model.addObject("fn","Prezydent");
+			model.setViewName("funkcyjniSzczegoly");
+			return model;
+		}
+		Optional<ParliamentarianEntity> a = parliamentarianRepository.findById(id);
+		if ( a.isEmpty() ) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person doesn't exist");
+		}
+		ModelAndView model = new ModelAndView();
+		model.addObject("politician",a.get());
+		List<CitizenEntity>b=new ArrayList<CitizenEntity>();
+		b.add(a.get().getPoliticianID().getCitizenID());
+		model.addObject("fn",roleRepository.findByUsersIsIn(b).toString());
+		model.setViewName("funkcyjniSzczegoly");
+		return model;
+	}
+
+	@GetMapping("/przeszleGlosowania")
+	public ModelAndView pastVotings(){
+		return new ModelAndView("historiaParlament");
+	}
+
+	@GetMapping("/przeszleGlosowania/sejm")
+	public ModelAndView sejm(){
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "pastVoting" );
+		createVotingList.past( modelAndView, VotingEntity.TypeOfVoting.SEJM, votingRepository );
+		return modelAndView;
+	}
+
+	@GetMapping("/przeszleGlosowania/senat")
+	public ModelAndView senat(){
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.setViewName( "pastVoting" );
+		createVotingList.past( modelAndView, VotingEntity.TypeOfVoting.SENAT, votingRepository );
+		return modelAndView;
 	}
 }
 

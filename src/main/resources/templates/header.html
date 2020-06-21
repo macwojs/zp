@@ -2,29 +2,67 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <nav class="navbar navbar-light navbar-expand-md navigation-clean-button" style="background-color: rgb(212,33,61);height: 10vh;">
-    <div class="container"><a class="navbar-brand" href="/" style="background-image: url(&quot;/img/godlo.png&quot;);background-size: contain;background-repeat: no-repeat;width: 10vh;height: 10vh;"></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+    <div class="container"><a class="navbar-brand" href="/" style="background-image: url('/img/godlo.png');background-size: contain;background-repeat: no-repeat;width: 10vh;height: 10vh;"></a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
         <div
                 class="collapse navbar-collapse" id="navcol-1">
             <ul class="nav navbar-nav mr-auto">
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/kalendarz">Kalendarz</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/glosowania" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK')">Zarządzanie</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/prezydent" sec:authorize="hasAnyRole('ADMIN', 'PREZYDENT')">Zatwierdź ustawę</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/wyboryReferenda" sec:authorize="isAuthenticated()">Wybory i referenda</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy">Ustawy</a></li>
-                <li class="nav-item dropdown">
-                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Info</a>
+                <!--                MENU KALENDARZ-->
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/wydarzenie/kalendarz">Kalendarz</a></li>
+
+                <!--                MENU OBYWATEL-->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Obywatel</a>
                     <div class="dropdown-menu" role="menu">
-                        <a class="dropdown-item" role="presentation" href="/historia">Historia</a>
-                        <a class="dropdown-item" role="presentation" href="/funkcyjni">Osoby funkcyjne</a>
+                        <a class="dropdown-item" role="presentation" href="/obywatel/dane">Dane</a>
+                        <a class="dropdown-item" role="presentation" href="/obywatel/wyboryReferenda">Wybory i referenda</a>
+                        <a class="dropdown-item" role="presentation" href="/obywatel/przeszleGlosowania">Przeszłe głosowania</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="/parlament">Parlament</a>
+
+                <!--                MENU PREZYDENT-->
+                <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'PREZYDENT')">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Prezydent</a>
                     <div class="dropdown-menu" role="menu">
-                        <a class="dropdown-item" role="presentation" href="/parlament/sejm">Sejm</a>
-                        <a class="dropdown-item" role="presentation" href="/parlament/senat">Senat</a>
+                        <a class="dropdown-item" role="presentation" href="/prezydent/podpisz">Podpisz ustawy</a>
+                        <a class="dropdown-item" role="presentation" href="/glosowania/referendum/plan">Zarządź referendum</a>
                     </div>
                 </li>
+
+                <!--                DZIENNIK USTAW-->
+                <li class="nav-item" role="presentation"><a class="nav-link" href="/ustawy/dziennikUstaw">Dziennik Ustaw</a></li>
+
+                <!--                MENU MARSZALEK SEJMU-->
+                <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK_SEJMU')">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Marszałek</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/glosowania/prezydenckie/plan">Ogłoś wybory</a>
+                        <a class="dropdown-item" role="presentation" href="/glosowania/referendum/plan">Zarządź referendum</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/documentForm">Dodaj dokument</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/sejm/voteAdd">Dodaj głosowanie sejmowe</a>
+                    </div>
+                </li>
+
+                <!--                MENU MARSZALEK SENATU-->
+                <li class="nav-item dropdown" sec:authorize="hasAnyRole('ADMIN', 'MARSZALEK_SENATU')">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" >Marszałek</a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" role="presentation" href="/parlament/documentForm">Dodaj dokument</a>
+                        <a class="dropdown-item" role="presentation" href="/parlament/senat/voteAdd">Dodaj głosowanie w senacie</a>
+                    </div>
+                </li>
+
+                <!--                MENU PARLAMENT-->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="/parlament">Parlament</a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ><a class="dropdown-item" role="presentation" href="/parlament/sejm/votingSchedule">Porządek obrad Sejm</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/parlament/senat/votingSchedule">Porządek obrad Senat</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/ustawy/listaUstaw">Procedowane ustawy</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/parlament/przeszleGlosowania">Przeszłe głosowania</a></li>
+                        <li><a class="dropdown-item" role="presentation" href="/parlament/funkcyjni">Osoby funkcyjne</a></li>
+                    </ul>
+                </li>
+
             </ul>
                 <span class="navbar-text actions">
                     <a class="login" href="/signin" sec:authorize="isAnonymous()">Zaloguj</a>

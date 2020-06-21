@@ -40,19 +40,18 @@ public class UstawyController {
 	@Autowired
 	DocumentTypeRepository docTypeR;
 
+	DocumentTypeRepository documentTypeRepository;
 	@Autowired
 	DocumentStatusRepository documentStatusRepository;
-
 	@Autowired
-	CitizenService cS;
-
+	CitizenService citizenService;
 	@Autowired
-	LogRepository logR;
+	LogRepository logRepository;
 
 	@GetMapping ( value = { "" } )
 	public RedirectView index() {
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl("ustawy/dziennikUstaw/");
+		redirect.setUrl("ustawy/listaUstaw/");
 		return redirect;
 	}
 
@@ -88,62 +87,6 @@ public class UstawyController {
 		}
 		modelAndView.addObject( "doc", doc );
 		return modelAndView;
-	}
-
-	@GetMapping ( "/prezydent" )
-	public ModelAndView documentListToSign( HttpServletRequest request,
-									  @RequestParam(name="docType", required = false, defaultValue = "0") Long docType,
-									  @RequestParam(name="dateControl", required = false, defaultValue = "") Long dateControl,
-									  @RequestParam(name="date", required = false, defaultValue ="") String date)  {
-		ModelAndView modelAndView = new ModelAndView( );
-		int page = 0;
-		int size = 10;
-		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
-			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
-		}
-		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
-			size = Integer.parseInt( request.getParameter( "size" ) );
-		}
-		Page< DocumentEntity > documents;
-
-		List<DocumentStatusEntity> docStatuses =
-				documentStatusRepository.findByDocStatusNameIn(Collections.singletonList(
-						"Do zatwierdzenia przez Prezydenta"
-				));
-		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
-
-		if(date.isEmpty()) {
-			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
-		}else{
-			Date temp = Date.valueOf(date);
-			if(dateControl == 1){
-				documents = documentRepository.findAllByStatusAndTypeLastEditAfter( docStatuses, docTypes, temp, PageRequest.of(page, size));
-			}else{
-				documents =documentRepository.findAllByStatusAndTypeLastEditBefore(docStatuses, docTypes, temp, PageRequest.of(page, size));
-			}
-		}
-
-		modelAndView.addObject( "documents", documents );
-		setOptionsListForDocumentListInProgress(modelAndView);
-		setSelected(modelAndView, docType, null, dateControl, date);
-		modelAndView.setViewName( "documentToSign" );
-		return modelAndView;
-	}
-
-	@GetMapping ( "/prezydent/{fun}/{id}" )
-	public RedirectView Signin(HttpServletRequest request,@PathVariable long id, @PathVariable int fun  ) throws Exception {
-		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
-		Optional<DocumentEntity> doc = documentRepository.findByDocID(id);
-		if( doc.isEmpty()){
-			logR.save(new Log(Log.Operation.EDIT, "Failed to edit document status - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
-			throw new Exception("Document not found");
-		}
-		if (fun==1) documentRepository.UpdateStatusByID(id,3);
-		else documentRepository.ActivateStatusByID(id,9);
-		logR.save(new Log(Log.Operation.EDIT, "Edit document status successfully", Log.ElementType.DOCUMENT, doc.get().getDocID(), citizen, Log.Status.SUCCESS));
-		RedirectView redirect = new RedirectView( );
-		redirect.setUrl("/ustawy/prezydent");
-		return redirect;
 	}
 
 	@GetMapping(value = {"/status/{id}"})
@@ -194,16 +137,16 @@ public class UstawyController {
 
 	@PostMapping(value = {"/status/{id}"})
 	public RedirectView statusListAdd(@PathVariable long id, @RequestParam("type") long type,  final HttpServletRequest request  ) throws Exception {
-		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
+		CitizenEntity citizen = citizenService.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
 		Optional<DocumentEntity> doc = documentRepository.findByDocID(id);
 		if( doc.isEmpty()){
-			logR.save(new Log(Log.Operation.EDIT, "Failed to edit document status - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
+			logRepository.save(new Log(Log.Operation.EDIT, "Failed to edit document status - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
 			throw new Exception("Document not found");
 		}
 
 		if (type != 11) documentRepository.UpdateStatusByID(id,type);
 		else documentRepository.ActivateStatusByID(id,type);
-		logR.save(new Log(Log.Operation.EDIT, "Edit document status successfully", Log.ElementType.DOCUMENT, doc.get().getDocID(), citizen, Log.Status.SUCCESS));
+		logRepository.save(new Log(Log.Operation.EDIT, "Edit document status successfully", Log.ElementType.DOCUMENT, doc.get().getDocID(), citizen, Log.Status.SUCCESS));
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl("/ustawy/"+id);
 		return redirect;
@@ -212,9 +155,9 @@ public class UstawyController {
 	@GetMapping(value = {"/description/{id}"})
 	public ModelAndView descriptionEdit(ModelAndView model, @PathVariable long id,  final HttpServletRequest request ) throws Exception {
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
-		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(()->new Exception("Citizen not found"));
+		CitizenEntity citizen = citizenService.findByEmail(request.getRemoteUser()).orElseThrow(()->new Exception("Citizen not found"));
 		if (document.isEmpty()){
-			logR.save(new Log(Log.Operation.EDIT, "Edit document description failure - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
+			logRepository.save(new Log(Log.Operation.EDIT, "Edit document description failure - document not found", Log.ElementType.DOCUMENT, citizen, Log.Status.FAILURE));
 			throw new ResponseStatusException( HttpStatus.NOT_FOUND, "Document not found" );
 		}
 		String docDesc = document.get().getDocDescription();
@@ -228,11 +171,11 @@ public class UstawyController {
 	@PostMapping(value = {"/description/{id}"})
 	public RedirectView descriptionEditPost(@PathVariable long id, @RequestParam("desc") String desc,  final HttpServletRequest request ) throws Exception {
 		DocumentEntity doc = documentRepository.getOne( id );
-		CitizenEntity citizen = cS.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
+		CitizenEntity citizen = citizenService.findByEmail(request.getRemoteUser()).orElseThrow(() -> new Exception("Citizen not found"));
 
 		doc.setDocDescription( desc );
 		documentRepository.save( doc );
-		logR.save(new Log(Log.Operation.EDIT, "Edit document description successfully", Log.ElementType.DOCUMENT, doc.getDocID(), citizen, Log.Status.SUCCESS));
+		logRepository.save(new Log(Log.Operation.EDIT, "Edit document description successfully", Log.ElementType.DOCUMENT, doc.getDocID(), citizen, Log.Status.SUCCESS));
 		RedirectView redirect = new RedirectView( );
 		redirect.setUrl("/ustawy/"+id);
 		return redirect;
@@ -257,7 +200,7 @@ public class UstawyController {
 		Page< DocumentEntity > documents;
 		List<DocumentStatusEntity> docStatuses =
 				(docStatus == 0) ? documentStatusRepository.findAllByDocStatusIDIn(Arrays.asList((long)3, (long)11)) : Collections.singletonList(documentStatusRepository.findByDocStatusID(docStatus));
-		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? documentTypeRepository.findAll() : Collections.singletonList( documentTypeRepository.findByDocTypeID(docType));
 
 		if(date.isEmpty() ) {
 			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
@@ -306,7 +249,7 @@ public class UstawyController {
 						"Do ponownego rozpatrzenia w Sejmie: Prezydent",
 						"Odrzucona"
 				)) : Collections.singletonList(documentStatusRepository.findByDocStatusID(docStatus));
-		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? docTypeR.findAll() : Collections.singletonList(docTypeR.findByDocTypeID(docType));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? documentTypeRepository.findAll() : Collections.singletonList( documentTypeRepository.findByDocTypeID(docType));
 
 		if(date.isEmpty()) {
 			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
@@ -326,6 +269,8 @@ public class UstawyController {
 		return modelAndView;
 	}
 
+
+//	ADDITIONAL METHODS
 	@GetMapping(value = {"/annotation/{id}"})
 	public ModelAndView annotation(ModelAndView model, @PathVariable long id) {
 		Optional<DocumentEntity> document = documentRepository.findByDocID(id);
@@ -381,13 +326,13 @@ public class UstawyController {
 	}
 
 	private void setOptionsListForDocumentList(ModelAndView modelAndView){
-		modelAndView.addObject("documentTypes", docTypeR.findAll());
+		modelAndView.addObject("documentTypes", documentTypeRepository.findAll());
 		modelAndView.addObject("documentStatus",
 				documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Wygasła")));
 	}
 
 	private void setOptionsListForDocumentListInProgress(ModelAndView modelAndView) {
-		modelAndView.addObject("documentTypes", docTypeR.findAll());
+		modelAndView.addObject("documentTypes", documentTypeRepository.findAll());
 		modelAndView.addObject("documentStatus",
 				documentStatusRepository.findByDocStatusNameIn(Arrays.asList(
 						"Zgłoszona",

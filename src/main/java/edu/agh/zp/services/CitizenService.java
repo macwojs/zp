@@ -12,31 +12,31 @@ import java.util.Optional;
 public class CitizenService {
 
     @Autowired
-    private CitizenRepository cR;
+    private CitizenRepository citizenRepository;
 
     public Optional<CitizenEntity> create(CitizenEntity citizen){
-        return Optional.of(cR.save(citizen));
+        return Optional.of( citizenRepository.save(citizen));
     }
 
     public ArrayList<CitizenEntity> findAll(){
-        return (ArrayList<CitizenEntity>)cR.findAll();
+        return (ArrayList<CitizenEntity>) citizenRepository.findAll();
     }
 
     public CitizenEntity findById(Long id){
-        return cR.findByCitizenID(id);
+        return citizenRepository.findByCitizenID(id);
     }
 
-    public Optional<CitizenEntity> findByEmail(String email){ return cR.findByEmail(email);}
+    public Optional<CitizenEntity> findByEmail(String email){ return citizenRepository.findByEmail(email);}
 
     public CitizenEntity update( CitizenEntity citizen ){
-        return cR.save(citizen);
+        return citizenRepository.save(citizen);
     }
 
-    public Optional<CitizenEntity> findByPesel(String pesel) { return cR.findByPesel(pesel);}
+    public Optional<CitizenEntity> findByPesel(String pesel) { return citizenRepository.findByPesel(pesel);}
 
-    public Optional<CitizenEntity> findByIdNumer(String idNumber) { return cR.findByIdNumber(idNumber);}
+    public Optional<CitizenEntity> findByIdNumer(String idNumber) { return citizenRepository.findByIdNumber(idNumber);}
 
     public long countEntitledToVote(){
-        return cR.count();
+        return citizenRepository.count();
     }
 }

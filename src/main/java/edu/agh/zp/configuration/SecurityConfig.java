@@ -34,18 +34,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable();
         // TODO...Change the authorization
         http.authorizeRequests()
-                .antMatchers("/glosowania/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU")
-                .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU", "ADMIN")
-                .antMatchers("/parlament/sejm/vote").hasAnyRole("POSEL", "ADMIN")
-                .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
-                .antMatchers("/parlament/vote/zmianaDaty/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU", "ADMIN")
-                .antMatchers("/parlament/**").authenticated()
-                .antMatchers("/wyboryReferenda/**").authenticated()
                 .antMatchers( "/obywatel/**" ).authenticated()
-                .antMatchers("/ustawy/status/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN")
-                .antMatchers("/ustawy/prezydent/**").hasAnyRole("PREZYDENT","ADMIN")
-                .antMatchers("/ustawy/description/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN", "SENATOR", "POSEL")
+
+                .antMatchers("/glosowania/prezydenckie/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU")
+                .antMatchers("/glosowania/referendum/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "PREZYDENT")
+                .antMatchers("/glosowania/zmianaDaty/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "PREZYDENT")
+
+                .antMatchers("/parlament/documentForm").hasAnyRole("ADMIN", "MARSZALEK_SENATU", "MARSZALEK_SEJMU")
+                .antMatchers("/parlament/vote/**").hasAnyRole("ADMIN", "SENATOR", "POSEL")
+                .antMatchers("/parlament/vote/zmianaDaty/**").hasAnyRole("ADMIN", "MARSZALEK_SENATU", "MARSZALEK_SEJMU")
+
+                .antMatchers("/parlament/senat/voteAdd").hasAnyRole("MARSZALEK_SENATU", "ADMIN")
+
+                .antMatchers("/parlament/sejm/voteAdd").hasAnyRole("MARSZALEK_SEJMU", "ADMIN")
+
+                .antMatchers("/prezydent").hasAnyRole("ADMIN", "PREZYDENT")
+
+                .antMatchers("/ustawy/status/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU")
+                .antMatchers("/ustawy/description/**").hasAnyRole("ADMIN", "MARSZALEK_SEJMU", "MARSZALEK_SENATU", "SENATOR", "POSEL")
+
                 .antMatchers("/ustawy/annotation/**").hasAnyRole("MARSZALEK_SEJMU", "MARSZALEK_SENATU","ADMIN", "SENATOR", "POSEL")
+                .antMatchers("/ustawy/prezydent/**").hasAnyRole("PREZYDENT","ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/signin")
@@ -82,3 +91,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return tokenRepositoryImpl;
     }
 }
+

@@ -1,5 +1,5 @@
 // Controller should be used for creating basic constant records in data base, just after initialization/flush,
-package edu.agh.zp.controller;
+package edu.agh.zp.controller.config;
 
 
 import com.github.javafaker.Faker;
