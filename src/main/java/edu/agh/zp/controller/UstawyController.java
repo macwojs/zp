@@ -151,7 +151,7 @@ public class UstawyController {
 		String name = docStatus.getDocStatusName();
 		List<DocumentStatusEntity> statuses = new ArrayList<>();
 		model.setViewName("alterStatus");
-		switch (name) {
+		if (document.get().getDocTypeID().getDocTypeName().equals("Ustawa") || document.get().getDocTypeID().getDocTypeName().equals("Uchwała")) switch (name) {
 			case "Zgłoszona":
 			case "Pierwsze czytanie":
 			case "Drugie czytanie":
@@ -174,6 +174,12 @@ public class UstawyController {
 			default:
 				model.setViewName("finalStatus");
 				model.addObject("th_redirect","ustawy/"+id);
+		}
+		else if (name.equals("Zgłoszona")){
+			statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Odrzucona"));
+		} else {
+			model.setViewName("finalStatus");
+			model.addObject("th_redirect","ustawy/"+id);
 		}
 		model.addObject("statuses",statuses);
 		return model;
