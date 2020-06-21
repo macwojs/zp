@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -136,10 +137,10 @@ public class ParlamentController {
 
 	@GetMapping ( value = { "/documentForm" } )
 	public ModelAndView documentForm( ModelAndView model ) {
-		List< DocumentTypeEntity > types = documentTypeRepository.findAll( );
+		List< DocumentTypeEntity > types = documentTypeRepository.findAllByDocTypeIDNotIn(Arrays.asList(6L,7L));
 		model.addObject( "types", types );
 
-		List< DocumentStatusEntity > statuses = documentStatusRepository.findAll( );
+		List< DocumentStatusEntity > statuses = documentStatusRepository.findAll();
 		model.addObject( "statuses", statuses );
 
 		model.addObject( "document", new DocumentEntity( ) );

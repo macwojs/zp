@@ -11,4 +11,6 @@ public interface DocumentTypeRepository extends JpaRepository<DocumentTypeEntity
     List<DocumentTypeEntity> findByDocTypeName(String Name);
     DocumentTypeEntity findByDocTypeID(long Name);
     List<DocumentTypeEntity> findAll();
+
+    List<DocumentTypeEntity> findAllByDocTypeIDNotIn(List<Long> asList);
 }
