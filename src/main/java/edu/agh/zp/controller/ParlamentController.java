@@ -18,7 +18,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
@@ -64,10 +63,10 @@ public class ParlamentController {
 	private VotingRepository votingRepository;
 
 	@Autowired
-	RoleRepository roleRepository;
+	private RoleRepository roleRepository;
 
 	@Autowired
-	ParliamentarianRepository parliamentarianRepository;
+	private ParliamentarianRepository parliamentarianRepository;
 
 	@Autowired
 	private LogRepository logR;
@@ -115,7 +114,7 @@ public class ParlamentController {
 			}
 		}
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl( "/parlament" );
+		redirect.setUrl( "/ustawy/"+document.getDocID() );
 		return new ModelAndView( redirect );
 	}
 
