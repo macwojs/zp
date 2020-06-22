@@ -18,7 +18,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.Date;
 import java.sql.Time;
@@ -64,10 +63,10 @@ public class ParlamentController {
 	private VotingRepository votingRepository;
 
 	@Autowired
-	RoleRepository roleRepository;
+	private RoleRepository roleRepository;
 
 	@Autowired
-	ParliamentarianRepository parliamentarianRepository;
+	private ParliamentarianRepository parliamentarianRepository;
 
 	@Autowired
 	private LogRepository logR;
@@ -115,7 +114,7 @@ public class ParlamentController {
 			}
 		}
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl( "/parlament" );
+		redirect.setUrl( "/ustawy/"+document.getDocID() );
 		return new ModelAndView( redirect );
 	}
 
@@ -124,6 +123,9 @@ public class ParlamentController {
 		VotingEntity voting = votingRepository.findByVotingID( id );
 
 		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ) );
+		if (optCurUser.isEmpty())
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't find logged user");
+
 		Optional< VoteEntity > vote = voteRepository.findByCitizenID_CitizenIDAndVotingID_VotingID( id, optCurUser.get( ).getCitizenID( ) );
 		if ( vote.isPresent( ) ) {
 			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
@@ -194,6 +196,9 @@ public class ParlamentController {
 	@GetMapping ( value = { "/vote/zmianaDaty/{id}" } )
 	public Object votingDateChange( @PathVariable long id, @RequestParam ( value = "dateForm", required = false ) Date dateForm, @RequestParam ( value = "timeFormOd", required = false ) Time timeFormOd, @RequestParam ( value = "timeFormDo", required = false ) Time timeFormDo, final HttpServletRequest request ) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
+		if (voting == null)
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
+
 		ModelAndView model = new ModelAndView();
 		Optional<CitizenEntity> citizen = citizenRepository.findByEmail(request.getRemoteUser());
 		if(citizen.isPresent()) {
@@ -222,9 +227,6 @@ public class ParlamentController {
 					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin or Marszalek Senatu or Prezydent can change voting date");
 				}
 
-			if (voting == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
-			}
 			if (voting.getVotingType() != VotingEntity.TypeOfVoting.SEJM && voting.getVotingType() != VotingEntity.TypeOfVoting.SENAT) {
 				logR.save(Log.failedEditVoting("Edition of voting failure - wrong voting type", voting, citizen.get()));
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong voting type");
