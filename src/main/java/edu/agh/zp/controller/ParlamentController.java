@@ -303,9 +303,35 @@ public class ParlamentController {
 		}
 		ModelAndView model = new ModelAndView();
 		model.addObject("politician",a.get());
-		List<CitizenEntity>b=new ArrayList<CitizenEntity>();
+		List<CitizenEntity>b=new ArrayList<>();
 		b.add(a.get().getPoliticianID().getCitizenID());
-		model.addObject("fn",roleRepository.findByUsersIsIn(b).toString());
+		int fn=0;
+		List<Role>c=new ArrayList<>(roleRepository.findByUsersIsIn(b));
+		//c.addAll(roleRepository.findByUsersIsIn(b));
+		for(Role i:c){
+			if(i.getName().equals("ROLE_MARSZALEK_SEJMU"))
+				fn=3;
+			else if (i.getName().equals("ROLE_MARSZALEK_SENATU"))
+				fn=4;
+			else if (i.getName().equals("ROLE_POSEL") & fn <3)
+				fn=1;
+			else if (i.getName().equals("ROLE_SENATOR") & fn <3)
+				fn=2;
+		}
+		switch(fn){
+			case 3:
+				model.addObject("fn","Marszałek Sejmu");
+				break;
+			case 4:
+				model.addObject("fn","Marszałek Senatu");
+				break;
+			case 1:
+				model.addObject("fn","Poseł");
+				break;
+			case 2:
+				model.addObject("fn","Senator");
+				break;
+		}
 		model.setViewName("funkcyjniSzczegoly");
 		return model;
 	}
