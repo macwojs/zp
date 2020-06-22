@@ -21,7 +21,7 @@
         <div class="list-group">
             <h3>Prezydent:</h3>
             <div th:if="${prezydent}!=null">
-                <a class="nav-link" th:href="'/funkcyjni/0'" th:text="${prezydent.getSurname()} + ' ' +  ${prezydent.getName()}"></a>
+                <a class="nav-link" th:href="'/parlament/funkcyjni/0'" th:text="${prezydent.getSurname()} + ' ' +  ${prezydent.getName()}"></a>
             </div>
             <h3>Posłowie</h3><small>[<a id="hide_button1" style="color: blue"
                                         onclick="hideVoting('to_hide1','hide_button1')">Ukryj</a>]</small>
@@ -36,8 +36,8 @@
                 <div th:if="${sejm}!=null">
                     <tbody class="to_hide1">
                     <tr th:each="person:${sejm}">
-                        <td><a class="nav-link" th:href="'/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></a></td>
-                        <td><a class="nav-link" th:href="'/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getName()}"></a></td>
+                        <td><a class="nav-link" th:href="'/parlament/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></a></td>
+                        <td><a class="nav-link" th:href="'/parlament/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getName()}"></a></td>
                         <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
                     </tr>
                     </tbody>
@@ -46,7 +46,7 @@
             <br><br><br>
             <h5>Marszałek sejmu:</h5>
             <div th:if="${marszalek_sejm}!=null">
-                <a class="nav-link" th:href="'/funkcyjni/'+${marszalek_sejm.parliamentarianID}"
+                <a class="nav-link" th:href="'/parlament/funkcyjni/'+${marszalek_sejm.parliamentarianID}"
                    th:text="${marszalek_sejm.getPoliticianID().getCitizenID().getSurname()} + ' ' +  ${marszalek_sejm.getPoliticianID().getCitizenID().getName()} + ' partia ' + ${marszalek_sejm.getPoliticalGroup()}"></a>
             </div>
             <h3>Senatorzy</h3><small>[<a id="hide_button2" style="color: blue"
@@ -62,8 +62,8 @@
                 <div th:if="${senat}!=null">
                     <tbody  class="to_hide2">
                     <tr th:each="person:${senat}">
-                        <td><a class="nav-link" th:href="'/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></a></td>
-                        <td><a class="nav-link" th:href="'/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getName()}"></a></td>
+                        <td><a class="nav-link" th:href="'/parlament/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getSurname()}"></a></td>
+                        <td><a class="nav-link" th:href="'/parlament/funkcyjni/'+*{person.parliamentarianID}" th:text="${person.getPoliticianID().getCitizenID().getName()}"></a></td>
                         <td th:text="${person.getPoliticalGroup()!=null} ? ${person.getPoliticalGroup()} : 'Brak'"></td>
                     </tr>
                     </tbody>
@@ -71,7 +71,7 @@
             </table>
             <h5>Marszałek senatu:</h5>
             <div th:if="${marszalek_senat}!=null">
-                <a class="nav-link" th:href="'/funkcyjni/'+${marszalek_senat.parliamentarianID}"
+                <a class="nav-link" th:href="'/parlament/funkcyjni/'+${marszalek_senat.parliamentarianID}"
                    th:text="${marszalek_senat.getPoliticianID().getCitizenID().getSurname()} + ' ' + ${marszalek_senat.getPoliticianID().getCitizenID().getName()} + ' partia ' + ${marszalek_senat.getPoliticalGroup()}"></a>
             </div>
         </div>
