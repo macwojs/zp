@@ -40,7 +40,9 @@ public class UstawyController {
 	@Autowired
 	DocumentTypeRepository docTypeR;
 
+	@Autowired
 	DocumentTypeRepository documentTypeRepository;
+
 	@Autowired
 	DocumentStatusRepository documentStatusRepository;
 	@Autowired
@@ -200,7 +202,9 @@ public class UstawyController {
 		Page< DocumentEntity > documents;
 		List<DocumentStatusEntity> docStatuses =
 				(docStatus == 0) ? documentStatusRepository.findAllByDocStatusIDIn(Arrays.asList((long)3, (long)11)) : Collections.singletonList(documentStatusRepository.findByDocStatusID(docStatus));
-		List<DocumentTypeEntity> docTypes = (docType == 0 ) ? documentTypeRepository.findAll() : Collections.singletonList( documentTypeRepository.findByDocTypeID(docType));
+		List<DocumentTypeEntity> docTypes = (docType == 0 ) ?
+				documentTypeRepository.findAll() :
+				Collections.singletonList( documentTypeRepository.findByDocTypeID(docType));
 
 		if(date.isEmpty() ) {
 			documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(page, size));
