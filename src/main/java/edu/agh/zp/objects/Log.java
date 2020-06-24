@@ -172,5 +172,11 @@ public class Log{
         this.status = status;
     }
 
+    public LocalDateTime getTime() {
+        return time;
+    }
 
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
 }
