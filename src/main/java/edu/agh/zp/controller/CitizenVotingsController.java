@@ -186,6 +186,8 @@ public class CitizenVotingsController {
 	@GetMapping ( value = { "/zmianaDaty/{id}" } )
 	public Object votingDateChange( @RequestParam ( value = "dateForm", required = false ) Date dateForm, @PathVariable long id, final HttpServletRequest request) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
+		if (voting == null)
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
 		ModelAndView model = new ModelAndView();
 		Optional<CitizenEntity> citizen = cS.findByEmail(request.getRemoteUser());
 		if(citizen.isPresent()) {
