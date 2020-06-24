@@ -214,10 +214,6 @@ public class CitizenVotingsController {
 					logR.save(Log.failedEditVoting("Edition of presidential voting failure - forbidden for rule other than admin and Marszalek Senatu", voting, citizen.get()));
 					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin or Marszalek Senatu can change voting date");
 				}
-
-			if (voting == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
-			}
 			if (voting.getVotingType() != VotingEntity.TypeOfVoting.REFERENDUM && voting.getVotingType() != VotingEntity.TypeOfVoting.PREZYDENT) {
 				logR.save(Log.failedEditVoting("Edition of voting failure - wrong voting type", voting, citizen.get()));
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong voting type");

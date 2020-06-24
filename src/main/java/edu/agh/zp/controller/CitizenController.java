@@ -152,7 +152,7 @@ public class CitizenController {
 		VotingEntity voting = votingSession.findByVotingID(id);
 		Optional< VotingControlEntity > votingControl = votingControlSession.findByCitizenIDAndVotingID(optCurUser.get(), voting);
 		if (votingControl.isPresent()) {
-			model.addObject("th_redirect", "/wyboryReferenda");
+			model.addObject("th_redirect", "/obywatel/wyboryReferenda");
 			model.setViewName("418_REPEAT_VOTE");
 			return model;
 		}
@@ -184,7 +184,7 @@ public class CitizenController {
 			Optional<VotingControlEntity> votingControl = votingControlSession.findByCitizenIDAndVotingID(optCurUser.get(), voting);
 			if (votingControl.isPresent()) {
 				ModelAndView model = new ModelAndView();
-				model.addObject("th_redirect", "/wyboryReferenda");
+				model.addObject("th_redirect", "/obywatel/wyboryReferenda");
 				model.setViewName("418_REPEAT_VOTE");
 				logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - vote already exists", voting, optCurUser.get()));
 				return model;
@@ -192,7 +192,7 @@ public class CitizenController {
 			if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
 				ModelAndView model = new ModelAndView();
 				model.setViewName("timeOut");
-				model.addObject("type", "/wyboryReferenda");
+				model.addObject("type", "/obywatel/wyboryReferenda");
 				logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - timeout", voting, optCurUser.get()));
 				return model;
 			}
