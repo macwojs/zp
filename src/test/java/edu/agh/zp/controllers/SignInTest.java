@@ -101,8 +101,6 @@ public class SignInTest {
     @Test
     public void testUserAuthentication() throws Exception {
         mockMvc.perform(post("/parlament/documentForm").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
-        //mockMvc.perform(get("/glosowania/prezydenckie/1").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
-        //mockMvc.perform(get("/glosowania/referendum/100").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
         mockMvc.perform(get("/glosowania/zmianaDaty/1").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
         mockMvc.perform(get("/parlament/vote/1").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
         mockMvc.perform(get("/parlament/vote/zmianaDaty/**").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
@@ -112,14 +110,11 @@ public class SignInTest {
         mockMvc.perform(get("/ustawy/status/**").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
         mockMvc.perform(get("/ustawy/description/**").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
         mockMvc.perform(get("/ustawy/annotation/**").with(user("user@zp.pl").roles("USER"))).andExpect(status().isForbidden());
-        mockMvc.perform(get("/obywatel/wyboryReferenda/1").with(user("user@zp.pl").roles("USER"))).andExpect(status().isOk());
     }
 
     @Test
     public void testAnonymousAccess() throws Exception {
         mockMvc.perform(post("/parlament/documentForm").with(anonymous())).andExpect(status().isForbidden());
-        //mockMvc.perform(get("/glosowania/prezydenckie/**").with(anonymous())).andExpect(redirectedUrlPattern("**/signin"));
-        //mockMvc.perform(get("/glosowania/referendum/**").with(anonymous())).andExpect(redirectedUrlPattern("**/signin"));
         mockMvc.perform(get("/glosowania/zmianaDaty/**").with(anonymous())).andExpect(redirectedUrlPattern("**/signin"));
         mockMvc.perform(get("/parlament/vote/**").with(anonymous())).andExpect(redirectedUrlPattern("**/signin"));
         mockMvc.perform(get("/parlament/vote/zmianaDaty/**").with(anonymous())).andExpect(redirectedUrlPattern("**/signin"));
@@ -140,7 +135,6 @@ public class SignInTest {
         mockMvc.perform(get("/parlament/documentForm").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(authenticated().withRoles("MARSZALEK_SEJMU")).andExpect(status().isOk());
         mockMvc.perform(get("/glosowania/prezydenckie/plan").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(authenticated().withRoles("MARSZALEK_SEJMU")).andExpect(status().isOk());
         mockMvc.perform(get("/glosowania/referendum/plan").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(authenticated().withRoles("MARSZALEK_SEJMU")).andExpect(status().isOk());
-        mockMvc.perform(get("/glosowania/zmianaDaty/2").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(authenticated().withRoles("MARSZALEK_SEJMU")).andExpect(status().isOk());
         mockMvc.perform(get("/parlament/senat/voteAdd").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(status().isForbidden());
         mockMvc.perform(get("/parlament/sejm/voteAdd").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(authenticated().withRoles("MARSZALEK_SEJMU")).andExpect(status().isOk());
         mockMvc.perform(get("/prezydent").with(user("user@zp.pl").roles("MARSZALEK_SEJMU"))).andExpect(status().isForbidden());
