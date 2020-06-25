@@ -186,6 +186,8 @@ public class CitizenVotingsController {
 	@GetMapping ( value = { "/zmianaDaty/{id}" } )
 	public Object votingDateChange( @RequestParam ( value = "dateForm", required = false ) Date dateForm, @PathVariable long id, final HttpServletRequest request) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
+		if (voting == null)
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
 		ModelAndView model = new ModelAndView();
 		Optional<CitizenEntity> citizen = cS.findByEmail(request.getRemoteUser());
 		if(citizen.isPresent()) {
@@ -214,10 +216,6 @@ public class CitizenVotingsController {
 					logR.save(Log.failedEditVoting("Edition of presidential voting failure - forbidden for rule other than admin and Marszalek Senatu", voting, citizen.get()));
 					throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only admin or Marszalek Senatu can change voting date");
 				}
-
-			if (voting == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
-			}
 			if (voting.getVotingType() != VotingEntity.TypeOfVoting.REFERENDUM && voting.getVotingType() != VotingEntity.TypeOfVoting.PREZYDENT) {
 				logR.save(Log.failedEditVoting("Edition of voting failure - wrong voting type", voting, citizen.get()));
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong voting type");

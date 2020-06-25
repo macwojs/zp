@@ -78,7 +78,7 @@ public class EventController {
 		if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.PREZYDENT ) {
 			link = "/prezydent/vote/" + voting.getVotingID( );
 		} else if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.REFERENDUM ) {
-			link = "/referendum/vote/" + voting.getVotingID( );
+			link = "/obywatel/wyboryReferenda/" + voting.getVotingID( );
 		} else if ( voting.getVotingType( ) == VotingEntity.TypeOfVoting.SEJM || voting.getVotingType( ) == VotingEntity.TypeOfVoting.SENAT ) {
 			link = "/parlament/vote/" + voting.getVotingID( );
 		}
