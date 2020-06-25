@@ -35,7 +35,7 @@ public class User {
     private String idnumber;
 
     @NotBlank (message = "Musisz podać hasło.")
-    @Size (min = 8, message = "Hasło musi posiagać minimum 8 znaków")
+    @Size (min = 8, message = "Hasło musi posiadać minimum 8 znaków")
     private String password;
 
     @Transient // keyword to not push field to the database

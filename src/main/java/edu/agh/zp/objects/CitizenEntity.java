@@ -29,7 +29,7 @@ public class CitizenEntity implements Serializable {
 
     @NotNull
     @NotBlank (message = "Musisz podać hasło.")
-    @Size (min = 8, message = "Hasło musi posiagać minimum 8 znaków")
+    @Size (min = 8, message = "Hasło musi posiadać minimum 8 znaków")
     @Column(name="password")
 
     private String password;
