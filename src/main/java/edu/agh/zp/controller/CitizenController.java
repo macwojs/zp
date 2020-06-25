@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -82,7 +84,7 @@ public class CitizenController {
 	}
 
 	@PostMapping( value = { "dane/modify/{scenario}" } )
-	public ModelAndView citizenPut(Principal principal, @RequestParam("field1") String f1, @RequestParam("field2") String f2, @PathVariable String scenario) {
+	public ModelAndView citizenPut(final HttpServletRequest request, Principal principal, @RequestParam("field1") String f1, @RequestParam("field2") String f2, @PathVariable String scenario)  throws ServletException {
 		ModelAndView model = new ModelAndView( );
 		Optional< CitizenEntity > currentCitizen = citizenRepository.findByEmail( principal.getName( ) );
 		if (currentCitizen.isEmpty()) {
@@ -106,6 +108,7 @@ public class CitizenController {
 					return model;
 				}
 				citizenRepository.updateEmail(citizen.getCitizenID(),f1);
+				request.logout();
 				redirect.setUrl("/logout");
 				return new ModelAndView(redirect);
 			case "pass":
@@ -117,6 +120,7 @@ public class CitizenController {
 						return model;
 					}
 					citizenRepository.updatePass(citizen.getCitizenID(),BCrypt.hashpw(f1, BCrypt.gensalt()));
+					request.logout();
 					redirect.setUrl("/logout");
 					return new ModelAndView(redirect);
 				}
