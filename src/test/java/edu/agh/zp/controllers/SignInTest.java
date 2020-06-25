@@ -1,41 +1,19 @@
 package edu.agh.zp.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.stream;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-import edu.agh.zp.controller.SignInController;
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.services.CitizenService;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -51,7 +29,6 @@ public class SignInTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders
@@ -60,30 +37,25 @@ public class SignInTest {
                 .build();
     }
 
-
     @Test
     public void correctLoginCredentialsTest() throws Exception {
         mockMvc.perform(get("/signin")).andExpect(cookie().exists("OLD_URL_REDIRECT"));
         mockMvc.perform((post("/signin")
                 .param("email","user@zp.pl")
                 .param("password", "useruser")
-                .with(csrf()))
-        ).andExpect(authenticated());
+                .with(csrf())))
+                .andExpect(authenticated().withUsername("user@zp.pl"));
     }
 
     @Test
     public void badLoginCredentialsTest() throws Exception {
-//        mockMvc.perform(post("/signin")
-//                .param("email","user")
-//                .param("password", "useruser")
-//                .with(csrf())
-//        );
         mockMvc.perform(get("/").with(anonymous())).andExpect(unauthenticated());
         mockMvc.perform(post("/signin")
                 .param("email","user@zp.pl")
                 .param("password", "user1user")
-                .with(csrf())
-        ).andExpect(unauthenticated());
+                .with(csrf()))
+                .andExpect(unauthenticated())
+                .andExpect(redirectedUrlPattern("/signin**"));
     }
 
     @Test
@@ -92,9 +64,12 @@ public class SignInTest {
         mockMvc.perform((post("/signin")
                 .param("email","marszaleksejmu@zp.pl")
                 .param("password", "marszalekmarszalek")
-                .with(csrf()))
-        ).andExpect(authenticated().withUsername("marszaleksejmu@zp.pl"));
-        mockMvc.perform(logout()).andExpect(unauthenticated());
+                .with(csrf())))
+                .andExpect(authenticated().withUsername("marszaleksejmu@zp.pl"));
+        mockMvc.perform(logout())
+                .andExpect(unauthenticated())
+                .andExpect(redirectedUrlPattern("/signin**"));
+
         mockMvc.perform(get("/parlament/documentForm")).andExpect(unauthenticated());
     }
 

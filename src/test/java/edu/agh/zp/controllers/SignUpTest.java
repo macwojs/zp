@@ -1,43 +1,29 @@
 package edu.agh.zp.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.repositories.CitizenRepository;
 import edu.agh.zp.services.CitizenService;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 
 import java.util.Optional;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-
 @AutoConfigureMockMvc
 public class SignUpTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private CitizenService cS;
@@ -182,7 +168,7 @@ public class SignUpTest {
                 .param("surname", "User")
                 .param("town", "Krakow")
                 .param("address", "ul. Twardowskiego 1")
-                .param("pesel", "01928374654")
+                .param("pesel", "12242125054")
                 .param("idNumber", "MKL818761")
                 .with(csrf()))
                 .andExpect(redirectedUrl(null))
@@ -206,7 +192,7 @@ public class SignUpTest {
                 .param("pesel", "12242125054")
                 .param("idNumber", "MKL818761")
                 .with(csrf()))
-                .andExpect(redirectedUrl(null));
+                .andExpect(redirectedUrl(""));
         //        .andExpect(content().string(containsString("Hasła się nie zgadzają)));
         assertThat( cS.findByIdNumer("user2@zp.pl").isEmpty() ).isEqualTo(true);
     }

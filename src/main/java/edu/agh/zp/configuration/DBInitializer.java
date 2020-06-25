@@ -40,8 +40,8 @@ public class DBInitializer implements CommandLineRunner {
         createSampleUser("user@zp.pl", "useruser","User", "User",faker.address().city(),faker.address().streetAddress(), "00010133000", "AOS266716");
         createSampleMarszalekSejmu("marszaleksejmu@zp.pl", "marszalekmarszalek","Marszalek", "Sejmu",faker.address().city(),faker.address().streetAddress(), "00010102260", "HNE905783", "AAA111222", "ABC");
         createSampleMarszalekSenatu("marszaleksenatu@zp.pl", "marszalekmarszalek","Marszalek", "Senatu",faker.address().city(),faker.address().streetAddress(), "02032857461", "BWY747731", "BBB111222", "DEF");
-        createSamplePosel("posel1@zp.pl", "posel1posel1", "Anna", "Nowak",faker.address().city(),faker.address().streetAddress(), "09122145291", "OHA621550", "AAA111111", "ABC");
-        createSamplePosel("posel2@zp.pl", "posel2posel2", "Jan", "Kowalski",faker.address().city(),faker.address().streetAddress(), "08030261521", "SOU105394", "AAA222111", "DEF");
+        createSamplePosel("posel1@zp.pl", "posel1posel1", "Anna", "Nowak", faker.address().city(),faker.address().streetAddress(), "09122145291", "OHA621550", "AAA111111", "ABC");
+        createSamplePosel("posel2@zp.pl", "posel2posel2", "Jan", "Kowalski","Konstancin-Jeziorna","al. Lipski 0761", "08030261521", "SOU105394", "AAA222111", "DEF");
         createSamplePosel("posel3@zp.pl", "posel3posel3", "Bonifacy", "Wójcik",faker.address().city(),faker.address().streetAddress(), "09090474258", "RLD507081", "AAA333111", "FGH");
         createSamplePosel("posel4@zp.pl", "posel4posel4", "Maurycy", "Wiśniewski",faker.address().city(),faker.address().streetAddress(), "08122579844", "TNV813623", "AAA444111", "FGH");
         createSamplePosel("posel5@zp.pl", "posel5posel5", "Alfred", "Szymański",faker.address().city(),faker.address().streetAddress(), "01070493316", "MTE724079", "AAA555111", "ABC");
