@@ -4,6 +4,7 @@ package edu.agh.zp.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.VotingRepository;
 import org.junit.jupiter.api.Test;
@@ -148,4 +149,79 @@ public class CitizenVotingsTest {
         List<VotingEntity> listAfter = vR.findAll();
         assertThat(listAfter.size()).isEqualTo(listBefore.size());
     }
+
+    @Test
+    void changeVotingDate() throws Exception {
+        LocalDate votingDate = LocalDate.now().plusDays(30);
+        mockMvc.perform(post("/glosowania/prezydenckie/planAdd")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("optionName1", "Anna Nowak")
+                .param("optionName2", "Jan Kowalski")
+                .param("optionName3", "Piotr Nowacki")
+                .param("date", votingDate.toString())
+                .with(csrf()))
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
+        List<VotingEntity> list = vR.findAll();
+        Optional<VotingEntity> votingTempBefore = vR.findById(list.get(list.size() - 1).getVotingID());
+        VotingEntity voting = votingTempBefore.orElseThrow();
+        assertThat(voting.getVotingDescription()).isEqualTo("Wybory Prezydenckie " + votingDate.toString());
+
+        LocalDate votingDateAfter = LocalDate.now().plusDays(40);
+        mockMvc.perform(get("/glosowania/zmianaDaty/" + voting.getVotingID() + "?dateForm=" + votingDateAfter.toString().substring(0, 10))
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU")))
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
+        Optional<VotingEntity> votingTempAfter = vR.findById(voting.getVotingID());
+        assertThat(votingDate.plusDays(10).toString()).isEqualTo(votingDateAfter.toString());
+        assertThat(votingTempAfter.orElseThrow().getVotingDate()).isEqualTo(votingDateAfter.toString());
+        vR.deleteById(voting.getVotingID());
+    }
+
+    @Test
+    void changeVotingWithWrongDate() throws Exception {
+        LocalDate votingDate = LocalDate.now().plusDays(30);
+        mockMvc.perform(post("/glosowania/prezydenckie/planAdd")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("optionName1", "Anna Nowak")
+                .param("optionName2", "Jan Kowalski")
+                .param("optionName3", "Piotr Nowacki")
+                .param("date", votingDate.toString())
+                .with(csrf()))
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
+        List<VotingEntity> list = vR.findAll();
+        Optional<VotingEntity> votingTempBefore = vR.findById(list.get(list.size() - 1).getVotingID());
+        VotingEntity voting = votingTempBefore.orElseThrow();
+        assertThat(voting.getVotingDescription()).isEqualTo("Wybory Prezydenckie " + votingDate.toString());
+        LocalDate votingDateAfter = LocalDate.now().plusDays(3);
+        mockMvc.perform(get("/glosowania/zmianaDaty/" + voting.getVotingID() + "?dateForm=" + votingDateAfter.toString().substring(0, 10))
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU")))
+                .andExpect(content().string(containsString("Głosowanie może być najwcześniej za 7 dni")));
+        Optional<VotingEntity> votingTempAfter = vR.findById(voting.getVotingID());
+        assertThat(votingTempAfter.orElseThrow().getVotingDate()).isEqualTo(votingDate.toString());
+        vR.deleteById(voting.getVotingID());
+    }
+
+    @Test
+    void changeVotingToYesterday() throws Exception {
+        LocalDate votingDate = LocalDate.now().plusDays(30);
+        mockMvc.perform(post("/glosowania/prezydenckie/planAdd")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("optionName1", "Anna Nowak")
+                .param("optionName2", "Jan Kowalski")
+                .param("optionName3", "Piotr Nowacki")
+                .param("date", votingDate.toString())
+                .with(csrf()))
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
+        List<VotingEntity> list = vR.findAll();
+        Optional<VotingEntity> votingTempBefore = vR.findById(list.get(list.size() - 1).getVotingID());
+        VotingEntity voting = votingTempBefore.orElseThrow();
+        assertThat(voting.getVotingDescription()).isEqualTo("Wybory Prezydenckie " + votingDate.toString());
+        LocalDate votingDateAfter = LocalDate.now().minusDays(1);
+        mockMvc.perform(get("/glosowania/zmianaDaty/" + voting.getVotingID() + "?dateForm=" + votingDateAfter.toString().substring(0, 10))
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU")))
+                .andExpect(content().string(containsString("Głosowanie może być najwcześniej za 7 dni")));
+        Optional<VotingEntity> votingTempAfter = vR.findById(voting.getVotingID());
+        assertThat(votingTempAfter.orElseThrow().getVotingDate()).isEqualTo(votingDate.toString());
+        vR.deleteById(voting.getVotingID());
+    }
+
 }
