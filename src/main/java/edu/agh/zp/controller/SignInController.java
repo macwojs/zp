@@ -30,16 +30,16 @@ import java.util.*;
 //@RequestMapping (value={"/signin"})
 public class SignInController {
 
-	@Autowired
-	private CitizenService cS;
-	@Autowired
-	private LogRepository lR;
+	private final CitizenService cS;
+	private final LogRepository lR;
 
     private final AuthenticationManager authManager;
 
-    public SignInController(AuthenticationManager authManager) {
+    public SignInController(AuthenticationManager authManager, CitizenService cS, LogRepository lR) {
         this.authManager = authManager;
-    }
+		this.cS = cS;
+		this.lR = lR;
+	}
 
     // API
 
@@ -50,17 +50,20 @@ public class SignInController {
 		String viewName = "signin" ;
 		Map<String, Object> model = new HashMap<>();
 		model.put("user", new CitizenEntity());
+		String referrer = request.getHeader("Referer");
+		if (referrer != null) {
+			model.put("url_prior_login", referrer);
+			response.addCookie(new Cookie("OLD_URL_REDIRECT", request.getHeader("Referer")));
+		}else{
+			model.put("url_prior_login", "/");
+			response.addCookie(new Cookie("OLD_URL_REDIRECT", "/"));
+		}
 
-        String referrer = request.getHeader("Referer");
-        if (referrer != null) {
-            model.put("url_prior_login", referrer);
-        }
-        response.addCookie(new Cookie("OLD_URL_REDIRECT", request.getHeader("Referer")));
         return new ModelAndView(viewName, model);
     }
 
 	@RequestMapping(value = "/signin", method = RequestMethod.POST)
-	public RedirectView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res, @CookieValue(name = "OLD_URL_REDIRECT") String ref) {
+	public RedirectView login(@ModelAttribute("user") CitizenEntity citizen,   Model model, final HttpServletRequest request, BindingResult res, @CookieValue(name = "OLD_URL_REDIRECT", defaultValue = "/") String ref) {
 		UsernamePasswordAuthenticationToken authReq =
 				new UsernamePasswordAuthenticationToken(citizen.getEmail(), citizen.getPassword());
 		Authentication auth;
