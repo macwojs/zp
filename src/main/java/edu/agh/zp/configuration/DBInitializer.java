@@ -5,7 +5,6 @@ import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.objects.ParliamentarianEntity;
 import edu.agh.zp.objects.PoliticianEntity;
 import edu.agh.zp.objects.Role;
-import edu.agh.zp.repositories.PoliticianRepository;
 import edu.agh.zp.repositories.RoleRepository;
 import edu.agh.zp.services.CitizenService;
 import edu.agh.zp.services.ParliamentarianService;

@@ -7,10 +7,8 @@ import edu.agh.zp.repositories.LogRepository;
 import edu.agh.zp.repositories.RoleRepository;
 import edu.agh.zp.services.CitizenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,7 +24,7 @@ import java.util.*;
 @RequestMapping (value={"/signup"})
 public class SignUpController {
 	@Autowired
-	private CitizenService cS;
+	private final CitizenService cS;
 	@Autowired
 	private RoleRepository rR;
 	@Autowired

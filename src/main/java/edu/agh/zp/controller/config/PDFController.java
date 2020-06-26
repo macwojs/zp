@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class PDFController {
     private String path;
 
     @GetMapping(value = {"/{doc}"} , produces = "application/pdf")
-    public void PDFDisplay(@PathVariable String doc, HttpServletResponse response) throws IOException {
+    public void PDFDisplay(@PathVariable String doc, HttpServletResponse response) {
         try {
             DefaultResourceLoader loader = new DefaultResourceLoader();
             InputStream is = loader.getResource("classpath:static/uploaded/"+doc+".pdf").getInputStream();

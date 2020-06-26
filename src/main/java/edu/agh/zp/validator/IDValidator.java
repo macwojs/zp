@@ -2,7 +2,6 @@ package edu.agh.zp.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Random;
 
 public class IDValidator implements ConstraintValidator< ID, String > {
 	@Override
@@ -21,7 +20,7 @@ public class IDValidator implements ConstraintValidator< ID, String > {
 		int d9 = Character.getNumericValue( s.charAt( 8 ) );
 
 		//suma znakow pomnozona przez wagi musi byc podzielna przez 10 zeby numer byl poprawny
-		return ( d1 * 7 + d2 * 3 + d3 * 1 + d4 * 9 + d5 * 7 + d6 * 3 + d7 * 1 + d8 * 7 + d9 * 3 ) % 10 == 0;
+		return ( d1 * 7 + d2 * 3 + d3 + d4 * 9 + d5 * 7 + d6 * 3 + d7 + d8 * 7 + d9 * 3 ) % 10 == 0;
 	}
 
 	private int getNumber( char a ) {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Chart {
-    public String title;
-    public List<StatisticRecord> data;
+    public final String title;
+    public final List<StatisticRecord> data;
 
     public Chart(String title){
         this.title = title;

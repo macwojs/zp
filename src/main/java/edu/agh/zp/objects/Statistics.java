@@ -1,8 +1,7 @@
 package edu.agh.zp.objects;
-import org.springframework.security.core.parameters.P;
 
 public class Statistics {
-    enum type {Sejm, Senat, Everyone};
+    enum type {Sejm, Senat, Everyone}
     public long votesCount;
     public long entitledToVote;
     public float frequency;
@@ -10,7 +9,7 @@ public class Statistics {
     public int freq50percent;
 
     public Chart chart;
-    public Statistics(){ ; }
+    public Statistics(){  }
 
     public Statistics(long votesCount_, long entitledToVote_, Chart chart_, VotingEntity.TypeOfVoting type_) {
 
@@ -39,8 +38,9 @@ public class Statistics {
                 if(votesCount*2 > entitledToVote){
                     result = "Wiążące";
                     for( StatisticRecord record : chart_.data) {
-                        if (record.value * 2 > votesCount) {
+                        if ( record.value * 2 > votesCount ) {
                             result = "Rozstrzygnięte";
+                            break;
                         }
                     }
                 }

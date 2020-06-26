@@ -4,7 +4,6 @@ import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.objects.Log;
 import edu.agh.zp.repositories.LogRepository;
 import edu.agh.zp.services.CitizenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

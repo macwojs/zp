@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import java.util.Optional;
 
 @Repository
 public interface OptionSetRepository extends JpaRepository<OptionSetEntity, Long> {

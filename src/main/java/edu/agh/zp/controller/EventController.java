@@ -116,11 +116,11 @@ public class EventController {
 				OptionEntity option = temp.get(); // option
 				if(voting.getVotingType() == VotingEntity.TypeOfVoting.SEJM ||  voting.getVotingType() == VotingEntity.TypeOfVoting.SENAT  ) {
 					for (int j = 0; j < politicalGroups.size(); ++j) { // iterate through political groups to get information about votes in each of them
-						Long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
+						long voteCount = voteS.findByVotingAndOptionAndPoliticalGroup(voting, option, politicalGroups.get(j));
 						multiChart.get(j).data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
 					}
 				}
-				Long voteCount = voteS.countByVotingAndOption(voting, option);
+				long voteCount = voteS.countByVotingAndOption(voting, option);
 				pieChart.data.add(new StatisticRecord(option.getOptionDescription(), voteCount));
 			}
 		}

@@ -3,7 +3,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.services.CitizenService;
 import org.junit.jupiter.api.Test;

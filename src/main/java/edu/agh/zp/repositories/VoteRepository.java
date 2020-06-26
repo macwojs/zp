@@ -1,11 +1,8 @@
 package edu.agh.zp.repositories;
 
-import edu.agh.zp.objects.CitizenEntity;
 import edu.agh.zp.objects.OptionEntity;
 import edu.agh.zp.objects.VoteEntity;
 import edu.agh.zp.objects.VotingEntity;
-import org.apache.catalina.startup.ListenerCreateRule;
-import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

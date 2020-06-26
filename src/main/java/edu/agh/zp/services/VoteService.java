@@ -1,7 +1,6 @@
 package edu.agh.zp.services;
 
 import edu.agh.zp.objects.*;
-import edu.agh.zp.repositories.ParliamentarianRepository;
 import edu.agh.zp.repositories.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

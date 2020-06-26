@@ -4,10 +4,6 @@ package edu.agh.zp.controller.config;
 
 import com.github.javafaker.Faker;
 import edu.agh.zp.repositories.*;
-import edu.agh.zp.objects.CitizenEntity;
-import edu.agh.zp.objects.DocumentStatusEntity;
-import edu.agh.zp.objects.DocumentTypeEntity;
-import edu.agh.zp.objects.FunctionEntity;
 import edu.agh.zp.objects.*;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +83,7 @@ public class PopulateController {
                 new FunctionEntity("minister"),
                 new FunctionEntity("członek komisji")));
 
-        ArrayList<OptionEntity> OptionList = new ArrayList<OptionEntity>(Arrays.asList(new OptionEntity("Za"), new OptionEntity("Przeciw"), new OptionEntity("Wstrzymał się")));
+        ArrayList<OptionEntity> OptionList = new ArrayList<>( Arrays.asList( new OptionEntity( "Za" ), new OptionEntity( "Przeciw" ), new OptionEntity( "Wstrzymał się" ) ) );
         SetEntity set = new SetEntity("głosowanie parlamentarne");
         OptionSession.saveAll(OptionList);
         SetSession.save(set);
@@ -95,7 +91,7 @@ public class PopulateController {
         {
             OptionSetSession.save(new OptionSetEntity(OptionList.get(i),set));
         }
-        OptionList = new ArrayList<OptionEntity>(Arrays.asList(new OptionEntity("TAK"), new OptionEntity("NIE")));
+        OptionList = new ArrayList<>( Arrays.asList( new OptionEntity( "TAK" ), new OptionEntity( "NIE" ) ) );
         set = new SetEntity("referendum");
         OptionSession.saveAll(OptionList);
         SetSession.save(set);
@@ -112,11 +108,11 @@ public class PopulateController {
             truncate();
             basicCreate();
         }
-        ArrayList<String> group = new ArrayList<String>(Arrays.asList("AAA", "BBB", "CCC", "DDD"));
+        ArrayList<String> group = new ArrayList<>( Arrays.asList( "AAA", "BBB", "CCC", "DDD" ) );
         Faker faker = new Faker(new Locale("pl"));
-        ArrayList<CitizenEntity> CitizenList = new ArrayList<CitizenEntity>();
-        ArrayList<PoliticianEntity> PoliticianList = new ArrayList<PoliticianEntity>();
-        ArrayList<ParliamentarianEntity> ParliamentarianList = new ArrayList<ParliamentarianEntity>();
+        ArrayList<CitizenEntity> CitizenList = new ArrayList<>( );
+        ArrayList<PoliticianEntity> PoliticianList = new ArrayList<>( );
+        ArrayList<ParliamentarianEntity> ParliamentarianList = new ArrayList<>( );
         Random rand = new Random();
         for (int i = 0; i < num; i++) {
             String name = faker.name().firstName();
@@ -175,14 +171,15 @@ public class PopulateController {
 
     private String genID() {
         Random rand = new Random();
-        String res1 = "", res2 = "";
+        StringBuilder res1 = new StringBuilder( );
+        StringBuilder res2 = new StringBuilder( );
         for (int i = 0; i < 3; i++) {
-            res1 += (char)(rand.nextInt(26) + 65);
+            res1.append( (char) ( rand.nextInt( 26 ) + 65 ) );
         }
-        res2 = Integer.toString(rand.nextInt(100000));
-        while (res2.length() < 5) res2 = "0" + res2;
-        int last = CalculateControl_ID(res1,res2);
-        return res1 + last + res2;
+        res2 = new StringBuilder( Integer.toString( rand.nextInt( 100000 ) ) );
+        while (res2.length() < 5) res2.insert( 0, "0" );
+        int last = CalculateControl_ID( res1.toString( ), res2.toString( ) );
+        return res1.toString( ) + last + res2;
     }
 
     private int GetValue(char c) {
@@ -201,10 +198,10 @@ public class PopulateController {
     private String GeneratePesel()
     {
         Random rand = new Random();
-        String result = Long.toString(abs(rand.nextLong()/100000000000L));
-        while (result.length() < 10) result = "0" + result;
-        result+=CalculateControl_ID(result);
-        return result;
+        StringBuilder result = new StringBuilder( Long.toString( abs( rand.nextLong( ) / 100000000000L ) ) );
+        while (result.length() < 10) result.insert( 0, "0" );
+        result.append( CalculateControl_ID( result.toString( ) ) );
+        return result.toString( );
     }
 
     private char CalculateControl_ID(String val)

@@ -1,17 +1,13 @@
 package edu.agh.zp.repositories;
 
-import edu.agh.zp.objects.DocumentEntity;
-import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.VotingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.util.Collection;
 import java.sql.Time;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface VotingRepository extends JpaRepository<VotingEntity, Long> {

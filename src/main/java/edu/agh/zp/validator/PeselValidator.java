@@ -21,7 +21,7 @@ public class PeselValidator implements ConstraintValidator< Pesel, String > {
 		int p10 = Character.getNumericValue( s.charAt( 9 ) );
 		int p11 = Character.getNumericValue( s.charAt( 10 ) );
 
-		return ( 9 * p1 + 7 * p2 + 3 * p3 + 1 * p4 + 9 * p5 + 7 * p6 + 3 * p7 + 1 * p8 + 9 * p9 + 7 * p10 ) % 10== p11;
+		return ( 9 * p1 + 7 * p2 + 3 * p3 + p4 + 9 * p5 + 7 * p6 + 3 * p7 + p8 + 9 * p9 + 7 * p10 ) % 10== p11;
 	}
 }
 

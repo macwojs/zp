@@ -3,14 +3,11 @@ package edu.agh.zp.repositories;
 import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.DocumentStatusEntity;
 import edu.agh.zp.objects.DocumentTypeEntity;
-import org.dom4j.Document;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

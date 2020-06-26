@@ -2,7 +2,6 @@ package edu.agh.zp;
 
 
 import edu.agh.zp.objects.CitizenEntity;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,12 +26,12 @@ public class CitizenDetails  implements UserDetails {
 //                .collect(Collectors.toList())
     }
 
-    public CitizenDetails() { ; }
+    public CitizenDetails() { }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> list = new ArrayList<>( );
 
         list.add(new SimpleGrantedAuthority("ROLE_"+role));
 

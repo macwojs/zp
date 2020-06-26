@@ -16,7 +16,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -67,7 +66,7 @@ public class CitizenVotingsController {
 	}
 
 	@PostMapping ( value = { "/prezydenckie/planAdd" } )
-	public Object prezydentSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) throws ParseException {
+	public Object prezydentSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) {
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.setViewName( "kalendarz" );
 		String data = reqParameters.remove( "date" );
@@ -115,7 +114,7 @@ public class CitizenVotingsController {
 	}
 
 	@PostMapping ( value = { "/referendum/planAdd" } )
-	public Object referendumSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) throws ParseException {
+	public Object referendumSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) {
 		ModelAndView modelAndView = new ModelAndView( );
 		String data = reqParameters.remove( "date" );
 		LocalDate time = timeVerify( data, 7 );
