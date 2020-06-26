@@ -59,7 +59,7 @@ public class CitizenVotingsTest {
     @Test
     void addReferendumWithWrongDate() throws Exception {
         LocalDate referendumDate = LocalDate.now().plusDays(2);
-        List<VotingEntity> listBefore = vR.findAll();
+        long votingNumberBefore = vR.count();
         mockMvc.perform(post("/glosowania/referendum/planAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .param("desc", "Czy każdy powinien dostać darmowe ciastka?")
@@ -67,14 +67,14 @@ public class CitizenVotingsTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Wydarzenie musi być zaplanowane z 7 dniowym wyprzedzeniem")));
-        List<VotingEntity> listAfter = vR.findAll();
-        assertThat(listAfter.size()).isEqualTo(listBefore.size());
+        long votingNumberAfter = vR.count();
+        assertThat(votingNumberBefore).isEqualTo(votingNumberAfter);
     }
 
     @Test
     void addReferendumWithoutQuestion() throws Exception {
         LocalDate referendumDate = LocalDate.now().plusDays(30);
-        List<VotingEntity> listBefore = vR.findAll();
+        long votingNumberBefore = vR.count();
         mockMvc.perform(post("/glosowania/referendum/planAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .param("desc", "")
@@ -82,8 +82,8 @@ public class CitizenVotingsTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Należy wpisać treść pytania")));
-        List<VotingEntity> listAfter = vR.findAll();
-        assertThat(listAfter.size()).isEqualTo(listBefore.size());
+        long votingNumberAfter = vR.count();
+        assertThat(votingNumberBefore).isEqualTo(votingNumberAfter);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class CitizenVotingsTest {
     @Test
     void addVotingOnlyOneCandidate() throws Exception {
         LocalDate votingDate = LocalDate.now().plusDays(30);
-        List<VotingEntity> listBefore = vR.findAll();
+        long votingNumberBefore = vR.count();
         mockMvc.perform(post("/glosowania/prezydenckie/planAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .param("optionName1", "Anna Nowak")
@@ -114,14 +114,14 @@ public class CitizenVotingsTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("musisz podać przynajmnej 2 kandydatów")));
-        List<VotingEntity> listAfter = vR.findAll();
-        assertThat(listAfter.size()).isEqualTo(listBefore.size());
+        long votingNumberAfter = vR.count();
+        assertThat(votingNumberBefore).isEqualTo(votingNumberAfter);
     }
 
     @Test
     void addVotingEmptyCandidate() throws Exception {
         LocalDate votingDate = LocalDate.now().plusDays(30);
-        List<VotingEntity> listBefore = vR.findAll();
+        long votingNumberBefore = vR.count();
         mockMvc.perform(post("/glosowania/prezydenckie/planAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .param("optionName1", "Anna Nowak")
@@ -130,14 +130,14 @@ public class CitizenVotingsTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("dane kandydata nie mogą być puste")));
-        List<VotingEntity> listAfter = vR.findAll();
-        assertThat(listAfter.size()).isEqualTo(listBefore.size());
+        long votingNumberAfter = vR.count();
+        assertThat(votingNumberBefore).isEqualTo(votingNumberAfter);
     }
 
     @Test
     void addVotingWithWrongDate() throws Exception {
         LocalDate votingDate = LocalDate.now().plusDays(3);
-        List<VotingEntity> listBefore = vR.findAll();
+        long votingNumberBefore = vR.count();
         mockMvc.perform(post("/glosowania/prezydenckie/planAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .param("optionName1", "Anna Nowak")
@@ -146,8 +146,8 @@ public class CitizenVotingsTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("wydarzenie musi być zaplanowane z 7 dniowym wyprzedzeniem")));
-        List<VotingEntity> listAfter = vR.findAll();
-        assertThat(listAfter.size()).isEqualTo(listBefore.size());
+        long votingNumberAfter = vR.count();
+        assertThat(votingNumberBefore).isEqualTo(votingNumberAfter);
     }
 
     @Test
