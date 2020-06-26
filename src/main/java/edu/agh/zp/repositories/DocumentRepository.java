@@ -25,7 +25,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	List<DocumentEntity> findByDocForSenat( );
 
 	List<DocumentEntity> findAllByAnnotation(DocumentEntity annotation);
-
+	Optional<DocumentEntity> findByDocNameAndDocDescription(String docName, String docDescription);
 
 	Optional<DocumentEntity> findByDocID(long docID);
 
