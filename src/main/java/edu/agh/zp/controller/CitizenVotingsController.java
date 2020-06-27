@@ -52,7 +52,7 @@ public class CitizenVotingsController {
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "glosowania" );
+		modelAndView.setViewName("Votings/glosowania.html");
 		return modelAndView;
 	}
 
@@ -61,14 +61,14 @@ public class CitizenVotingsController {
 		deleteOldVotingData( java.sql.Date.valueOf( LocalDate.now( ) ) );
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.addObject( "ErrorList", null );
-		modelAndView.setViewName( "presidentVotingAdd" );
+		modelAndView.setViewName("Votings/presidentVotingAdd.html");
 		return modelAndView;
 	}
 
 	@PostMapping ( value = { "/prezydenckie/planAdd" } )
 	public Object prezydentSubmit( @RequestParam Map< String, String > reqParameters, final HttpServletRequest request ) {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "kalendarz" );
+		modelAndView.setViewName("Calendar/kalendarz.html");
 		String data = reqParameters.remove( "date" );
 		SetEntity set = new SetEntity( "Wybory Prezydenckie " + data );
 		LocalDate time = timeVerify( data, 7 );
@@ -77,7 +77,7 @@ public class CitizenVotingsController {
 		if(citizen.isPresent()) {
 			if (time == null || reqParameters.size() < 3 || reqParameters.containsValue("")) {
 				ArrayList<String> errors = errorsMsg(time, 7, reqParameters);
-				modelAndView.setViewName("presidentVotingAdd");
+				modelAndView.setViewName("Votings/presidentVotingAdd.html");
 				modelAndView.addObject("ErrorList", errors);
 				logR.save(Log.failedAddVoting("Failed to add new presidential voting", citizen.get()));
 				return modelAndView;
@@ -109,7 +109,7 @@ public class CitizenVotingsController {
 		deleteOldVotingData( java.sql.Date.valueOf( LocalDate.now( ) ) );
 		ModelAndView modelAndView = new ModelAndView( );
 		modelAndView.addObject( "ErrorList", null );
-		modelAndView.setViewName( "referendumAdd" );
+		modelAndView.setViewName("Votings/referendumAdd.html");
 		return modelAndView;
 	}
 
@@ -128,7 +128,7 @@ public class CitizenVotingsController {
 					errors.add( "Wydarzenie musi być zaplanowane z 7 dniowym wyprzedzeniem\n" );
 				if ( desc.isEmpty( ) )
 					errors.add( "Należy wpisać treść pytania\n" );
-				modelAndView.setViewName( "referendumAdd" );
+				modelAndView.setViewName("Votings/referendumAdd.html");
 				modelAndView.addObject( "ErrorList", errors );
 				logR.save(Log.failedAddVoting("Failed to add new referendum - wrong time or question is empty", citizen.get()));
 				return modelAndView;

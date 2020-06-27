@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - dodawanie dokumentu</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+    </th:block>
+</head>
+
+
+<body>
+<section id="tresc" >
+    <div class="contact-clean">
+        <form method="POST" th:action="@{/parlament/documentForm}" enctype="multipart/form-data" th:object="${document}">
+            <h2 class="text-center">Dodawanie dokumentu</h2>
+            <div class="form-group">
+                <select required="required" th:field="*{docTypeID}" class="form-control" name="type">
+                    <option value="">Wybierz typ dokumentu</option>
+                    <option th:each="type: ${types}"
+                            th:value="${type.docTypeID}"
+                            th:text="${type.docTypeName}"></option>
+                </select>
+                <span class="text-danger" th:errors="*{docTypeID}"></span>
+            </div>
+            <div class="form-group">
+                <input required="required" th:field="*{docName}" class="form-control" type="text" name="docname" placeholder="Nazwa dokumentu">
+                <span class="text-danger" th:errors="*{docName}"></span>
+            </div>
+            <div class="form-group">
+                <textarea required="required" th:field="*{docDescription}" class="form-control" name="docdescription" placeholder="Opis" rows="14"></textarea>
+                <span class="text-danger" th:errors="*{docDescription}"></span>
+            </div>
+            <div class="form-group">
+                <select required="required" th:field="*{docStatusID}" class="form-control" name="type">
+                    <option value="">Wybierz status dokumentu</option>
+                    <option th:each="status: ${statuses}"
+                            th:value="${status.docStatusID}"
+                            th:text="${status.docStatusName}"></option>
+                </select>
+                <span class="text-danger" th:errors="*{docStatusID}"></span>
+            </div>
+            <div class="form-group">
+                <input th:object="${file}" class="bg-white border rounded border-white shadow-none" type="file" name="file">
+                <span class="text-danger" th:errors="*{pdfFilePath}"></span>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj</button>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+
+</html>

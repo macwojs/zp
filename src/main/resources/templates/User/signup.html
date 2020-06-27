@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Zarejestruj się</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
+    </th:block>
+</head>
+
+<section>
+    <div class="register-photo">
+        <div class="form-container">
+            <form method="post" th:action="@{/signup}"  th:object="${user}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <h2 class="text-center"><strong>Utwórz konto</strong></h2>
+                <div class="form-group"><span class="text-danger" th:errors="*{global}"> </span></div>
+                <div class="form-group"><span class="text-danger" th:text="${error}"> </span></div>
+                <div class="form-group">
+                    <input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email" required="">
+                    <span class="text-danger" th:errors="*{email}"></span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{password}" class="form-control" type="password" name="password" placeholder="Hasło" required="">
+                    <span class="text-danger" th:errors="*{password}"></span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{repeatPassword}" class="form-control" type="password" name="password-repeat" placeholder="Hasło (powtórz)" required="">
+                    <span class="text-danger" th:errors="*{repeatPassword}"> </span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{name}" class="form-control" type="text" name="name" placeholder="Imię" required="">
+                    <span class="text-danger" th:errors="*{name}"></span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{surname}" class="form-control" type="text" name="surname" placeholder="Nazwisko" required="">
+                    <span class="text-danger" th:errors="*{surname}"></span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{town}" class="form-control" type="text" name="surname" placeholder="Miasto" required="">
+                    <span class="text-danger" th:errors="*{town}"></span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{address}" class="form-control" type="text" name="surname" placeholder="adres" required="">
+                    <span class="text-danger" th:errors="*{address}"></span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{pesel}" class="form-control" type="number" name="pesel" placeholder="PESEL" inputmode="numeric">
+                    <span class="text-danger" th:errors="*{pesel}"> </span>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{idNumber}" class="form-control" type="text" name="surname" placeholder="Seria i numer dowodu osobistego" required="">
+                    <span class="text-danger" th:errors="*{idNumber}"></span>
+                </div>
+                <div class="form-group">
+                    <div class="form-check"><label class="form-check-label"><input class="form-check-input" type="checkbox" required="">Zgadzam się z polityką prywatności.</label></div>
+                </div>
+                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Zarejestruj</button></div><a class="already" href="/signin">Masz konto? Zaloguj się tutaj.</a></form>
+        </div>
+    </div>
+</section>
+</html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::.tresc}, ~{::.extraHead} )">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::.tresc}, ~{::.extraHead} )">
 <head>
     <title>zp</title>
-    <div th:remove="tag" class="extraHead"></div>
+    <th:block th:remove="tag" class="extraHead"></th:block>
 </head>
 
 

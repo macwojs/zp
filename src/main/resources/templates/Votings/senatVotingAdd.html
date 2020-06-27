@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Dodaj głosowanie w senacie</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+    </th:block>
+</head>
+
+
+<body>
+<section id="tresc">
+    <div class="contact-clean">
+        <form method="post" th:action="@{/parlament/senat/voteAdd}" th:object="${voting}">
+            <h2 class="text-center">Dodawanie głosowania w senacie</h2>
+            <div class="form-group">
+                <span class="text-danger" th:errors="*{global}"></span>
+            </div>
+            <div class="form-group">
+                <select th:field="*{documentID}" class="form-control" name="document"  required>
+                    <option th:each="document: ${documents}"
+                            th:value="${document.docID}"
+                            th:text="${document.docName}"></option>
+                </select>
+                <span class="text-danger" th:errors="*{documentID}"></span>
+            </div>
+            <div class="form-group">
+                <input th:field="*{votingDate}" class="form-control" type="date" required="required">
+                <small class="form-text text-muted">Data głosowania</small>
+                <span class="text-danger" th:errors="*{votingDate}"></span>
+            </div>
+            <div class="form-group">
+                <input th:field="*{open}" class="form-control" type="time" step="1" required="required">
+                <small class="form-text text-muted">Czas rozpoczęcia głosowania</small>
+                <span class="text-danger" th:errors="*{open}"></span>
+            </div>
+            <div class="form-group">
+                <input th:field="*{close}" class="form-control" type="time" step="1" required="required">
+                <small class="form-text text-muted">Czas zakończenia głosowania</small>
+                <span class="text-danger" th:errors="*{close}"></span>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" style="background-color: rgb(212,33,61);">Dodaj&nbsp;</button>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

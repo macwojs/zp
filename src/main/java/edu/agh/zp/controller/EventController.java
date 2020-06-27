@@ -53,7 +53,7 @@ public class EventController {
 	@GetMapping ( value = "/kalendarz" )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "kalendarz" );
+		modelAndView.setViewName("Calendar/kalendarz.html");
 		modelAndView.addObject( "voting", parseVotingsToEvents( ) );
 
 		return modelAndView;
@@ -71,7 +71,7 @@ public class EventController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voting not found");
 		}
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "wydarzenie" );
+		modelAndView.setViewName("Calendar/wydarzenie.html");
 		modelAndView.addObject( "voting", voting );
 		//System.out.println("\n\n\n"+num+"\n\n\n");
 		String link = "";
@@ -140,7 +140,7 @@ public class EventController {
 				break;
 		}
 
-		modelAndView.setViewName( "votingResults" );
+		modelAndView.setViewName("Votings/votingResults.html");
 		modelAndView.addObject("voting", voting);
 		modelAndView.addObject("statistics",  stats);
 

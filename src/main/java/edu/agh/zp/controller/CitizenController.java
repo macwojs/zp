@@ -65,7 +65,7 @@ public class CitizenController {
 		ModelAndView model = new ModelAndView( );
 		Optional< CitizenEntity > currentCitizen = citizenRepository.findByEmail( principal.getName( ) );
 		currentCitizen.ifPresent(citizenEntity -> model.addObject("citizen", citizenEntity));
-	    model.setViewName( "citizenDetails" );
+	    model.setViewName("User/citizenDetails.html");
 		return model;
 	}
 
@@ -78,7 +78,7 @@ public class CitizenController {
 			return model;
 		}
 		model.addObject("sceanario",scenario);
-		model.setViewName("citizenModify");
+		model.setViewName("User/citizenModify.html");
 		model.addObject("err", null);
 		return model;
 	}
@@ -104,7 +104,7 @@ public class CitizenController {
 				{
 					model.addObject("err", "email zajęty");
 					model.addObject("sceanario",scenario);
-					model.setViewName("citizenModify");
+					model.setViewName("User/citizenModify.html");
 					return model;
 				}
 				citizenRepository.updateEmail(citizen.getCitizenID(),f1);
@@ -116,7 +116,7 @@ public class CitizenController {
 					if (f1.length()<8){
 						model.addObject("err", "hasło musi zawierać conajmej 8 znaków");
 						model.addObject("sceanario",scenario);
-						model.setViewName("citizenModify");
+						model.setViewName("User/citizenModify.html");
 						return model;
 					}
 					citizenRepository.updatePass(citizen.getCitizenID(),BCrypt.hashpw(f1, BCrypt.gensalt()));
@@ -127,12 +127,12 @@ public class CitizenController {
 				else {
 					model.addObject("err", "hasła nie zgadzają się");
 					model.addObject("sceanario",scenario);
-					model.setViewName("citizenModify");
+					model.setViewName("User/citizenModify.html");
 					return model;
 				}
 		}
 		model.addObject( "citizen", citizen );
-		model.setViewName( "citizenDetails" );
+		model.setViewName("User/citizenDetails.html");
 		return model;
 	}
 
@@ -142,7 +142,7 @@ public class CitizenController {
 		createVotingList.future(modelAndView, Arrays.asList( VotingEntity.TypeOfVoting.REFERENDUM, VotingEntity.TypeOfVoting.PREZYDENT), votingSession);
 		Th_min min = new Th_min();
 		modelAndView.addObject("min", min);
-		modelAndView.setViewName("wyboryReferenda");
+		modelAndView.setViewName("Votings/wyboryReferenda.html");
 		return modelAndView;
 	}
 
@@ -150,20 +150,20 @@ public class CitizenController {
 	public ModelAndView referendumVote(ModelAndView model, @PathVariable long id, Principal principal) {
 		Optional<CitizenEntity> optCurUser = citizenSession.findByEmail(principal.getName());
 		if (optCurUser.isEmpty()) {
-			model.setViewName("signin");
+			model.setViewName("User/signin.html");
 			return model;
 		}
 		VotingEntity voting = votingSession.findByVotingID(id);
 		Optional< VotingControlEntity > votingControl = votingControlSession.findByCitizenIDAndVotingID(optCurUser.get(), voting);
 		if (votingControl.isPresent()) {
 			model.addObject("th_redirect", "/obywatel/wyboryReferenda");
-			model.setViewName("418_REPEAT_VOTE");
+			model.setViewName("error/418_REPEAT_VOTE.html");
 			return model;
 		}
 		model.addObject("voting", voting);
 		model.addObject("id", id);
 
-		model.setViewName("wyboryReferendaVoting");
+		model.setViewName("Votings/wyboryReferendaVoting.html");
 		List< OptionSetEntity > list = optionSetSession.findBySetIDcolumn(voting.getSetID_column());
 		ArrayList<OptionEntity> options = new ArrayList<>();
 		for (OptionSetEntity optionSet : list) {
@@ -189,13 +189,13 @@ public class CitizenController {
 			if (votingControl.isPresent()) {
 				ModelAndView model = new ModelAndView();
 				model.addObject("th_redirect", "/obywatel/wyboryReferenda");
-				model.setViewName("418_REPEAT_VOTE");
+				model.setViewName("error/418_REPEAT_VOTE.html");
 				logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - vote already exists", voting, optCurUser.get()));
 				return model;
 			}
 			if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
 				ModelAndView model = new ModelAndView();
-				model.setViewName("timeOut");
+				model.setViewName("error/timeOut.html");
 				model.addObject("type", "/obywatel/wyboryReferenda");
 				logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - timeout", voting, optCurUser.get()));
 				return model;
@@ -212,13 +212,13 @@ public class CitizenController {
 
 	@GetMapping("przeszleGlosowania")
 	public ModelAndView index(){
-		return new ModelAndView("historiaObywatel");
+		return new ModelAndView("Votings/historiaObywatel.html");
 	}
 
 	@GetMapping("przeszleGlosowania/prezydent")
 	public ModelAndView prezydent(){
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "pastVoting" );
+		modelAndView.setViewName("Votings/pastVoting.html");
 		createVotingList.past( modelAndView, VotingEntity.TypeOfVoting.PREZYDENT, votingRepository );
 		return modelAndView;
 	}
@@ -226,7 +226,7 @@ public class CitizenController {
 	@GetMapping("przeszleGlosowania/referendum")
 	public ModelAndView referendum(){
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "pastVoting" );
+		modelAndView.setViewName("Votings/pastVoting.html");
 		createVotingList.past( modelAndView, VotingEntity.TypeOfVoting.REFERENDUM, votingRepository );
 		return modelAndView;
 	}

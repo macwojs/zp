@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Zaloguj się</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Login-Form-Clean.css}">
+    </th:block>
+</head>
+
+
+<body>
+    <section>
+        <div class="login-clean">
+            <form method="post" th:action="@{/signin}" th:object="${user}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <h2 class="sr-only">Login Form</h2>
+                <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
+                <div class="form-group">
+                    <input th:field="*{email}" class="form-control" type="email" name="email" placeholder="Email">
+                    <small th:errors="*{email}" class="form-text text-muted validation-signin">Help text for a form field.</small>
+                </div>
+                <div class="form-group">
+                    <input th:field="*{password}" class="form-control" type="password" name="password" placeholder="Hasło">
+                    <small  th:errors="*{password}" class="form-text text-muted validation-signin">Help text for a form field.</small>
+                </div>
+                <div class="form-group"><span class="text-danger" th:text="${error}"> </span></div>
+                <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Zaloguj</button></div>
+            </form>
+        </div>
+    </section>
+
+</body>
+
+</html>

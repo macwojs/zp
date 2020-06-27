@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Senat</title>
+    <th:block class="extraHead">
+        <script type="text/javascript" th:src="@{/js/Visibility.js}"></script>
+    </th:block>
+</head>
+<body>
+    <section id="tresc" style="min-height: 60vh;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <p style="font-size: 43px;text-align: center;"><br>Senat</p>
+                    <a class="nav-link" href="/parlament/documentForm" sec:authorize="hasAnyRole('SENATOR', 'ADMIN')">Dodawnie dokumentu</a>
+                    <a class="nav-link" href="/parlament/senat/voteAdd" sec:authorize="hasAnyRole('MARSZALEK_SENATU', 'ADMIN')">Dodawnie głosowania w senacie</a>
+                    <a class="nav-link" href="/parlament/senat/votingSchedule">Porządek obrad na dziś</a>
+                    <h3>najbliższe głosowania</h3>
+                    <button id="hide_button" type="button" class="btn btn-info" style="background-color: rgb(212,33,61);" onclick="hideVoting('closed-voting','hide_button',info1='Pokaż nieaktywne glosowania',info2='Ukryj nieaktywne glosowania')">Ukryj nieaktywne glosowania</button>
+                    <ul class="list-group shadow" th:each="voting : ${VotingList}" th:switch="${Sign[votingStat.index]}">
+                        <li th:case="true" class="list-group-item">
+                            <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                                <div th:switch="${voting.getVotingDescription()}" class="media-body order-2 order-lg-1">
+                                    <a th:case="null" class="nav-link" th:href="'/parlament/vote/'+${voting.getVotingID()}"  sec:authorize="hasAnyRole('SENATOR', 'ADMIN')">
+                                        <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getDocumentID().getDocDescription()}"></h5>
+                                    </a>
+                                    <a th:case="*" class="nav-link" th:href="'/parlament/vote/'+${voting.getVotingID()}"  sec:authorize="hasAnyRole('SENATOR', 'ADMIN')">
+                                        <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getVotingID()}"></h5>
+                                    </a>
+                                    <p th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}" class="font-italic text-muted mb-0 small"></p>
+                                </div>
+                            </div>
+                        </li>
+                        <li th:case="false" class="list-group-item closed-voting">
+                            <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                                <div th:switch="${voting.getVotingDescription()}" class="media-body order-2 order-lg-1">
+                                    <h5 th:case="null" class="mt-0 font-weight-bold mb-2" th:text="${voting.getDocumentID().getDocDescription()}"></h5>
+                                    <h5 th:case="*" class="mt-0 font-weight-bold mb-2" th:text="${voting.getVotingID()}"></h5>
+                                    <p th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania: ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}" class="font-italic text-muted mb-0 small"></p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

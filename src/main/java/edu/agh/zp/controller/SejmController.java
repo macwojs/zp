@@ -44,7 +44,7 @@ public class SejmController {
 	@GetMapping ( value = { "" } )
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "sejm" );
+		modelAndView.setViewName("Votings/sejm.html");
 		createVotingList.run( modelAndView, Collections.singletonList( VotingEntity.TypeOfVoting.SEJM ), votingRepository );
 		return modelAndView;
 	}
@@ -57,7 +57,7 @@ public class SejmController {
 			model.addObject( "documents", documents );
 			model.addObject( "voting", new VotingEntity( ) );
 		}
-		model.setViewName( "sejmVotingAdd" );
+		model.setViewName("Votings/sejmVotingAdd.html");
 		return model;
 	}
 
@@ -73,7 +73,7 @@ public class SejmController {
 			ModelAndView model = new ModelAndView( );
 			List< DocumentEntity > documents = documentRepository.findByDocForSejm( );
 			model.addObject( "documents", documents );
-			model.setViewName( "sejmVotingAdd" );
+			model.setViewName("Votings/sejmVotingAdd.html");
 			logR.save(Log.failedAddVoting("Failed to Add Sejm voting - validation", citizen));
 			return model;
 		}
@@ -113,7 +113,7 @@ public class SejmController {
 		model.addObject( "schedule_name", "Sejmie" );
 		model.addObject( "current_date", formattedDate );
 		model.addObject( "votings", votings );
-		model.setViewName( "votingSchedule" );
+		model.setViewName("Votings/votingSchedule.html");
 		return model;
 	}
 

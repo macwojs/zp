@@ -64,7 +64,7 @@ public class UstawyController {
 			return new ModelAndView( String.valueOf( HttpStatus.NOT_FOUND ) );
 		}
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "ustawaPodglad" );
+		modelAndView.setViewName("Documents/ustawaPodglad.html");
 		modelAndView.addObject("id",id);
 		DocumentEntity doc = document.get();
 		String status = doc.getDocStatusID().getDocStatusName();
@@ -102,7 +102,7 @@ public class UstawyController {
 		model.addObject("id",id);
 		String name = docStatus.getDocStatusName();
 		List<DocumentStatusEntity> statuses = new ArrayList<>();
-		model.setViewName("alterStatus");
+		model.setViewName("Documents/alterStatus.html");
 		if (document.get().getDocTypeID().getDocTypeName().equals("Ustawa") || document.get().getDocTypeID().getDocTypeName().equals("Uchwała")) switch (name) {
 			case "Zgłoszona":
 			case "Pierwsze czytanie":
@@ -124,13 +124,13 @@ public class UstawyController {
 				statuses = documentStatusRepository.findByDocStatusNameIn(Collections.singletonList("Wygasła"));
 				break;
 			default:
-				model.setViewName("finalStatus");
+				model.setViewName("error/finalStatus.html");
 				model.addObject("th_redirect","ustawy/"+id);
 		}
 		else if (name.equals("Zgłoszona")){
 			statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Odrzucona"));
 		} else {
-			model.setViewName("finalStatus");
+			model.setViewName("error/finalStatus.html");
 			model.addObject("th_redirect","ustawy/"+id);
 		}
 		model.addObject("statuses",statuses);
@@ -166,7 +166,7 @@ public class UstawyController {
 
 		model.addObject("currentDesc",docDesc);
 		model.addObject("id",id);
-		model.setViewName("descEdit");
+		model.setViewName("Documents/descEdit.html");
 		return model;
 	}
 
@@ -221,7 +221,7 @@ public class UstawyController {
 		modelAndView.addObject( "documents", documents );
 		setOptionsListForDocumentList(modelAndView);
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
-		modelAndView.setViewName( "documentList" );
+		modelAndView.setViewName("Documents/documentList.html");
 		return modelAndView;
 	}
 
@@ -269,7 +269,7 @@ public class UstawyController {
 		modelAndView.addObject( "documents", documents );
 		setOptionsListForDocumentListInProgress(modelAndView);
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
-		modelAndView.setViewName( "documentList" );
+		modelAndView.setViewName("Documents/documentList.html");
 		return modelAndView;
 	}
 
@@ -318,7 +318,7 @@ public class UstawyController {
 
 	//	ADDITIONAL METHODS
 	private void setObjects(ModelAndView model, DocumentEntity doc){
-		model.setViewName("poprawkaForm");
+		model.setViewName("Documents/poprawkaForm.html");
 		model.addObject("doc", doc);
 		model.addObject( "document", new DocumentEntity( ) );
 		List< DocumentStatusEntity > statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta","Zgłoszona"));

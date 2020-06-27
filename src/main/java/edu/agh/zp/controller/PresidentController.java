@@ -75,7 +75,7 @@ public class PresidentController {
 		modelAndView.addObject( "documents", documents );
 		setOptionsListForDocumentListInProgress(modelAndView);
 		setSelected(modelAndView, docType, null, dateControl, date);
-		modelAndView.setViewName( "documentToSign" );
+		modelAndView.setViewName("Documents/documentToSign.html");
 		return modelAndView;
 	}
 

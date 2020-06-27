@@ -88,7 +88,7 @@ public class ParlamentController {
 
 		model.addObject( "document", new DocumentEntity( ) );
 
-		model.setViewName( "documentForm" );
+		model.setViewName("Documents/documentForm.html");
 		return model;
 	}
 
@@ -98,7 +98,7 @@ public class ParlamentController {
 		if(citizen.isPresent()) {
 			if (res.hasErrors()) {
 				logR.save(new Log(Log.Operation.ADD, "Failed to add document", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.FAILURE));
-				return new ModelAndView("documentForm");
+				return new ModelAndView("Documents/documentForm.html");
 			}
 
 			if (!file.isEmpty()) {
@@ -132,13 +132,13 @@ public class ParlamentController {
 				model.addObject( "th_redirect", "/parlament/sejm" );
 			else
 				model.addObject( "th_redirect", "/parlament/senat" );
-			model.setViewName( "418_REPEAT_VOTE" );
+			model.setViewName("error/418_REPEAT_VOTE.html");
 			return model;
 		}
 
 		model.addObject( "voting", voting );
 		model.addObject( "id", id );
-		model.setViewName( "parliamentVoting" );
+		model.setViewName("Votings/parliamentVoting.html");
 		return model;
 	}
 
@@ -164,11 +164,11 @@ public class ParlamentController {
 					model.addObject("th_redirect", "/parlament/senat");
 					logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - vote already exists", citizen.get()));
 				}
-				model.setViewName("418_REPEAT_VOTE");
+				model.setViewName("error/418_REPEAT_VOTE.html");
 				return model;
 			}
 			if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
-				model.setViewName("timeOut");
+				model.setViewName("error/timeOut.html");
 				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) {
 					model.addObject("type", "/parlament/sejm");
 					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - time out", citizen.get()));
@@ -340,13 +340,13 @@ public class ParlamentController {
 
 	@GetMapping("/przeszleGlosowania")
 	public ModelAndView pastVotings(){
-		return new ModelAndView("historiaParlament");
+		return new ModelAndView("Votings/historiaParlament.html");
 	}
 
 	@GetMapping("/przeszleGlosowania/sejm")
 	public ModelAndView sejm(){
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "pastVoting" );
+		modelAndView.setViewName("Votings/pastVoting.html");
 		createVotingList.past( modelAndView, VotingEntity.TypeOfVoting.SEJM, votingRepository );
 		return modelAndView;
 	}
@@ -354,7 +354,7 @@ public class ParlamentController {
 	@GetMapping("/przeszleGlosowania/senat")
 	public ModelAndView senat(){
 		ModelAndView modelAndView = new ModelAndView( );
-		modelAndView.setViewName( "pastVoting" );
+		modelAndView.setViewName("Votings/pastVoting.html");
 		createVotingList.past( modelAndView, VotingEntity.TypeOfVoting.SENAT, votingRepository );
 		return modelAndView;
 	}

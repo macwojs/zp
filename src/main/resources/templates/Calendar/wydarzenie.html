@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="base :: layout(~{::title}, ~{::.event}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Contact-Form-Clean.css}">
+    </th:block>
+</head>
+<body>
+<div class="event">
+    <div class="contact-clean" style="padding-bottom: 40px;" th:object="${voting}">
+        <form style="max-width: 600px; margin-bottom: 40px;">
+            <h2 class="text-center">Szczegóły wydarzenia</h2>
+            <table>
+            <tr th:if="*{votingDate}">
+                <td><a>Data głosowania: </a></td>
+                <td><a style="text-align:right" th:text="*{votingDate}" ></a></td>
+            </tr>
+            <tr th:if="*{openVoting}">
+                <td><a>Czas rozpoczęcia głosowania: </a></td>
+                <td><a th:text="*{openVoting}" ></a></td>
+            </tr>
+            <tr th:if="*{closeVoting}">
+                <td><a>Czas zakończecia głosowania: </a></td>
+                <td><a th:text="*{closeVoting}" ></a></td>
+            </tr>
+            <tr th:if="*{votingDescription}">
+                <td><a>Opis: </a></td>
+                <td><a th:text="*{votingDescription}" ></a></td>
+            </tr>
+            <tr th:if="*{votingType}">
+                <td><a>Typ: </a></td>
+                <td><a th:text="*{votingType}" ></a></td>
+            </tr>
+            <tr th:if="*{setID_column}">
+                <td><a>Status: </a></td>
+                <td><a th:text="*{setID_column.setName}" ></a></td>
+            </tr>
+            <tr th:if="*{documentID}">
+                <td><a>Dokument: </a></td>
+                <td><a th:text="*{documentID.docName}" ></a></td>
+            </tr>
+            </table>
+        </form>
+        <div th:if="${(voting.votingType.toString() == 'PREZYDENT' || voting.votingType.toString() == 'REFERENDUM')&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="isAuthenticated()"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${voting.votingType.toString() == 'SEJM'&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('POSEL','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${voting.votingType.toString() == 'SENAT'&&visibility}" style="max-width: 600px; width: 90%; margin: 0 auto;" sec:authorize="hasAnyRole('SENATOR','ADMIN')"><a style="text-decoration: none;" th:href="${link}"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zagłosuj</button></a></div>
+        <div th:if="${ended}" style="max-width: 600px; width: 90%; margin: 0 auto;"><a style="text-decoration: none;" th:href="'/wydarzenie/'+*{votingID}+'/wyniki'"><button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Wyniki</button></a></div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'SEJM' }"
+             sec:authorize="hasAnyRole('MARSZALEK_SEJMU','ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/parlament/vote/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'SENAT' }"
+             sec:authorize="hasAnyRole('MARSZALEK_SENATU','ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/parlament/vote/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'PREZYDENT' }"
+             sec:authorize="hasAnyRole('MARSZALEK_SEJMU','ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/glosowania/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+        <div th:if="${!during and !ended and voting.votingType.toString() == 'REFERENDUM' }"
+             sec:authorize="hasAnyRole('PREZYDENT', 'MARSZALEK_SEJMU', 'ADMIN')"
+             style="max-width: 600px; width: 90%; margin: 0 auto;">
+            <a style="text-decoration: none;" th:href="'/glosowania/zmianaDaty/'+*{votingID}">
+                <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Zmień termin</button>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

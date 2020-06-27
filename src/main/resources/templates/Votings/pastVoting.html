@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Historia</title>
+    <th:block th:remove="tag" class="extraHead"></th:block>
+</head>
+
+<body>
+    <section id="tresc" style="min-height: 60vh;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <p style="font-size: 43px;text-align: center;">Historia</p>
+                    <ul class="list-group shadow" th:each="voting : ${VotingList}" >
+                        <li class="list-group-item">
+                            <div class="media align-items-lg-center flex-column flex-lg-row p-3">
+                                <div th:switch="${voting.getVotingDescription()}" class="media-body order-2 order-lg-1">
+                                    <a th:case="null" th:href="'/wydarzenie/'+${voting.getVotingID()}">
+                                        <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getDocumentID().getDocDescription()}"></h5>
+                                    </a>
+                                    <a th:case="*" th:href="'/wydarzenie/'+${voting.getVotingID()}">
+                                        <h5 class="mt-0 font-weight-bold mb-2" th:text="${voting.getVotingDescription()}"></h5>
+                                    </a>
+                                    <p th:text="'Dzień: '+${voting.getVotingDate()} +' Czas głosowania ' + ${voting.getOpenVoting()} + ' - ' +  ${voting.getCloseVoting()}" class="font-italic text-muted mb-0 small"></p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

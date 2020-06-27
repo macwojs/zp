@@ -44,7 +44,7 @@ public class SenatController {
 	public ModelAndView index() {
 		ModelAndView modelAndView = new ModelAndView( );
 		createVotingList.run( modelAndView, Collections.singletonList( VotingEntity.TypeOfVoting.SENAT ), votingRepository );
-		modelAndView.setViewName( "senat" );
+		modelAndView.setViewName("Votings/senat.html");
 		return modelAndView;
 	}
 
@@ -56,7 +56,7 @@ public class SenatController {
 			model.addObject( "documents", documents );
 			model.addObject( "voting", new VotingEntity( ) );
 		}
-		model.setViewName( "senatVotingAdd" );
+		model.setViewName("Votings/senatVotingAdd.html");
 		return model;
 	}
 
@@ -72,7 +72,7 @@ public class SenatController {
 			ModelAndView model = new ModelAndView( );
 			List< DocumentEntity > documents = documentRepository.findByDocForSenat( );
 			model.addObject( "documents", documents );
-			model.setViewName( "senatVotingAdd" );
+			model.setViewName("Votings/senatVotingAdd.html");
 			logR.save(Log.failedAddVoting("Failed to Add Sejm voting - validation problems", citizen));
 			return model;
 		}
@@ -112,7 +112,7 @@ public class SenatController {
 		model.addObject( "schedule_name", "Senacie" );
 		model.addObject( "current_date", formattedDate );
 		model.addObject( "votings", votings );
-		model.setViewName( "votingSchedule" );
+		model.setViewName("Votings/votingSchedule.html");
 		return model;
 	}
 }

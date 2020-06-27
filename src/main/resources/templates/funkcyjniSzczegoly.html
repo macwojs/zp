@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>ZP - Funkcyjni</title>
-    <div th:remove="tag" class="extraHead">
+    <th:block th:remove="tag" class="extraHead">
         <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
-    </div>
+    </th:block>
 </head>
 
 <body>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>ZP - Ustawy</title>
+    <th:block th:remove="tag" class="extraHead"></th:block>
+</head>
+
+<body>
+<section id="tresc" style="height: 80vh;">
+    <p style="font-size: 43px;text-align: center;"><br>Nie można zmienić statusu tej ustawy</p>
+    <div class="d-sm-flex justify-content-sm-center">
+        <a th:href="${th_redirect}"><button class="btn btn-primary border-white" style="background-color: rgb(212,33,61);">Powrót do ustawy</button></a>
+    </div>
+</section>
+</body>
+
+</html>

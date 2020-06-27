@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
 <head>
     <title>ZP - zmiana daty - prezydent</title>
-    <div th:remove="tag" class="extraHead">
+    <th:block th:remove="tag" class="extraHead">
         <link rel="stylesheet" th:href="@{/css/date-change-form.css}">
-    </div>
+    </th:block>
 </head>
 
 

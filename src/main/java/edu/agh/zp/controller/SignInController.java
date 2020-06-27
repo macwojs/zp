@@ -46,7 +46,7 @@ public class SignInController {
     @GetMapping(value = {"/signin"})
     public ModelAndView index(RedirectAttributes attributes, HttpServletRequest request, HttpServletResponse response) {
 
-		String viewName = "signin" ;
+		String viewName = "User/signin" ;
 		Map<String, Object> model = new HashMap<>();
 		model.put("user", new CitizenEntity());
 		String referrer = request.getHeader("Referer");

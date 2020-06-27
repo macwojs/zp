@@ -36,7 +36,7 @@ public class SignUpController {
 
 	@GetMapping (value = {""})
 	public ModelAndView index() {
-		String viewName = "signup";
+		String viewName = "User/signup";
 		Map<String, Object> model = new HashMap<>();
 		model.put("user", new CitizenEntity());
 		return new ModelAndView(viewName, model);
@@ -45,25 +45,25 @@ public class SignUpController {
 	@PostMapping("")
 	public ModelAndView submitRegister(@Valid @ModelAttribute("user") CitizenEntity citizen, BindingResult res){
 		if( res.hasErrors()){
-			return new ModelAndView("signup");
+			return new ModelAndView("User/signup.html");
 		}else{
 			Optional<CitizenEntity> exists = cS.findByEmail(citizen.getEmail());
 			if(exists.isPresent()){
-				ModelAndView mv = new ModelAndView("signup");
+				ModelAndView mv = new ModelAndView("User/signup.html");
 				mv.addObject("error", "Obywatel z tym adresem e-mail już istnieje.");
 				lR.save(Log.failedSignInOrSignUp(Log.Operation.ADD, "Sign Up - User with this email already exists"));
 				return mv;
 			}
 			exists = cS.findByPesel(citizen.getPesel());
 			if(exists.isPresent()){
-				ModelAndView mv = new ModelAndView("signup");
+				ModelAndView mv = new ModelAndView("User/signup.html");
 				mv.addObject("error", "Obywatel z tym numerem PESEL już istnieje.");
 				lR.save(Log.failedSignInOrSignUp(Log.Operation.ADD, "Sign Up - User with this PESEL already exists"));
 				return mv;
 			}
 			exists = cS.findByIdNumer(citizen.getIdNumber());
 			if(exists.isPresent()){
-				ModelAndView mv = new ModelAndView("signup");
+				ModelAndView mv = new ModelAndView("User/signup.html");
 				mv.addObject("error", "Obywatel z tym numerem dowodu osobistego już istnieje.");
 				lR.save(Log.failedSignInOrSignUp(Log.Operation.ADD, "Sign Up - User with this Citizen ID already exists"));
 				return mv;

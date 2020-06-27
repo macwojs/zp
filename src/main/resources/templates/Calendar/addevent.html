@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pl"  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="base :: layout(~{::title}, ~{::section}, ~{::.extraHead} )">
+<head>
+    <title>zp</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/css/Registration-Form-with-Photo.css}">
+    </th:block>
+</head>
+
+
+<body>
+<section id="tresc" style="height: 60vh;">
+    <div class="col-lg-8 mx-auto">
+        <p style="font-size: 34px;text-align: center;"><br>Dodaj Głosowanie</p>
+            <a style="margin-left: 30px" class="nav-link" href="/glosowania/prezydenckie/plan">Dodaj datę wyborów prezydenckich</a>
+            <a style="margin-left: 30px" class="nav-link" href="/parlament/sejm/voteAdd">Dodawnie głosowania w sejmie</a>
+            <a style="margin-left: 30px" class="nav-link" href="/parlament/senat/voteAdd">Dodawnie głosowania w senacie</a>
+            <a style="margin-left: 30px" class="nav-link" href="/glosowania/referendum/plan">Referendum</a>
+    </div>
+</section>
+
+</body>
+</html>
