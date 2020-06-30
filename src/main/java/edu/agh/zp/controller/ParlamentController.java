@@ -123,18 +123,28 @@ public class ParlamentController {
 	public ModelAndView parlamentVote( ModelAndView model, @PathVariable long id, Principal principal ) {
 		VotingEntity voting = votingRepository.findByVotingID( id );
 
+		LocalTime time = LocalTime.now( );
+		LocalDate date = LocalDate.now( );
+
 		Optional< CitizenEntity > optCurUser = citizenRepository.findByEmail( principal.getName( ) );
 		if (optCurUser.isEmpty())
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't find logged user");
 
+		if( !voting.getVotingDate().equals(java.sql.Date.valueOf(date)) )
+			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting isn't schedule for today" );
+
+		if ( voting.getOpenVoting().after(java.sql.Time.valueOf(time)) )
+			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting will start in the future" );
+
+		if ( voting.getCloseVoting().before(java.sql.Time.valueOf(time)) ) {
+			model.setViewName("error/timeOut.html");
+			model.addObject("type", "/wydarzenie/"+voting.getVotingID());
+			return model;
+		}
+
 		Optional< VoteEntity > vote = voteRepository.findByCitizenID_CitizenIDAndVotingID_VotingID( id, optCurUser.get( ).getCitizenID( ) );
 		if ( vote.isPresent( ) ) {
-			if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
-				model.addObject( "th_redirect", "/parlament/sejm" );
-			else
-				model.addObject( "th_redirect", "/parlament/senat" );
-			model.setViewName("error/418_REPEAT_VOTE.html");
-			return model;
+			throw new ResponseStatusException( HttpStatus.FORBIDDEN, "You already send your vote" );
 		}
 
 		model.addObject( "voting", voting );
@@ -158,26 +168,30 @@ public class ParlamentController {
 		Optional<CitizenEntity> citizen = citizenRepository.findByEmail(request.getRemoteUser());
 		if(citizen.isPresent()) {
 			if (voteControl.isPresent()) {
-				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) {
-					model.addObject("th_redirect", "/parlament/sejm");
+				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM))
 					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - vote already exists", citizen.get()));
-				}else {
-					model.addObject("th_redirect", "/parlament/senat");
+				else
 					logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - vote already exists", citizen.get()));
-				}
-				model.setViewName("error/418_REPEAT_VOTE.html");
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "You already send your vote" );
+			}
+			if( !voting.getVotingDate().equals(java.sql.Date.valueOf(date)) ) {
+				logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - access in wrong day", citizen.get()));
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting isn't schedule for today" );
+			}
+
+			if ( voting.getCloseVoting().before(java.sql.Time.valueOf(time)) ) {
+				model.setViewName("error/timeOut.html");
+				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM))
+					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - time out", citizen.get()));
+				else
+					logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - time out", citizen.get()));
+				model.addObject("type", "/wydarzenie/"+voting.getVotingID());
 				return model;
 			}
-			if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
-				model.setViewName("error/timeOut.html");
-				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM)) {
-					model.addObject("type", "/parlament/sejm");
-					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - time out", citizen.get()));
-				} else {
-					model.addObject("type", "/parlament/senat");
-					logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - time out", citizen.get()));
-				}
-				return model;
+
+			if ( voting.getOpenVoting().after(java.sql.Time.valueOf(time)) ) {
+				logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - acces before voting time", citizen.get()));
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting will start in the future" );
 			}
 			vote.setVoteTimestamp(new Timestamp(System.currentTimeMillis()));
 			VoteEntity check = voteRepository.save(vote);

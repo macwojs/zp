@@ -6,8 +6,12 @@
 
 <body>
 <section id="tresc" style="height: 80vh;">
-    <p style="font-size: 43px;text-align: center;"><br>Głos oddany po przepisowym zakończeniu głosowania.</p>
-    <p><a th:href="${type}">Wróć do strony głosowań </a></p>
+    <p style="font-size: 43px;text-align: center;"><br>Głosowanie już się zakończyło</p>
+    <div style="max-width: 240px; width: 90%; margin: 16px auto;">
+        <a style="text-decoration: none;" th:href="${type}">
+            <button  style="background: rgb(212,33,61); border-color: rgb(212,33,61);" class="btn btn-primary btn-block" >Wróć do strony wydarzenia</button>
+        </a>
+    </div>
 </section>
 </body>
 
