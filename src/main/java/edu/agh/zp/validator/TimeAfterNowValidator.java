@@ -1,5 +1,6 @@
 package edu.agh.zp.validator;
 
+import edu.agh.zp.classes.TimeProvider;
 import edu.agh.zp.objects.VotingEntity;
 
 import javax.validation.ConstraintValidator;
@@ -16,7 +17,7 @@ public class TimeAfterNowValidator implements ConstraintValidator<TimeAfterNow, 
 	public boolean isValid( VotingEntity voting, ConstraintValidatorContext constraintValidatorContext ) {
 		if (voting.getVotingType()== VotingEntity.TypeOfVoting.PREZYDENT || voting.getVotingType()== VotingEntity.TypeOfVoting.REFERENDUM) return true;
 		DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = TimeProvider.now();
 		LocalDateTime provided;
 		if( voting.getClose() != null) {
 			try {

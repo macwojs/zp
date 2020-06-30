@@ -1,5 +1,7 @@
 package edu.agh.zp.objects;
 
+import edu.agh.zp.classes.TimeProvider;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -54,7 +56,7 @@ public class Log{
         this.elementID = elementID;
         this.user = user;
         this.status = status.toString();
-        this.time = LocalDateTime.now();
+        this.time = TimeProvider.now();
     }
 
     // failed sign in or sign up
@@ -64,7 +66,7 @@ public class Log{
         this.elementType = elementType.toString();
         this.user = null;
         this.status = status.toString();
-        this.time = LocalDateTime.now();
+        this.time = TimeProvider.now();
     }
 
     public Log(Operation operation, @NotEmpty String logDescription, ElementType elementType, CitizenEntity user, Status status) {
@@ -73,7 +75,7 @@ public class Log{
         this.elementType = elementType.toString();
         this.user = user;
         this.status = status.toString();
-        this.time = LocalDateTime.now();
+        this.time = TimeProvider.now();
     }
 
     static public Log failedSignInOrSignUp(Operation operation, @NotEmpty String logDescription){

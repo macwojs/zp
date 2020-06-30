@@ -1,5 +1,6 @@
 package edu.agh.zp.controller;
 
+import edu.agh.zp.classes.TimeProvider;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.StorageService;
@@ -235,7 +236,7 @@ public class ParlamentController {
 			//validacja
 			String error = null;
 			if (dateForm != null && timeFormOd != null && timeFormDo != null) {
-				LocalDateTime nowLDT = LocalDateTime.now();
+				LocalDateTime nowLDT = TimeProvider.now();
 				String odDT = dateForm + "T" + timeFormOd;
 				String doDT = dateForm + "T" + timeFormDo;
 				LocalDateTime odLDT = LocalDateTime.parse(odDT);
