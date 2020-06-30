@@ -35,4 +35,6 @@ public interface VoteRepository extends JpaRepository< VoteEntity, Long > {
 
 	@Query ( value = "SELECT * FROM vote u WHERE u.votingid = ?1", nativeQuery = true )
 	List<VoteEntity> findAllByVotingId(long voting);
+
+    long countAllByCitizenID_CitizenIDAndVotingID_VotingID(long citizenID, long votingID);
 }

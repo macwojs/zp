@@ -3,8 +3,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.VotingRepository;
@@ -13,14 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -41,42 +32,48 @@ public class SejmTest {
     @Autowired
     private DocumentRepository dR;
 
-    @Test
-    void addVotingInSejm() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
+    public static int compare(VotingEntity o1, VotingEntity o2) {
+        long b = o2.getVotingID();
+        long a = o1.getVotingID();
+        return Long.compare(a, b);
+    }
+
+    public static void addVotingInSejmCorrectly(MockMvc mockMvc, Long docID, LocalDate date, String openingTime, String closingTime) throws Exception {
+        mockMvc.perform(post("/parlament/sejm/voteAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("documentID", docID.toString())
+                .param("votingDate", date.toString())
+                .param("open", openingTime)
+                .param("close", closingTime)
                 .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+                .andExpect(redirectedUrl("/parlament/sejm"));
+    }
 
-
-        LocalDate votingDate = LocalDate.now().plusDays(5);
-        Time openTime = Time.valueOf("12:00:00");
-        Time closeTime = Time.valueOf("12:05:00");
+    public static VotingEntity addVotingInSejmCorrectly(MockMvc mockMvc, VotingRepository vR, Long docID, LocalDate date, String openingTime, String closingTime) throws Exception {
         long votingCountBefore = vR.count();
         mockMvc.perform(post("/parlament/sejm/voteAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", "12:00:00")
-                .param("close", "12:05:00")
+                .param("votingDate", date.toString())
+                .param("open", openingTime)
+                .param("close", closingTime)
                 .with(csrf()))
                 .andExpect(redirectedUrl("/parlament/sejm"));
         List<VotingEntity> list = vR.findAll();
+        list.sort(SejmTest::compare);
         assertThat(list.size()).isEqualTo(votingCountBefore+1);
         Optional<VotingEntity> votingTemp = vR.findById(list.get((int) votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
+        return votingTemp.orElseThrow();
+    }
+
+    @Test
+    void addVotingInSejm() throws Exception {
+        Long docID = DocumentTest.addDocumentSejm(mockMvc, dR);
+
+        LocalDate votingDate = LocalDate.now().plusDays(5);
+        Time openTime = Time.valueOf("12:00:00");
+        Time closeTime = Time.valueOf("12:05:00");
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
         assertThat( voting.getOpenVoting() ).isEqualTo(openTime);
         assertThat( voting.getCloseVoting() ).isEqualTo(closeTime);
         assertThat( voting.getDocumentID().getDocID() ).isEqualTo(docID);
@@ -86,23 +83,8 @@ public class SejmTest {
 
     @Test
     void addVotingInSejmYesterday() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        
-        Long docID = docTemp.orElseThrow().getDocID();
+        Long docID = DocumentTest.addDocumentSejm(mockMvc, dR);
+
         LocalDate votingDate = LocalDate.now().minusDays(1);
         long votingCountBefore = vR.count();
         mockMvc.perform(post("/parlament/sejm/voteAdd")
@@ -121,56 +103,20 @@ public class SejmTest {
 
     @Test
     void displayTodaysVotings() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        Long docID = DocumentTest.addDocumentSejm(mockMvc, dR);
 
         long votingCountBefore = vR.count();
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime1 = LocalTime.now();
         LocalTime closeTime1 = openTime1.plusMinutes(1);
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime1.toString())
-                .param("close", closeTime1.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+        addVotingInSejmCorrectly(mockMvc, docID, votingDate, openTime1.toString(), closeTime1.toString());
         LocalTime openTime2 = LocalTime.now().plusMinutes(1);
         LocalTime closeTime2 = openTime2.plusMinutes(2);
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime2.toString())
-                .param("close", closeTime2.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+        addVotingInSejmCorrectly(mockMvc, docID, votingDate, openTime2.toString(), closeTime2.toString());
         LocalTime openTime3 = LocalTime.now().plusMinutes(2);
         LocalTime closeTime3 = openTime3.plusMinutes(3);
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime3.toString())
-                .param("close", closeTime3.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+        addVotingInSejmCorrectly(mockMvc, docID, votingDate, openTime3.toString(), closeTime3.toString());
         List<VotingEntity> list = vR.findAll();
         assertThat(list.size()).isEqualTo(votingCountBefore+3);
 
@@ -187,22 +133,7 @@ public class SejmTest {
 
     @Test
     void displayTomorrowsVotings() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        Long docID = DocumentTest.addDocumentSejm(mockMvc, dR);
 
         long votingCountBefore = vR.count();
 
@@ -210,34 +141,13 @@ public class SejmTest {
         LocalDate votingDate2 = LocalDate.now().plusDays(1);
         LocalTime openTime1 = LocalTime.now();
         LocalTime closeTime1 = openTime1.plusMinutes(1);
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate1.toString())
-                .param("open", openTime1.toString())
-                .param("close", closeTime1.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+        addVotingInSejmCorrectly(mockMvc, docID, votingDate1, openTime1.toString(), closeTime1.toString());
         LocalTime openTime2 = LocalTime.now().plusMinutes(1);
         LocalTime closeTime2 = openTime2.plusMinutes(2);
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate2.toString())
-                .param("open", openTime2.toString())
-                .param("close", closeTime2.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+        addVotingInSejmCorrectly(mockMvc, docID, votingDate2, openTime2.toString(), closeTime2.toString());
         LocalTime openTime3 = LocalTime.now().plusMinutes(2);
         LocalTime closeTime3 = openTime3.plusMinutes(3);
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate2.toString())
-                .param("open", openTime3.toString())
-                .param("close", closeTime3.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+        addVotingInSejmCorrectly(mockMvc, docID, votingDate2, openTime3.toString(), closeTime3.toString());
         List<VotingEntity> list = vR.findAll();
         assertThat(list.size()).isEqualTo(votingCountBefore+3);
 

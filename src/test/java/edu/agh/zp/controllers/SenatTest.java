@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.VotingRepository;
@@ -13,14 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -43,22 +35,7 @@ public class SenatTest {
 
     @Test
     void addVotingInSenat() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test")
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "2")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
-
+        Long docID = DocumentTest.addDocumentSenat(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now().plusDays(5);
         Time openTime = Time.valueOf("12:00:00");
@@ -85,22 +62,8 @@ public class SenatTest {
 
     @Test
     void addVotingInsenatYesterday() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test")
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "2")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
+        Long docID = DocumentTest.addDocumentSenat(mockMvc, dR);
 
-        Long docID = docTemp.orElseThrow().getDocID();
         LocalDate votingDate = LocalDate.now().minusDays(1);
         long votingCountBefore = vR.count();
         mockMvc.perform(post("/parlament/senat/voteAdd")
@@ -119,21 +82,7 @@ public class SenatTest {
 
     @Test
     void displayTodaysVotings() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test")
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "2")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        Long docID = DocumentTest.addDocumentSenat(mockMvc, dR);
 
         long votingCountBefore = vR.count();
 
@@ -184,21 +133,7 @@ public class SenatTest {
 
     @Test
     void displayTomorrowsVotings() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", targetStream);
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "2")
-                .param("docName", "Ustawa Test")
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "2")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        Long docID = DocumentTest.addDocumentSenat(mockMvc, dR);
 
         long votingCountBefore = vR.count();
 

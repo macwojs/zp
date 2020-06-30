@@ -18,6 +18,7 @@ import static edu.agh.zp.controllers.SejmTest.addVotingInSejmCorrectly;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.hamcrest.Matchers.containsString;
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ParlamentTest {
+public class AddVoteInSejmTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -227,12 +228,84 @@ public class ParlamentTest {
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
                 .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Głos oddany po przepisowym zakończeniu głosowania.")));
+
+        Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
+        assertThat(vote.isEmpty()).isEqualTo(true);
+
+        vR.deleteById(voting.getVotingID());
+        dR.deleteById(docID);
+    }
+
+    @Test
+    void getOnPageBeforeClosing_votingAfterClosing() throws Exception {
+        TimeProvider.useFixedClockAt(NOW);
+
+        Long docID = addDocumentSejm(mockMvc, dR);
+
+        LocalDate votingDate = TimeProvider.now().toLocalDate();
+        LocalTime openTime = TimeProvider.now().toLocalTime();
+        LocalTime closeTime = openTime.plusSeconds(1);
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
+        mockMvc.perform(get("/parlament/vote/"+voting.getVotingID())
+                .with(user("posel2@zp.pl").roles("POSEL")))
+                .andExpect(status().isOk());
+
+        CountDownLatch time = new CountDownLatch(1);
+        time.await(1, TimeUnit.SECONDS);
+        // 3 - za 5 wstrzymaj sie 4 - przeciw
+        CitizenEntity posel = cS.findByEmail("posel2@zp.pl").orElseThrow();
+        assertThat(voteR.findByCitizenIdVotingId(posel.getCitizenID(), voting.getVotingID()).isEmpty()).isEqualTo(true);
+        mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
+                .param("votingRadio", "3")
+                .with(user("posel2@zp.pl").roles("POSEL"))
+                .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Głos oddany po przepisowym zakończeniu głosowania.")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);
 
+        vR.deleteById(voting.getVotingID());
+        dR.deleteById(docID);
+    }
+
+    @Test
+    void repeatVote() throws Exception {
+        TimeProvider.useFixedClockAt(NOW);
+
+        Long docID = addDocumentSejm(mockMvc, dR);
+
+        LocalDate votingDate = LocalDate.now();
+        LocalTime openTime = LocalTime.now();
+        LocalTime closeTime = openTime.plusMinutes(5);
+
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
+
+        CountDownLatch time = new CountDownLatch(1);
+        time.await(1, TimeUnit.SECONDS);
+        // 3 - za 5 wstrzymaj sie 4 - przeciw
+
+        CitizenEntity posel = cS.findByEmail("posel2@zp.pl").orElseThrow();
+        assertThat(voteR.findByCitizenIdVotingId(posel.getCitizenID(), voting.getVotingID()).isEmpty()).isEqualTo(true);
+        mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
+                .param("votingRadio", "3")
+                .with(user("posel2@zp.pl").roles("POSEL"))
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/parlament/sejm"));
+        Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
+        assertThat(vote.isPresent()).isEqualTo(true);
+
+        mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
+                .param("votingRadio", "3")
+                .with(user("posel2@zp.pl").roles("POSEL"))
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Już oddałeś głos w tym głosowaniu")));
+
+        assertThat(voteR.countAllByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID())).isEqualTo(1);
+        voteR.deleteById(vote.orElseThrow().getVoteID());
         vR.deleteById(voting.getVotingID());
         dR.deleteById(docID);
     }

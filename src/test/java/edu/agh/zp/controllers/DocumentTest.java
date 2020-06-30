@@ -67,7 +67,7 @@ public class DocumentTest {
                 .param("docName", "Ustawa Test"+timeStr)
                 .param("docDescription", "Ustawa Test")
                 .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
         Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
