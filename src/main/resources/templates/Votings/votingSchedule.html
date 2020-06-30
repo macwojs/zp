@@ -49,7 +49,7 @@
                             <p style="margin: 0px;"><span th:text="${voting.openVoting}">21:30</span> - <span
                                     th:text="${voting.closeVoting}">22:30</span></p>
                             <a th:text="${voting.documentID.docName}"
-                               th:href="@{/ustawy/{id}(id=${voting.documentID.docID})}"
+                               th:href="@{/wydarzenie/{id}(id=${voting.votingID})}"
                                style="margin-bottom: 0px; color: rgb(0,0,0);">Ustawa o związkach partnerskich</a>
                             <p th:text="${voting.documentID.docStatusID.docStatusName}"
                                style="margin-bottom: 0px;color: rgb(124,132,140);font-size: 14px;">Pierwsze czytanie</p>
