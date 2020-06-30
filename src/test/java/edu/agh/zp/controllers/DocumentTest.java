@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,7 +36,8 @@ public class DocumentTest {
     @Test
     void addDocument() throws Exception {
         long documentCountBefore = dR.count();
-        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
+        String timeStr = LocalTime.now().toString();
+        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
         assertThat(doc1.isEmpty()).isEqualTo(true);
 
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
@@ -45,7 +47,7 @@ public class DocumentTest {
                 .file(file)
                 .characterEncoding("UTF-8")
                 .param("docTypeID", "1")
-                .param("docName", "Ustawa Test")
+                .param("docName", "Ustawa Test"+timeStr)
                 .param("docDescription", "Ustawa Test")
                 .param("docStatusID", "1")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
@@ -54,7 +56,7 @@ public class DocumentTest {
 
         long documentCountAfter = dR.count();
         assertThat(documentCountAfter).isEqualTo(documentCountBefore+1);
-        Optional<DocumentEntity> doc2 = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
+        Optional<DocumentEntity> doc2 = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
         assertThat(doc2.isPresent()).isEqualTo(true);
         dR.deleteById(doc2.orElseThrow().getDocID());
     }
