@@ -222,6 +222,7 @@ public class UstawyController {
 		setOptionsListForDocumentList(modelAndView);
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
 		modelAndView.addObject( "link", "dziennikUstaw" );
+		modelAndView.addObject( "header", "Dziennik Ustaw" );
 		modelAndView.setViewName("Documents/documentList.html");
 		return modelAndView;
 	}
@@ -271,6 +272,7 @@ public class UstawyController {
 		setOptionsListForDocumentListInProgress(modelAndView);
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
 		modelAndView.addObject( "link", "listaUstaw" );
+		modelAndView.addObject( "header", "Procedowane ustawy" );
 		modelAndView.setViewName("Documents/documentList.html");
 		return modelAndView;
 	}

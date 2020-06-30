@@ -16,9 +16,7 @@
 <section id="tresc">
     <div class="text-center d-xl-flex justify-content-xl-center">
         <div style="width: 90%; max-width: 1200px">
-            <h2 class="text-center"
-                style="font-weight: 600;margin-top: 24px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;">
-                Dziennik Ustaw</h2>
+            <h2 class="text-center" style="font-weight: 600;margin-top: 24px;margin-right: 8px;margin-bottom: 24px;margin-left: 8px;" th:text="${header}">Dziennik Ustaw</h2>
             <div style="text-align: left">
                 <a class="btn btn-primary" data-toggle="collapse" aria-expanded="false"
                    aria-controls="collapse-1" href="#collapse-1" role="button">
@@ -122,13 +120,13 @@
                         <a class="" th:href="@{/{doc}(doc=${document.getPdfFilePath()})}" target="_blank"
                            th:classappend="${document.getPdfFilePath()} ? '' : 'btn-link disabled'">
                             <img th:src="${document.getPdfFilePath()} ? '/img/doc_icon.svg' : '/img/doc_icon_disable.svg' "
-                                 style="height: 30px;">
+                                 style="height: 30px;" alt="Doc icon">
                         </a>
                     </td>
                     <td>
                         <!--                <a href="#" target="_blank">-->
                         <a th:href="@{/ustawy/{id}(id=${document.docID})}">
-                            <img src="/img/info_icon.svg" style="height: 30px;">
+                            <img src="/img/info_icon.svg" style="height: 30px;" alt="Info icon">
                         </a>
                     </td>
                 </tr>
