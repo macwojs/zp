@@ -221,6 +221,7 @@ public class UstawyController {
 		modelAndView.addObject( "documents", documents );
 		setOptionsListForDocumentList(modelAndView);
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
+		modelAndView.addObject( "link", "dziennikUstaw" );
 		modelAndView.setViewName("Documents/documentList.html");
 		return modelAndView;
 	}
@@ -269,6 +270,7 @@ public class UstawyController {
 		modelAndView.addObject( "documents", documents );
 		setOptionsListForDocumentListInProgress(modelAndView);
 		setSelected(modelAndView, docType, docStatus, dateControl, date);
+		modelAndView.addObject( "link", "listaUstaw" );
 		modelAndView.setViewName("Documents/documentList.html");
 		return modelAndView;
 	}
