@@ -92,7 +92,7 @@ public class SejmController {
 			logR.save( Log.successAddVoting("Add Sejm voting", voting, citizen));
 		}
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl( "/parlament/sejm" );
+		redirect.setUrl( "/wydarzenie/"+voting.getVotingID() );
 		return new ModelAndView( redirect );
 	}
 

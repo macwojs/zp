@@ -91,7 +91,7 @@ public class SenatController {
 			logR.save( Log.successAddVoting("Add Senat voting", voting, citizen));
 		}
 		RedirectView redirect = new RedirectView( );
-		redirect.setUrl( "/parlament/senat" );
+		redirect.setUrl( "/wydarzenie/"+voting.getVotingID() );
 		return new ModelAndView( redirect );
 	}
 
