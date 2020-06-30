@@ -1,5 +1,6 @@
 package edu.agh.zp.controllers;
 
+import edu.agh.zp.classes.TimeProvider;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.CitizenService;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +27,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -57,6 +58,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ParlamentTest {
@@ -75,24 +78,22 @@ public class ParlamentTest {
     @Autowired
     private DocumentRepository dR;
 
+    private static final LocalDateTime NEWNOW = LocalDateTime.of(2020, 7, 1, 10, 10,0);
+    private static final LocalDateTime NOW = LocalDateTime.now();
+
+    public int compare(VotingEntity o1, VotingEntity o2) {
+        long b = o2.getVotingID();
+        long a = o1.getVotingID();
+        return Long.compare(a, b);
+    }
+
+
+
     @Test
     void addVoteAsPoselInSejmVoting() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        TimeProvider.useFixedClockAt(NOW);
+
+        Long docID = DocumentTest.addDocument(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now();
@@ -109,14 +110,7 @@ public class ParlamentTest {
         List<VotingEntity> list = vR.findAll();
 
         assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        Collections.sort(list, new Comparator<VotingEntity>() {
-
-            public int compare(VotingEntity o1, VotingEntity o2) {
-                long b = o2.getVotingID();
-                long a = o1.getVotingID();
-                return Long.compare(a, b);
-            }
-        });
+        list.sort(this::compare);
         Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
         VotingEntity voting = votingTemp.orElseThrow();
         CountDownLatch time = new CountDownLatch(1);
@@ -140,22 +134,8 @@ public class ParlamentTest {
 
     @Test
     void addVoteAsMarszalekSejmuInSejmVoting() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        TimeProvider.useFixedClockAt(NOW);
+        Long docID = DocumentTest.addDocument(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now();
@@ -172,14 +152,7 @@ public class ParlamentTest {
         List<VotingEntity> list = vR.findAll();
 
         assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        Collections.sort(list, new Comparator<VotingEntity>() {
-
-            public int compare(VotingEntity o1, VotingEntity o2) {
-                long b = o2.getVotingID();
-                long a = o1.getVotingID();
-                return Long.compare(a, b);
-            }
-        });
+        list.sort(this::compare);
         Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
         VotingEntity voting = votingTemp.orElseThrow();
         CountDownLatch time = new CountDownLatch(1);
@@ -203,26 +176,20 @@ public class ParlamentTest {
 
     @Test
     void addVoteAsGroupOfPoselInSejmVoting() throws Exception {
-        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
-        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
-        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
-                .file(file)
-                .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
-                .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        Long docID = docTemp.orElseThrow().getDocID();
+        TimeProvider.useFixedClockAt(NOW);
+        Long docID = DocumentTest.addDocument(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now();
         LocalTime closeTime = openTime.plusMinutes(5);
+        for(int i = 0 ; i< 50 ; ++i) {
+            System.out.print("hello\n");
+        }
+        System.out.print( openTime.toString() + "\n");
+        System.out.print( closeTime.toString() + "\n");
+        System.out.print(votingDate.toString() + "\n");
+
+
         long votingCountBefore = vR.count();
         mockMvc.perform(post("/parlament/sejm/voteAdd")
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
@@ -235,14 +202,7 @@ public class ParlamentTest {
         List<VotingEntity> list = vR.findAll();
 
         assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        Collections.sort(list, new Comparator<VotingEntity>() {
-
-            public int compare(VotingEntity o1, VotingEntity o2) {
-                long b = o2.getVotingID();
-                long a = o1.getVotingID();
-                return Long.compare(a, b);
-            }
-        });
+        list.sort(this::compare);
         Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
         VotingEntity voting = votingTemp.orElseThrow();
         CountDownLatch time = new CountDownLatch(1);
@@ -297,5 +257,93 @@ public class ParlamentTest {
         dR.deleteById(docID);
     }
 
+    @Test
+    void votingBeforeOpening() throws Exception {
+        TimeProvider.useFixedClockAt(NOW);
+        Long docID = DocumentTest.addDocument(mockMvc, dR);
+
+        LocalDate votingDate = LocalDate.now();
+        LocalTime openTime = LocalTime.now().plusMinutes(5);
+        LocalTime closeTime = openTime.plusMinutes(5);
+        long votingCountBefore = vR.count();
+        mockMvc.perform(post("/parlament/sejm/voteAdd")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("documentID", docID.toString())
+                .param("votingDate", votingDate.toString())
+                .param("open", openTime.toString())
+                .param("close", closeTime.toString())
+                .with(csrf()))
+                .andExpect(redirectedUrl("/parlament/sejm"));
+        List<VotingEntity> list = vR.findAll();
+
+        assertThat(list.size()).isEqualTo(votingCountBefore+1);
+        list.sort(this::compare);
+        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
+        VotingEntity voting = votingTemp.orElseThrow();
+
+
+        CountDownLatch time = new CountDownLatch(1);
+        time.await(1, TimeUnit.SECONDS);
+        // 3 - za 5 wstrzymaj sie 4 - przeciw
+        CitizenEntity posel = cS.findByEmail("posel2@zp.pl").orElseThrow();
+        assertThat(voteR.findByCitizenIdVotingId(posel.getCitizenID(), voting.getVotingID()).isEmpty()).isEqualTo(true);
+        mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
+                .param("votingRadio", "3")
+                .with(user("posel2@zp.pl").roles("POSEL"))
+                .with(csrf()))
+                .andExpect(status().isOk());
+
+        Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
+        assertThat(vote.isEmpty()).isEqualTo(true);
+
+        vR.deleteById(voting.getVotingID());
+        dR.deleteById(docID);
+    }
+
+    @Test
+    void votingAfterClosing() throws Exception {
+        TimeProvider.useFixedClockAt(NEWNOW);
+
+        Long docID = DocumentTest.addDocument(mockMvc, dR);
+
+        LocalDate votingDate = TimeProvider.now().toLocalDate();
+        LocalTime openTime = TimeProvider.now().toLocalTime().plusMinutes(5).plusSeconds(5);
+        LocalTime closeTime = openTime.plusMinutes(5);
+        long votingCountBefore = vR.count();
+        mockMvc.perform(post("/parlament/sejm/voteAdd")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("documentID", docID.toString())
+                .param("votingDate", votingDate.toString())
+                .param("open", openTime.toString())
+                .param("close", closeTime.toString())
+                .with(csrf()))
+                .andExpect(redirectedUrl("/parlament/sejm"));
+        List<VotingEntity> list = vR.findAll();
+
+        assertThat(list.size()).isEqualTo(votingCountBefore+1);
+        list.sort(this::compare);
+        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
+        VotingEntity voting = votingTemp.orElseThrow();
+
+
+        CountDownLatch time = new CountDownLatch(1);
+        time.await(1, TimeUnit.SECONDS);
+        // 3 - za 5 wstrzymaj sie 4 - przeciw
+        CitizenEntity posel = cS.findByEmail("posel2@zp.pl").orElseThrow();
+        assertThat(voteR.findByCitizenIdVotingId(posel.getCitizenID(), voting.getVotingID()).isEmpty()).isEqualTo(true);
+        mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
+                .param("votingRadio", "3")
+                .with(user("posel2@zp.pl").roles("POSEL"))
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Głos oddany po przepisowym zakończeniu głosowania.")));
+
+        Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
+        assertThat(vote.isEmpty()).isEqualTo(true);
+
+        vR.deleteById(voting.getVotingID());
+        dR.deleteById(docID);
+    }
 
 }

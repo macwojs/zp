@@ -2,6 +2,8 @@ package edu.agh.zp.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
+import edu.agh.zp.ZpApplication;
+import edu.agh.zp.classes.TimeProvider;
 import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import org.junit.jupiter.api.Test;
@@ -33,16 +35,11 @@ public class DocumentTest {
     @Autowired
     private DocumentRepository dR;
 
-    @Test
-    void addDocument() throws Exception {
-        long documentCountBefore = dR.count();
-        String timeStr = LocalTime.now().toString();
-        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        assertThat(doc1.isEmpty()).isEqualTo(true);
-
+    public static long addDocument(MockMvc mockMvc, DocumentRepository dR) throws Exception {
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
         InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
         MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
+        String timeStr = LocalTime.now().toString();
         mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
                 .file(file)
                 .characterEncoding("UTF-8")
@@ -53,12 +50,21 @@ public class DocumentTest {
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        assertThat(docTemp.isPresent()).isEqualTo(true);
+        return docTemp.orElseThrow().getDocID();
+    }
 
+    @Test
+    void addDocumentTest() throws Exception {
+        long documentCountBefore = dR.count();
+        String timeStr = LocalTime.now().toString();
+        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        assertThat(doc1.isEmpty()).isEqualTo(true);
+        long docID = addDocument(mockMvc, dR);
         long documentCountAfter = dR.count();
         assertThat(documentCountAfter).isEqualTo(documentCountBefore+1);
-        Optional<DocumentEntity> doc2 = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
-        assertThat(doc2.isPresent()).isEqualTo(true);
-        dR.deleteById(doc2.orElseThrow().getDocID());
+        dR.deleteById(docID);
     }
 
 
