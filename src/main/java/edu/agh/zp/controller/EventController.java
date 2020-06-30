@@ -1,12 +1,16 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.classes.Event;
+import edu.agh.zp.classes.Votes;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.CitizenService;
 import edu.agh.zp.services.ParliamentarianService;
 import edu.agh.zp.services.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +53,15 @@ public class EventController {
 
 	@Autowired
 	private OptionRepository oR;
+
+	@Autowired
+	private VoteRepository voteRepository;
+
+	@Autowired
+	private PoliticianRepository politicianRepository;
+
+	@Autowired
+	private ParliamentarianRepository parliamentarianRepository;
 
 
 	@GetMapping ( value = "/kalendarz" )
@@ -147,6 +161,51 @@ public class EventController {
 		return modelAndView;
 	}
 
+	@GetMapping ( value = { "/{id}/votesList" } )
+	public ModelAndView parlamentVotesList( @PathVariable long id, HttpServletRequest request ) {
+//		Pagination control
+		int page = 0;
+		int size = 10;
+		if ( request.getParameter( "page" ) != null && !request.getParameter( "page" ).isEmpty( ) ) {
+			page = Integer.parseInt( request.getParameter( "page" ) ) - 1;
+		}
+		if ( request.getParameter( "size" ) != null && !request.getParameter( "size" ).isEmpty( ) ) {
+			size = Integer.parseInt( request.getParameter( "size" ) );
+		}
+
+
+		List< VoteEntity > votes = voteRepository.findAllByVotingId( id );
+		List< Votes > votesTh = new ArrayList<>( );
+		for ( VoteEntity i : votes ) {
+			CitizenEntity citizen = i.getCitizenID( );
+			Optional< PoliticianEntity > politicianEntity = politicianRepository.findByCitizenID( i.getCitizenID( ) );
+			long politicID = 0;
+			String party = "-";
+			if ( politicianEntity.isPresent( ) ) {
+				politicID = politicianEntity.get( ).getPoliticianID( );
+				try {
+					ParliamentarianEntity parliamentarianEntity = parliamentarianRepository.findByPoliticianID( politicianEntity.get( ) );
+					party = parliamentarianEntity.getPoliticalGroup( );
+				} catch ( Exception e ) {
+					e.printStackTrace( );
+				}
+			}
+
+			votesTh.add( new Votes( citizen.getSurname( ), citizen.getName( ), party, i.getOptionID( ).getOptionDescription( ), politicID ) );
+		}
+
+//		Convert list to page
+		PageRequest pageable = PageRequest.of( page, size );
+		long start = pageable.getOffset( );
+		long end = ( start + pageable.getPageSize( ) ) > votesTh.size( ) ? votesTh.size( ) : ( start + pageable.getPageSize( ) );
+		Page< Votes > pageTh = new PageImpl<>( votesTh.subList( (int) start, (int) end ), pageable, votesTh.size( ) );
+
+		ModelAndView modelAndView = new ModelAndView( );
+		modelAndView.addObject( "votes", pageTh );
+		modelAndView.addObject( "vote_id", id );
+		modelAndView.setViewName( "Votings/votesList" );
+		return modelAndView;
+	}
 
 //	ADDITIONAL METHODS
 	public List< Event > parseVotingsToEvents() {

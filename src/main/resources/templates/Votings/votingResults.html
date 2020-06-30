@@ -186,7 +186,7 @@
                  id="chartContainer" style="height: 300px; width: 100%; margin-bottom: 20px;" >
             </div>
             <a  th:if="${voting.votingType == voting.votingType.SEJM } OR ${voting.votingType == voting.votingType.SENAT }"
-                th:href="@{'/parlament/vote/votesList/'+${voting.votingID}}">
+                th:href="@{/wydarzenie/{id}/votesList (id=${voting.votingID})}">
                 Sprawdź jak głosowali poszczególni parlamentarzyści
             </a>
         </form>
