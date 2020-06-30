@@ -33,6 +33,34 @@ public class SenatTest {
     @Autowired
     private DocumentRepository dR;
 
+    public static void addVotingInSenatCorrectly(MockMvc mockMvc, Long docID, LocalDate date, String openingTime, String closingTime) throws Exception {
+        mockMvc.perform(post("/parlament/senat/voteAdd")
+                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
+                .param("documentID", docID.toString())
+                .param("votingDate", date.toString())
+                .param("open", openingTime)
+                .param("close", closingTime)
+                .with(csrf()))
+                .andExpect(redirectedUrl("/parlament/senat"));
+    }
+
+    public static VotingEntity addVotingInSenatCorrectly(MockMvc mockMvc, VotingRepository vR, Long docID, LocalDate date, String openingTime, String closingTime) throws Exception {
+        long votingCountBefore = vR.count();
+        mockMvc.perform(post("/parlament/senat/voteAdd")
+                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
+                .param("documentID", docID.toString())
+                .param("votingDate", date.toString())
+                .param("open", openingTime)
+                .param("close", closingTime)
+                .with(csrf()))
+                .andExpect(redirectedUrl("/parlament/senat"));
+        List<VotingEntity> list = vR.findAll();
+        list.sort(SejmTest::compare);
+        assertThat(list.size()).isEqualTo(votingCountBefore+1);
+        Optional<VotingEntity> votingTemp = vR.findById(list.get((int) votingCountBefore).getVotingID());
+        return votingTemp.orElseThrow();
+    }
+
     @Test
     void addVotingInSenat() throws Exception {
         Long docID = DocumentTest.addDocumentSenat(mockMvc, dR);
@@ -40,19 +68,7 @@ public class SenatTest {
         LocalDate votingDate = LocalDate.now().plusDays(5);
         Time openTime = Time.valueOf("12:00:00");
         Time closeTime = Time.valueOf("12:05:00");
-        long votingCountBefore = vR.count();
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", "12:00:00")
-                .param("close", "12:05:00")
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
-        List<VotingEntity> list = vR.findAll();
-        assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        Optional<VotingEntity> votingTemp = vR.findById(list.get((int) votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
+        VotingEntity voting = addVotingInSenatCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
         assertThat( voting.getOpenVoting() ).isEqualTo(openTime);
         assertThat( voting.getCloseVoting() ).isEqualTo(closeTime);
         assertThat( voting.getDocumentID().getDocID() ).isEqualTo(docID);
@@ -61,7 +77,7 @@ public class SenatTest {
     }
 
     @Test
-    void addVotingInsenatYesterday() throws Exception {
+    void addVotingInSenatYesterday() throws Exception {
         Long docID = DocumentTest.addDocumentSenat(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now().minusDays(1);
@@ -89,37 +105,16 @@ public class SenatTest {
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime1 = LocalTime.now();
         LocalTime closeTime1 = openTime1.plusMinutes(1);
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime1.toString())
-                .param("close", closeTime1.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
-        LocalTime openTime2 = LocalTime.now().plusMinutes(1);
+        addVotingInSenatCorrectly(mockMvc, docID, votingDate, openTime1.toString(), closeTime1.toString());
+        LocalTime openTime2 = openTime1.plusMinutes(1);
         LocalTime closeTime2 = openTime2.plusMinutes(2);
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime2.toString())
-                .param("close", closeTime2.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
-        LocalTime openTime3 = LocalTime.now().plusMinutes(2);
+        addVotingInSenatCorrectly(mockMvc, docID, votingDate, openTime2.toString(), closeTime2.toString());
+        LocalTime openTime3 = openTime2.plusMinutes(2);
         LocalTime closeTime3 = openTime3.plusMinutes(3);
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime3.toString())
-                .param("close", closeTime3.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
+        addVotingInSenatCorrectly(mockMvc, docID, votingDate, openTime3.toString(), closeTime3.toString());
         List<VotingEntity> list = vR.findAll();
         assertThat(list.size()).isEqualTo(votingCountBefore+3);
-
+        list.sort(SejmTest::compare);
         mockMvc.perform(get("/parlament/senat/votingSchedule"))
                 .andExpect(content().string(containsString(openTime1.toString().substring(0,8)+"</span> - <span>"+closeTime1.toString().substring(0,8))))
                 .andExpect(content().string(containsString(openTime2.toString().substring(0,8)+"</span> - <span>"+closeTime2.toString().substring(0,8))))
@@ -141,34 +136,13 @@ public class SenatTest {
         LocalDate votingDate2 = LocalDate.now().plusDays(1);
         LocalTime openTime1 = LocalTime.now();
         LocalTime closeTime1 = openTime1.plusMinutes(1);
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate1.toString())
-                .param("open", openTime1.toString())
-                .param("close", closeTime1.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
+        addVotingInSenatCorrectly(mockMvc, docID, votingDate1, openTime1.toString(), closeTime1.toString());
         LocalTime openTime2 = LocalTime.now().plusMinutes(1);
         LocalTime closeTime2 = openTime2.plusMinutes(2);
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate2.toString())
-                .param("open", openTime2.toString())
-                .param("close", closeTime2.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
+        addVotingInSenatCorrectly(mockMvc, docID, votingDate2, openTime2.toString(), closeTime2.toString());
         LocalTime openTime3 = LocalTime.now().plusMinutes(2);
         LocalTime closeTime3 = openTime3.plusMinutes(3);
-        mockMvc.perform(post("/parlament/senat/voteAdd")
-                .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate2.toString())
-                .param("open", openTime3.toString())
-                .param("close", closeTime3.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/senat"));
+        addVotingInSenatCorrectly(mockMvc, docID, votingDate2, openTime3.toString(), closeTime3.toString());
         List<VotingEntity> list = vR.findAll();
         assertThat(list.size()).isEqualTo(votingCountBefore + 3);
 
