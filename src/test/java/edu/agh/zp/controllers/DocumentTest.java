@@ -66,7 +66,7 @@ public class DocumentTest {
                 .param("docTypeID", "2")
                 .param("docName", "Ustawa Test"+timeStr)
                 .param("docDescription", "Ustawa Test")
-                .param("docStatusID", "1")
+                .param("docStatusID", "2")
                 .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
