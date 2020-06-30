@@ -6,58 +6,30 @@ import edu.agh.zp.repositories.*;
 import edu.agh.zp.services.CitizenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import static edu.agh.zp.controllers.DocumentTest.addDocumentSejm;
+import static edu.agh.zp.controllers.SejmTest.addVotingInSejmCorrectly;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-import edu.agh.zp.objects.DocumentEntity;
 import edu.agh.zp.objects.VotingEntity;
 import edu.agh.zp.repositories.DocumentRepository;
 import edu.agh.zp.repositories.VotingRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 
 
 @SpringBootTest
@@ -81,41 +53,23 @@ public class ParlamentTest {
     private static final LocalDateTime NEWNOW = LocalDateTime.of(2020, 7, 1, 10, 10,0);
     private static final LocalDateTime NOW = LocalDateTime.now();
 
-    public int compare(VotingEntity o1, VotingEntity o2) {
-        long b = o2.getVotingID();
-        long a = o1.getVotingID();
-        return Long.compare(a, b);
-    }
-
-
 
     @Test
     void addVoteAsPoselInSejmVoting() throws Exception {
         TimeProvider.useFixedClockAt(NOW);
 
-        Long docID = DocumentTest.addDocument(mockMvc, dR);
+        Long docID = addDocumentSejm(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now();
         LocalTime closeTime = openTime.plusMinutes(5);
-        long votingCountBefore = vR.count();
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime.toString())
-                .param("close", closeTime.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
-        List<VotingEntity> list = vR.findAll();
 
-        assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        list.sort(this::compare);
-        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
+
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);
         // 3 - za 5 wstrzymaj sie 4 - przeciw
+
         CitizenEntity posel = cS.findByEmail("posel2@zp.pl").orElseThrow();
         assertThat(voteR.findByCitizenIdVotingId(posel.getCitizenID(), voting.getVotingID()).isEmpty()).isEqualTo(true);
         mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
@@ -135,26 +89,13 @@ public class ParlamentTest {
     @Test
     void addVoteAsMarszalekSejmuInSejmVoting() throws Exception {
         TimeProvider.useFixedClockAt(NOW);
-        Long docID = DocumentTest.addDocument(mockMvc, dR);
+        Long docID = addDocumentSejm(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now();
         LocalTime closeTime = openTime.plusMinutes(5);
-        long votingCountBefore = vR.count();
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime.toString())
-                .param("close", closeTime.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
-        List<VotingEntity> list = vR.findAll();
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
 
-        assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        list.sort(this::compare);
-        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);
         // 3 - za 5 wstrzymaj sie 4 - przeciw
@@ -177,34 +118,14 @@ public class ParlamentTest {
     @Test
     void addVoteAsGroupOfPoselInSejmVoting() throws Exception {
         TimeProvider.useFixedClockAt(NOW);
-        Long docID = DocumentTest.addDocument(mockMvc, dR);
+        Long docID = addDocumentSejm(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now();
         LocalTime closeTime = openTime.plusMinutes(5);
-        for(int i = 0 ; i< 50 ; ++i) {
-            System.out.print("hello\n");
-        }
-        System.out.print( openTime.toString() + "\n");
-        System.out.print( closeTime.toString() + "\n");
-        System.out.print(votingDate.toString() + "\n");
 
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
 
-        long votingCountBefore = vR.count();
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime.toString())
-                .param("close", closeTime.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
-        List<VotingEntity> list = vR.findAll();
-
-        assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        list.sort(this::compare);
-        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);
 
@@ -260,27 +181,12 @@ public class ParlamentTest {
     @Test
     void votingBeforeOpening() throws Exception {
         TimeProvider.useFixedClockAt(NOW);
-        Long docID = DocumentTest.addDocument(mockMvc, dR);
+        Long docID = addDocumentSejm(mockMvc, dR);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime openTime = LocalTime.now().plusMinutes(5);
         LocalTime closeTime = openTime.plusMinutes(5);
-        long votingCountBefore = vR.count();
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime.toString())
-                .param("close", closeTime.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
-        List<VotingEntity> list = vR.findAll();
-
-        assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        list.sort(this::compare);
-        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
-
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
 
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);
@@ -304,27 +210,12 @@ public class ParlamentTest {
     void votingAfterClosing() throws Exception {
         TimeProvider.useFixedClockAt(NEWNOW);
 
-        Long docID = DocumentTest.addDocument(mockMvc, dR);
+        Long docID = addDocumentSejm(mockMvc, dR);
 
         LocalDate votingDate = TimeProvider.now().toLocalDate();
         LocalTime openTime = TimeProvider.now().toLocalTime().plusMinutes(5).plusSeconds(5);
         LocalTime closeTime = openTime.plusMinutes(5);
-        long votingCountBefore = vR.count();
-        mockMvc.perform(post("/parlament/sejm/voteAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("documentID", docID.toString())
-                .param("votingDate", votingDate.toString())
-                .param("open", openTime.toString())
-                .param("close", closeTime.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
-        List<VotingEntity> list = vR.findAll();
-
-        assertThat(list.size()).isEqualTo(votingCountBefore+1);
-        list.sort(this::compare);
-        Optional<VotingEntity> votingTemp = vR.findById(list.get((int)votingCountBefore).getVotingID());
-        VotingEntity voting = votingTemp.orElseThrow();
-
+        VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
 
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);

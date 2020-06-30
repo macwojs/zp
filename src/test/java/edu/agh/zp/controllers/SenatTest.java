@@ -46,18 +46,17 @@ public class SenatTest {
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
         InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
         MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
         mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
                 .file(file)
                 .characterEncoding("UTF-8")
                 .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
+                .param("docName", "Ustawa Test")
                 .param("docDescription", "Ustawa Test")
                 .param("docStatusID", "2")
                 .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
         Long docID = docTemp.orElseThrow().getDocID();
 
 
@@ -89,18 +88,17 @@ public class SenatTest {
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
         InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
         MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
         mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
                 .file(file)
                 .characterEncoding("UTF-8")
                 .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
+                .param("docName", "Ustawa Test")
                 .param("docDescription", "Ustawa Test")
                 .param("docStatusID", "2")
                 .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
 
         Long docID = docTemp.orElseThrow().getDocID();
         LocalDate votingDate = LocalDate.now().minusDays(1);
@@ -124,18 +122,17 @@ public class SenatTest {
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
         InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
         MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
         mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
                 .file(file)
                 .characterEncoding("UTF-8")
                 .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
+                .param("docName", "Ustawa Test")
                 .param("docDescription", "Ustawa Test")
                 .param("docStatusID", "2")
                 .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
         Long docID = docTemp.orElseThrow().getDocID();
 
         long votingCountBefore = vR.count();
@@ -190,18 +187,17 @@ public class SenatTest {
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
         InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
         MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", targetStream);
-        String timeStr = LocalTime.now().toString();
         mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
                 .file(file)
                 .characterEncoding("UTF-8")
-                .param("docTypeID", "1")
-                .param("docName", "Ustawa Test"+timeStr)
+                .param("docTypeID", "2")
+                .param("docName", "Ustawa Test")
                 .param("docDescription", "Ustawa Test")
                 .param("docStatusID", "2")
                 .with(user("marszaleksenatu@zp.pl").roles("MARSZALEK_SENATU"))
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("/ustawy/*"));
-        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test", "Ustawa Test");
         Long docID = docTemp.orElseThrow().getDocID();
 
         long votingCountBefore = vR.count();
