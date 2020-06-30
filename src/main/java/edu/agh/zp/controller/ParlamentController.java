@@ -187,10 +187,7 @@ public class ParlamentController {
 				logR.save(Log.successAddVoteParlam("Add Senat vote successfully", check));
 		}
 		RedirectView redirect = new RedirectView( );
-		if ( voting.getVotingType( ).equals( VotingEntity.TypeOfVoting.SEJM ) )
-			redirect.setUrl( "/parlament/sejm" );
-		else
-			redirect.setUrl( "/parlament/senat" );
+		redirect.setUrl( "/wydarzenie/"+id );
 		return new ModelAndView( redirect );
 	}
 
