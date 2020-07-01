@@ -90,7 +90,7 @@ public class CitizenDetailsTest {
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("**/"));
 
-        mockMvc.perform(post("/obywatel/dane/modify/mail").with(user("user2@zp.pl"))
+        mockMvc.perform(post("/obywatel/dane/modify/mail").with(user("user2@zp.pl").password("useruser"))
                 .param("field1", "user3@zp.pl")
                 .param("field2", "")
                 .with(csrf()))

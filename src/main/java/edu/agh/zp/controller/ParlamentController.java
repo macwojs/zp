@@ -190,8 +190,8 @@ public class ParlamentController {
 			}
 
 			if ( voting.getOpenVoting().after(java.sql.Time.valueOf(time)) ) {
-				logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - acces before voting time", citizen.get()));
-				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting will start in the future" );
+				logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - access after voting time", citizen.get()));
+				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting has ended." );
 			}
 			vote.setVoteTimestamp(new Timestamp(System.currentTimeMillis()));
 			VoteEntity check = voteRepository.save(vote);
