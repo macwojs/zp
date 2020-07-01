@@ -74,9 +74,9 @@ public class AddVoteInSejmTest {
         CitizenEntity posel = cS.findByEmail("posel2@zp.pl").orElseThrow();
         assertThat(voteR.findByCitizenIdVotingId(posel.getCitizenID(), voting.getVotingID()).isEmpty()).isEqualTo(true);
         mockMvc.perform(post("/parlament/vote/"+voting.getVotingID())
-                        .param("votingRadio", "3")
-                        .with(user("posel2@zp.pl").roles("POSEL"))
-                        .with(csrf()))
+                .param("votingRadio", "3")
+                .with(user("posel2@zp.pl").roles("POSEL"))
+                .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
@@ -227,8 +227,8 @@ public class AddVoteInSejmTest {
                 .param("votingRadio", "3")
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
-                .andExpect(status().isForbidden())
-                .andExpect(status().reason(containsString("Voting has ended.")));
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Głosowanie już się zakończyło")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);

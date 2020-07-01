@@ -178,7 +178,7 @@ public class SignUpTest {
 
     @Test
     @Transactional
-    void passwordAndRPasswordNotMatch() throws Exception {
+    void passwordAndRepeatPasswordAreNotTheSame() throws Exception {
         assertThat( cS.findByIdNumer("user2@zp.pl").isEmpty() ).isEqualTo(true);
         mockMvc.perform(post("/signup")
                 .param("email","user1@zp.pl")

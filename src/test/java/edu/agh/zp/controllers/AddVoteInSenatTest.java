@@ -228,8 +228,8 @@ public class AddVoteInSenatTest {
                 .param("votingRadio", "3")
                 .with(user("senator2@zp.pl").roles("SENATOR"))
                 .with(csrf()))
-                .andExpect(status().isForbidden())
-                .andExpect(status().reason(containsString("Voting has ended.")));
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Głosowanie już się zakończyło")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(senator.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);
