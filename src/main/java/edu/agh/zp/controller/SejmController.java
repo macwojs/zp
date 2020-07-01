@@ -108,7 +108,6 @@ public class SejmController {
 		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
 		String pattern = "dd MMMMM yyyy";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
-		System.out.println( date );
 		String formattedDate = simpleDateFormat.format( date );
 		model.addObject( "schedule_name", "Sejmie" );
 		model.addObject( "current_date", formattedDate );

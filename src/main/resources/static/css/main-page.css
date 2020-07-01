@@ -1,0 +1,62 @@
+body {
+  background-color: rgb(251,245,246);
+}
+
+.main-block {
+  background-color: #ffffff;
+  max-width: 1200px;
+  width: 90%;
+  text-align: center;
+  margin: auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.heading-form {
+  padding-top: 16px;
+  font-weight: 600;
+}
+
+.date-form {
+  max-width: 200px;
+  margin: auto;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.date-form-ob {
+  max-width: 200px;
+  margin: auto;
+  margin-left: 16px;
+  margin-right: auto;
+}
+
+.time-form {
+  max-width: 200px;
+  margin: auto;
+  margin-left: 16px;
+  margin-right: auto;
+}
+
+.text-form {
+  margin: auto;
+  margin-left: auto;
+  margin-right: 16px;
+}
+
+.form-group.d-md-flex.align-items-md-center {
+  margin: auto;
+  padding-top: 8px;
+  padding-bottom: 8pxpx;
+}
+
+.btn.btn-primary.button-form {
+  background-color: rgb(212,33,61);
+  border-color: #8f1a1a;
+  margin: 16px;
+}
+
+.btn.btn-primary.button-form:hover {
+  background-color: #8f1a1a;
+}
+

@@ -46,6 +46,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
 	Page<DocumentEntity> findAllByDocTypeID_DocTypeID(long docType, Pageable page);
 
 	Page<DocumentEntity> findAllByDocStatusIDInAndDocTypeIDIn(Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Pageable page);
+	//Page<DocumentEntity> findAllByDocStatusIDInAndDocTypeIDInOrderByLaDsc(Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Pageable page);
 
 	@Query( value = "SELECT * FROM document WHERE docstatusid IN ?1 AND doctypeid IN ?2 AND  lastedit >= ?3 ", nativeQuery = true)
 	Page<DocumentEntity> findAllByStatusAndTypeLastEditAfter( Collection<DocumentStatusEntity> docStatuses, Collection<DocumentTypeEntity> docTypes, Date date, Pageable page);

@@ -1,16 +1,87 @@
 <!DOCTYPE html>
 
-<html lang="pl" xmlns:th="http://www.thymeleaf.org"  th:replace="base :: layout(~{::title}, ~{::.tresc}, ~{::.extraHead} )">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      th:replace="base :: layout(~{::title}, ~{::.tresc}, ~{::.extraHead} )">
 <head>
-    <title>zp</title>
-    <th:block th:remove="tag" class="extraHead"></th:block>
+    <title>ZP - Strona główna</title>
+    <th:block th:remove="tag" class="extraHead">
+        <link rel="stylesheet" th:href="@{/fonts/ionicons.min.css}">
+        <link rel="stylesheet" th:href="@{/css/main-page.css}">
+    </th:block>
 </head>
 
 
 <body>
-    <div class="tresc" style="">
-        <p style="font-size: 43px;text-align: center;"><br>Welcome to the Zarzadzanie Panstwem!<br><br></p>
+<div class="tresc" style="">
+    <div class="text-center main-block" style="padding: 16px;">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>Najnowsze ustawy</h1>
+                    <table class="table table-hover table-bordered results">
+                        <thead>
+                        <tr>
+                            <th class="col-md-4 col-xs-4">Ustawa</th>
+                            <th class="col-md-1 col-xs-1">Info</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="document : ${documents}">
+                            <td th:text="${document.docName}">Ustawa taka i taka</td>
+                            <td>
+                                <a th:href="@{/ustawy/{id}(id=${document.docID})}">
+                                    <img src="/img/info_icon.svg" style="margin: auto; height: 24px;" alt="Info icon">
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col">
+                    <div class="row">
+                        <div class="col right-top" style="margin-bottom: 32px;">
+                            <h2>Najbliższe referendum</h2>
+                            <div style="margin: auto; margin-bottom: 24px;">
+                                <p style="margin: 0px;font-size: 18px;" th:text="${refDate}">21.06.2020</p>
+                                <a th:href="@{/wydarzenie/{id}(id=${ref.votingID})}"
+                                   th:text="${ref.votingDescription}"
+                                   style="color: rgb(212,33,61);font-size: 20px;">Referendumo tym i o tym</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col">
+                            <h3>Dzisiejsze posiedzenie sejmu</h3>
+                            <div class="text-center" style="margin: 24px;"><h3 th:if="${ #lists.isEmpty(votings)}">Brak głosowań</h3>
+                            <div style="margin: auto;" th:each="voting : ${votings}">
+                                <div class="text-center" style="margin: 24px;">
+                                    <div class="text-center d-md-flex align-items-md-center"><i
+                                            class="icon ion-android-radio-button-on"
+                                            style="margin: auto; margin-right: 16px; color: rgb(212,33,61); font-size: 24px;"></i>
+                                        <div style="margin: auto; margin-left: 8px;">
+                                            <p style="margin: 0px;">
+                                                <span th:text="${voting.openVoting}">21:30</span>
+                                                -
+                                                <span th:text="${voting.closeVoting}">22:30</span>
+                                            </p>
+                                            <a th:text="${voting.documentID.docName}"
+                                               th:href="@{/wydarzenie/{id}(id=${voting.votingID})}"
+                                               style="color: rgb(0,0,0);">Ustawa o związkach partnerskich</a>
+                                            <p th:text="${voting.documentID.docStatusID.docStatusName}"
+                                               style="margin-bottom: 0px;color: rgb(124,132,140);font-size: 14px;">
+                                                Pierwsze czytanie</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 </body>
 
 </html>
