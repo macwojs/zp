@@ -1,6 +1,5 @@
 package edu.agh.zp.objects;
 
-//import edu.agh.zp.Role;
 import edu.agh.zp.validator.ID;
 import edu.agh.zp.validator.Password;
 import edu.agh.zp.validator.Pesel;
@@ -11,15 +10,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-
 @Entity(name = "Citizen")
-@Password(groups = CitizenEntity.class)
+@Password //(groups = CitizenEntity.class)
 public class CitizenEntity implements Serializable {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Citizen_citizenID_seq")

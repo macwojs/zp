@@ -68,7 +68,9 @@ public class SignUpController {
 				lR.save(Log.failedSignInOrSignUp(Log.Operation.ADD, "Sign Up - User with this Citizen ID already exists"));
 				return mv;
 			} else {
-				citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), BCrypt.gensalt()));
+				String salt = BCrypt.gensalt();
+				citizen.setPassword(BCrypt.hashpw(citizen.getPassword(), salt));
+				citizen.setRepeatPassword(BCrypt.hashpw(citizen.getRepeatPassword(), salt));
 				List<Role> roles = new ArrayList <>();
 				Optional<Role> temp = rR.findByName("ROLE_USER");
 				temp.ifPresent(roles::add);

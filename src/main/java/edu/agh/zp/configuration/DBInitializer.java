@@ -129,7 +129,9 @@ public class DBInitializer implements CommandLineRunner {
 
     private CitizenEntity createBasicUser(String email, String password, String name, String surname, String town, String address, String pesel, String idnumber){
         CitizenEntity user=  new CitizenEntity(password,password, email, name, surname, town, address, pesel, idnumber);
-        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        String salt = BCrypt.gensalt();
+        user.setPassword(BCrypt.hashpw(user.getPassword(), salt));
+        user.setRepeatPassword(BCrypt.hashpw(user.getRepeatPassword(), salt));
         return user;
     }
 
