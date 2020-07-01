@@ -42,8 +42,8 @@
                     <div class="row">
                         <div class="col right-top" style="margin-bottom: 32px;">
                             <h2>Najbliższe referendum</h2>
-                            <div style="margin: auto; margin-bottom: 24px;">
-                                <p style="margin: 0px;font-size: 18px;" th:text="${refDate}">21.06.2020</p>
+                            <div style="margin: auto auto 24px;">
+                                <p style="margin: 0; font-size: 18px;" th:text="${refDate}">21.06.2020</p>
                                 <a th:href="@{/wydarzenie/{id}(id=${ref.votingID})}"
                                    th:text="${ref.votingDescription}"
                                    style="color: rgb(212,33,61);font-size: 20px;">Referendumo tym i o tym</a>
@@ -53,24 +53,26 @@
                     <div class="row text-center">
                         <div class="col">
                             <h3>Dzisiejsze posiedzenie sejmu</h3>
-                            <div class="text-center" style="margin: 24px;"><h3 th:if="${ #lists.isEmpty(votings)}">Brak głosowań</h3>
-                            <div style="margin: auto;" th:each="voting : ${votings}">
-                                <div class="text-center" style="margin: 24px;">
-                                    <div class="text-center d-md-flex align-items-md-center"><i
-                                            class="icon ion-android-radio-button-on"
-                                            style="margin: auto; margin-right: 16px; color: rgb(212,33,61); font-size: 24px;"></i>
-                                        <div style="margin: auto; margin-left: 8px;">
-                                            <p style="margin: 0px;">
-                                                <span th:text="${voting.openVoting}">21:30</span>
-                                                -
-                                                <span th:text="${voting.closeVoting}">22:30</span>
-                                            </p>
-                                            <a th:text="${voting.documentID.docName}"
-                                               th:href="@{/wydarzenie/{id}(id=${voting.votingID})}"
-                                               style="color: rgb(0,0,0);">Ustawa o związkach partnerskich</a>
-                                            <p th:text="${voting.documentID.docStatusID.docStatusName}"
-                                               style="margin-bottom: 0px;color: rgb(124,132,140);font-size: 14px;">
-                                                Pierwsze czytanie</p>
+                            <div class="text-center" style="margin: 40px 24px 24px;"><h3
+                                    th:if="${ #lists.isEmpty(votings)}">Brak głosowań</h3>
+                                <div style="margin: auto;" th:each="voting : ${votings}">
+                                    <div class="text-center" style="margin: 24px;">
+                                        <div class="text-center d-md-flex align-items-md-center"><i
+                                                class="icon ion-android-radio-button-on"
+                                                style="margin: auto 16px auto auto;color: rgb(212,33,61); font-size: 24px;"></i>
+                                            <div style="margin: auto auto auto 8px;">
+                                                <p style="margin: 0;">
+                                                    <span th:text="${voting.openVoting}">21:30</span>
+                                                    -
+                                                    <span th:text="${voting.closeVoting}">22:30</span>
+                                                </p>
+                                                <a th:text="${voting.documentID.docName}"
+                                                   th:href="@{/wydarzenie/{id}(id=${voting.votingID})}"
+                                                   style="color: rgb(0,0,0);">Ustawa o związkach partnerskich</a>
+                                                <p th:text="${voting.documentID.docStatusID.docStatusName}"
+                                                   style="margin-bottom: 0;color: rgb(124,132,140);font-size: 14px;">
+                                                    Pierwsze czytanie</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
