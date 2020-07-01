@@ -125,13 +125,13 @@ public class UstawyController {
 				break;
 			default:
 				model.setViewName("error/finalStatus.html");
-				model.addObject("th_redirect","ustawy/"+id);
+				model.addObject("th_redirect","/ustawy/"+id);
 		}
 		else if (name.equals("Zgłoszona")){
 			statuses = documentStatusRepository.findByDocStatusNameIn(Arrays.asList("Przyjęta", "Odrzucona"));
 		} else {
 			model.setViewName("error/finalStatus.html");
-			model.addObject("th_redirect","ustawy/"+id);
+			model.addObject("th_redirect","/ustawy/"+id);
 		}
 		model.addObject("statuses",statuses);
 		return model;
