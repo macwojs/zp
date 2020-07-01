@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @Controller
@@ -46,6 +45,26 @@ public class IndexController {
 		List< DocumentTypeEntity > docTypes = documentTypeRepository.findAll();
 		documents = documentRepository.findAllByDocStatusIDInAndDocTypeIDIn(docStatuses, docTypes, PageRequest.of(0, 10, Sort.by("lastEdit").descending()));
 		modelAndView.addObject( "documents", documents );
+
+		//Obsługa referendum
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		Date dateYesterday = new Date((cal.getTime()).getTime());
+		Page< VotingEntity > referendum;
+		referendum = votingRepository.findAllByVotingTypeAndVotingDateAfter( VotingEntity.TypeOfVoting.REFERENDUM, dateYesterday, PageRequest.of(0, 1, Sort.by("votingDate").ascending()) );
+		modelAndView.addObject( "ref", referendum.getContent().get( 0 ) );
+		String pattern = "dd MMMMM yyyy";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
+		System.out.println( dateYesterday );
+		String formattedDate = simpleDateFormat.format( referendum.getContent().get( 0 ).getVotingDate() );
+		modelAndView.addObject( "refDate", formattedDate );
+
+		//Obsluga porzadku obrad
+		java.util.Date date = new java.util.Date( );
+		Date dateSQL = new Date( date.getTime( ) );
+		List< Long > statusID = Arrays.asList( 1L, 5L, 6L, 8L, 9L );
+		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
+		modelAndView.addObject( "votings", votings );
 
 		modelAndView.setViewName( "index" );
 		return modelAndView;
