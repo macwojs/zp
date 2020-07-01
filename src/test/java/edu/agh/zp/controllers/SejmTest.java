@@ -46,7 +46,7 @@ public class SejmTest {
                 .param("open", openingTime)
                 .param("close", closingTime)
                 .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
     }
 
     public static VotingEntity addVotingInSejmCorrectly(MockMvc mockMvc, VotingRepository vR, Long docID, LocalDate date, String openingTime, String closingTime) throws Exception {
@@ -58,7 +58,7 @@ public class SejmTest {
                 .param("open", openingTime)
                 .param("close", closingTime)
                 .with(csrf()))
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
         List<VotingEntity> list = vR.findAll();
         list.sort(SejmTest::compare);
         assertThat(list.size()).isEqualTo(votingCountBefore+1);

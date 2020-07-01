@@ -78,7 +78,7 @@ public class AddVoteInSejmTest {
                         .with(user("posel2@zp.pl").roles("POSEL"))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isPresent()).isEqualTo(true);
@@ -107,7 +107,7 @@ public class AddVoteInSejmTest {
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU", "POSEL"))
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isPresent()).isEqualTo(true);
@@ -137,7 +137,7 @@ public class AddVoteInSejmTest {
                 .with(user("posel1@zp.pl").roles("POSEL"))
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
         time.await(1, TimeUnit.MILLISECONDS);
 
@@ -148,7 +148,7 @@ public class AddVoteInSejmTest {
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
         time.await(1, TimeUnit.MILLISECONDS);
 
@@ -159,7 +159,7 @@ public class AddVoteInSejmTest {
                 .with(user("posel3@zp.pl").roles("POSEL"))
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
         time.await(1, TimeUnit.MILLISECONDS);
 
@@ -170,7 +170,7 @@ public class AddVoteInSejmTest {
                 .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU", "POSEL"))
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
 
         List<VoteEntity> votes = voteR.findAllByVotingID(voting);
         assertThat(votes.size()).isEqualTo(4);
@@ -198,7 +198,7 @@ public class AddVoteInSejmTest {
                 .param("votingRadio", "3")
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);
@@ -227,8 +227,8 @@ public class AddVoteInSejmTest {
                 .param("votingRadio", "3")
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Głos oddany po przepisowym zakończeniu głosowania.")));
+                .andExpect(status().isForbidden())
+                .andExpect(status().reason(containsString("Voting has ended.")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);
@@ -261,7 +261,7 @@ public class AddVoteInSejmTest {
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Głos oddany po przepisowym zakończeniu głosowania.")));
+                .andExpect(content().string(containsString("Głosowanie już się zakończyło")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);
@@ -293,7 +293,7 @@ public class AddVoteInSejmTest {
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/parlament/sejm"));
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isPresent()).isEqualTo(true);
 
@@ -301,8 +301,8 @@ public class AddVoteInSejmTest {
                 .param("votingRadio", "3")
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Już oddałeś głos w tym głosowaniu")));
+                .andExpect(status().isForbidden())
+                .andExpect(status().reason(containsString("You already send your vote")));
 
         assertThat(voteR.countAllByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID())).isEqualTo(1);
         voteR.deleteById(vote.orElseThrow().getVoteID());

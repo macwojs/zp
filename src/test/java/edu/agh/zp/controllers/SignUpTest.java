@@ -33,8 +33,8 @@ public class SignUpTest {
         assertThat( cS.findByEmail("user2@zp.pl").isEmpty() ).isEqualTo(true);
         mockMvc.perform(post("/signup")
                 .param("email","user2@zp.pl")
-                .param("password", "useruser")
-                .param("repeatPassword", "useruser")
+                .param("password", "useruser1")
+                .param("repeatPassword", "useruser1")
                 .param("name", "User")
                 .param("surname", "User")
                 .param("town", "Krakow")
@@ -114,7 +114,7 @@ public class SignUpTest {
     @Test
     @Transactional
     void wrongFormatOfPeselAndIdNumber() throws Exception {
-        assertThat( cS.findByIdNumer("user2@zp.pl").isEmpty() ).isEqualTo(true);
+        assertThat( cS.findByEmail("user2@zp.pl").isEmpty() ).isEqualTo(true);
         mockMvc.perform(post("/signup")
                 .param("email","user1@zp.pl")
                 .param("password", "useruser")
@@ -137,7 +137,7 @@ public class SignUpTest {
     @Test
     @Transactional
     void wrongPeselAndIdNumber() throws Exception {
-        assertThat( cS.findByIdNumer("user2@zp.pl").isEmpty() ).isEqualTo(true);
+        assertThat( cS.findByEmail("user2@zp.pl").isEmpty() ).isEqualTo(true);
         mockMvc.perform(post("/signup")
                 .param("email","user1@zp.pl")
                 .param("password", "useruser")
@@ -158,7 +158,7 @@ public class SignUpTest {
     @Test
     @Transactional
     void tooShortPassword() throws Exception {
-        assertThat( cS.findByIdNumer("user2@zp.pl").isEmpty() ).isEqualTo(true);
+        assertThat( cS.findByEmail("user2@zp.pl").isEmpty() ).isEqualTo(true);
         mockMvc.perform(post("/signup")
                 .param("email","user2@zp.pl")
                 .param("password", "user")
@@ -191,8 +191,7 @@ public class SignUpTest {
                 .param("pesel", "12242125054")
                 .param("idNumber", "MKL818761")
                 .with(csrf()))
-                .andExpect(redirectedUrl(""));
-        //        .andExpect(content().string(containsString("Hasła się nie zgadzają)));
+                .andExpect(content().string(containsString("Hasła muszą być takie same.")));
         assertThat( cS.findByIdNumer("user2@zp.pl").isEmpty() ).isEqualTo(true);
     }
 }
