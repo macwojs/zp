@@ -133,7 +133,7 @@ public class CitizenVotingsController {
 				logR.save(Log.failedAddVoting("Failed to add new referendum - wrong time or question is empty", citizen.get()));
 				return modelAndView;
 			}
-			voting = new VotingEntity( java.sql.Date.valueOf( time ), java.sql.Time.valueOf( LocalTime.parse( "06:00:00" ) ), java.sql.Time.valueOf( LocalTime.parse( "21:00:00" ) ), setSession.findById( 1L ).get( ), null, VotingEntity.TypeOfVoting.REFERENDUM, desc );
+			voting = new VotingEntity( java.sql.Date.valueOf( time ), java.sql.Time.valueOf( LocalTime.parse( "06:00:00" ) ), java.sql.Time.valueOf( LocalTime.parse( "21:00:00" ) ), setSession.findById( 1L ).orElseThrow( ), null, VotingEntity.TypeOfVoting.REFERENDUM, desc );
 			VotingEntity check = votingRepository.save( voting );
 			if( votingRepository.findById(check.getVotingID()).isPresent()){
 				logR.save(Log.successAddVoting("Add new referendum voting",  check, citizen.get()));
