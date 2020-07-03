@@ -26,6 +26,23 @@ public class CitizenVotingsTest {
     @Autowired
     private VotingRepository vR;
 
+    public static VotingEntity addReferendumAsMarszalekSejmu(LocalDate referendumDate, VotingRepository vR, MockMvc mockMvc) throws Exception {
+        long before = vR.count();
+        mockMvc.perform(post("/glosowania/referendum/planAdd")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .param("desc", "Czy każdy powinien dostać darmowe ciastka?")
+                .param("date", referendumDate.toString())
+                .with(csrf()))
+                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
+        List<VotingEntity> list = vR.findAll();
+        list.sort(SejmTest::compare);
+        assertThat(list.size()).isEqualTo(before+1);
+        Optional<VotingEntity> voting = vR.findById(list.get((int)before).getVotingID());
+        assertThat(voting.isPresent()).isEqualTo(true);
+        return voting.orElseThrow();
+    }
+
+
     @Test
     void addReferendumByPrezydent() throws Exception {
         LocalDate referendumDate = LocalDate.now().plusDays(30);
@@ -44,16 +61,9 @@ public class CitizenVotingsTest {
     @Test
     void addReferendumByMarszalekSejmu() throws Exception {
         LocalDate referendumDate = LocalDate.now().plusDays(30);
-        mockMvc.perform(post("/glosowania/referendum/planAdd")
-                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
-                .param("desc", "Czy każdy powinien dostać darmowe ciastka?")
-                .param("date", referendumDate.toString())
-                .with(csrf()))
-                .andExpect(redirectedUrlPattern("/wydarzenie/*"));
-        List<VotingEntity> list = vR.findAll();
-        Optional<VotingEntity> voting = vR.findById(list.get(list.size()-1).getVotingID());
-        assertThat( voting.orElseThrow().getVotingDescription() ).isEqualTo("Czy każdy powinien dostać darmowe ciastka?");
-        vR.deleteById(list.get(list.size()-1).getVotingID());
+        VotingEntity voting = addReferendumAsMarszalekSejmu(referendumDate, vR, mockMvc);
+        assertThat( voting.getVotingDescription() ).isEqualTo("Czy każdy powinien dostać darmowe ciastka?");
+        vR.deleteById(voting.getVotingID());
     }
 
     @Test

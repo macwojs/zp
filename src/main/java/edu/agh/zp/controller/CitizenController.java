@@ -1,6 +1,7 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.classes.Th_min;
+import edu.agh.zp.classes.TimeProvider;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -180,8 +182,8 @@ public class CitizenController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		vote.setVotingID(votingSession.findByVotingID(id));
-		LocalTime time = LocalTime.now();
-		LocalDate date = LocalDate.now();
+		LocalTime time = TimeProvider.now().toLocalTime();
+		LocalDate date = TimeProvider.now().toLocalDate();
 		VotingEntity voting = vote.getVotingID();
 		Optional<CitizenEntity> optCurUser = citizenSession.findByEmail(principal.getName());
 		if(optCurUser.isPresent()) {
