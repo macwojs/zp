@@ -49,6 +49,25 @@ public class DocumentTest {
         assertThat(docTemp.isPresent()).isEqualTo(true);
         return docTemp.orElseThrow().getDocID();
     }
+    public static long addDocumentStatusPresident(MockMvc mockMvc, DocumentRepository dR) throws Exception {
+        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
+        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
+        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
+        String timeStr = LocalTime.now().toString();
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/parlament/documentForm")
+                .file(file)
+                .characterEncoding("UTF-8")
+                .param("docTypeID", "1")
+                .param("docName", "Ustawa dla Prezydenta_"+timeStr)
+                .param("docDescription", "Ustawa Test")
+                .param("docStatusID", "7")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .with(csrf()))
+                .andExpect(redirectedUrlPattern("/ustawy/*"));
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa dla Prezydenta_"+timeStr, "Ustawa Test");
+        assertThat(docTemp.isPresent()).isEqualTo(true);
+        return docTemp.orElseThrow().getDocID();
+    }
 
     public static long addDocumentSenat(MockMvc mockMvc, DocumentRepository dR) throws Exception {
         File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
@@ -258,5 +277,43 @@ public class DocumentTest {
         dR.deleteById(docID);
     }
 
+
+    @Test
+    void presidentSignTheAct() throws Exception {
+        long documentCountBefore = dR.count();
+        String timeStr = LocalTime.now().toString();
+        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa dla Prezydenta_"+timeStr, "Ustawa Test");
+        assertThat(doc1.isEmpty()).isEqualTo(true);
+        long docID = addDocumentStatusPresident(mockMvc, dR);
+        long documentCountAfter = dR.count();
+        assertThat(documentCountAfter).isEqualTo(documentCountBefore+1);
+        assertThat(dR.findByDocID(docID).orElseThrow().getDocStatusID().getDocStatusName()).isEqualTo("Do zatwierdzenia przez Prezydenta");
+
+        mockMvc.perform(get("/prezydent/podpisz/1/"+docID)
+                .with(user("prezydent@zp.pl").roles("PREZYDENT")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/prezydent/podpisz"));
+        assertThat(dR.findByDocID(docID).orElseThrow().getDocStatusID().getDocStatusName()).isEqualTo("Przyjęta");
+        dR.deleteById(docID);
+    }
+
+    @Test
+    void presidentRejectAct() throws Exception {
+        long documentCountBefore = dR.count();
+        String timeStr = LocalTime.now().toString();
+        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa dla Prezydenta_"+timeStr, "Ustawa Test");
+        assertThat(doc1.isEmpty()).isEqualTo(true);
+        long docID = addDocumentStatusPresident(mockMvc, dR);
+        long documentCountAfter = dR.count();
+        assertThat(documentCountAfter).isEqualTo(documentCountBefore+1);
+        assertThat(dR.findByDocID(docID).orElseThrow().getDocStatusID().getDocStatusName()).isEqualTo("Do zatwierdzenia przez Prezydenta");
+
+        mockMvc.perform(get("/prezydent/podpisz/0/"+docID)
+                .with(user("prezydent@zp.pl").roles("PREZYDENT")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/prezydent/podpisz"));
+        assertThat(dR.findByDocID(docID).orElseThrow().getDocStatusID().getDocStatusName()).isEqualTo("Do ponownego rozpatrzenia w Sejmie: Prezydent");
+        dR.deleteById(docID);
+    }
 
 }
