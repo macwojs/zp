@@ -123,29 +123,12 @@ public class CitizenDetailsTest {
                 .param("idNumber", "MKL818761")
                 .with(csrf()))
                 .andExpect(redirectedUrlPattern("**/"));
-        String pass = cS.findByEmail("user2@zp.pl").orElseThrow().getPassword();
-        mockMvc.perform(post("/obywatel/dane/modify/pass").with(user("user2@zp.pl"))
+        String pass = cS.findByEmail("user@zp.pl").orElseThrow().getPassword();
+        mockMvc.perform(post("/obywatel/dane/modify/pass").with(user("user@zp.pl"))
                 .param("field1", "user1user1")
                 .param("field2", "user1user1")
                 .with(csrf()))
                 .andExpect(redirectedUrl("/logout"));
-
-        //TODO.. don't know how force tests to change password in database
-        //
-
-        //        mockMvc.perform(post("/signin")
-//                .param("email","user2@zp.pl")
-//                .param("password", "useruser")
-//                .with(csrf()))
-//                .andExpect(unauthenticated())
-//                .andExpect(redirectedUrlPattern("/signin**"));
-
-//        mockMvc.perform((post("/signin")
-//                .param("email","user2@zp.pl")
-//                .param("password", "user1user1")
-//                .with(csrf())))
-//                .andExpect(authenticated())
-//                .andExpect(redirectedUrl("/"));
     }
 
     @Test

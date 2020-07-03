@@ -1,6 +1,7 @@
 package edu.agh.zp.controller;
 
 import edu.agh.zp.classes.Th_min;
+import edu.agh.zp.classes.TimeProvider;
 import edu.agh.zp.objects.*;
 import edu.agh.zp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +100,7 @@ public class CitizenController {
 				citizenRepository.updateAddress(citizen.getCitizenID(),f1,f2);
 				citizen.setTown(f1);
 				citizen.setAddress(f2);
+//				logR.save(new Log(Log.Operation.EDIT, "Successful edit citizen address", Log.ElementType.USER, citizen, Log.Status.SUCCESS));
 				break;
 			case "mail":
 				if (citizenRepository.findByEmail(f1).isPresent())
@@ -105,8 +108,10 @@ public class CitizenController {
 					model.addObject("err", "email zajęty");
 					model.addObject("sceanario",scenario);
 					model.setViewName("User/citizenModify.html");
+//					logR.save(new Log(Log.Operation.EDIT, "Failure to edit citizen email - email already exists", Log.ElementType.USER, citizen, Log.Status.FAILURE));
 					return model;
 				}
+//				logR.save(new Log(Log.Operation.EDIT, "Successful edit citizen email", Log.ElementType.USER, citizen, Log.Status.SUCCESS));
 				citizenRepository.updateEmail(citizen.getCitizenID(),f1);
 				request.logout();
 				redirect.setUrl("/logout");
@@ -116,15 +121,19 @@ public class CitizenController {
 					if (f1.length()<8){
 						model.addObject("err", "hasło musi zawierać conajmej 8 znaków");
 						model.addObject("sceanario",scenario);
+//						logR.save(new Log(Log.Operation.EDIT, "Failure to edit citizen password - password is too short", Log.ElementType.USER, citizen, Log.Status.FAILURE));
 						model.setViewName("User/citizenModify.html");
 						return model;
 					}
+
 					citizenRepository.updatePass(citizen.getCitizenID(),BCrypt.hashpw(f1, BCrypt.gensalt()));
 					request.logout();
 					redirect.setUrl("/logout");
+//					logR.save(new Log(Log.Operation.EDIT, "Successful edit citizen password", Log.ElementType.USER, citizen, Log.Status.SUCCESS));
 					return new ModelAndView(redirect);
 				}
 				else {
+//					logR.save(new Log(Log.Operation.EDIT, "Failure to edit citizen password - password and repeat password don't match", Log.ElementType.USER, citizen, Log.Status.FAILURE));
 					model.addObject("err", "hasła nie zgadzają się");
 					model.addObject("sceanario",scenario);
 					model.setViewName("User/citizenModify.html");
@@ -180,8 +189,8 @@ public class CitizenController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		vote.setVotingID(votingSession.findByVotingID(id));
-		LocalTime time = LocalTime.now();
-		LocalDate date = LocalDate.now();
+		LocalTime time = TimeProvider.now().toLocalTime();
+		LocalDate date = TimeProvider.now().toLocalDate();
 		VotingEntity voting = vote.getVotingID();
 		Optional<CitizenEntity> optCurUser = citizenSession.findByEmail(principal.getName());
 		if(optCurUser.isPresent()) {
