@@ -9,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -70,6 +68,24 @@ public class DocumentTest {
         Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
         assertThat(docTemp.isPresent()).isEqualTo(true);
         return docTemp.orElseThrow().getDocID();
+    }
+
+    public static DocumentEntity addAnnotation(long docID, DocumentRepository dR, MockMvc mockMvc, String timeStr ) throws Exception {
+        File initialFile = new File("src/test/java/edu/agh/zp/resources/Looks_Like.pdf");
+        InputStream targetStream = new DataInputStream(new FileInputStream(initialFile));
+        MockMultipartFile file = new MockMultipartFile("file","test.pdf", "application/pdf", targetStream);
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/ustawy/annotation/"+docID)
+                .file(file)
+                .characterEncoding("UTF-8")
+                .param("docName", "Adnotacja_"+docID+"_"+timeStr)
+                .param("docDescription", "Adnotacja")
+                .param("docStatusID", "3")
+                .with(user("marszaleksejmu@zp.pl").roles("MARSZALEK_SEJMU"))
+                .with(csrf()))
+                .andExpect(redirectedUrlPattern("/ustawy/*"));
+        Optional<DocumentEntity> docTemp = dR.findByDocNameAndDocDescription("Adnotacja_"+docID+"_"+timeStr, "Adnotacja");
+        assertThat(docTemp.isPresent()).isEqualTo(true);
+        return docTemp.orElseThrow();
     }
 
     @Test
@@ -228,4 +244,19 @@ public class DocumentTest {
         assertThat(dR.findByDocID(docID).orElseThrow().getDocStatusID().getDocStatusName()).isEqualTo("Głosowanie w Sejmie");
         dR.deleteById(docID);
     }
+
+    @Test
+    void addAnnotationToDocumentTest() throws Exception {
+        String timeStr = LocalTime.now().toString();
+        Optional<DocumentEntity> doc1 = dR.findByDocNameAndDocDescription("Ustawa Test"+timeStr, "Ustawa Test");
+        assertThat(doc1.isEmpty()).isEqualTo(true);
+        long docID = addDocumentSejm(mockMvc, dR);
+        long documentCountAfter = dR.count();
+        DocumentEntity annotation= addAnnotation(docID, dR, mockMvc, timeStr);
+        assertThat(dR.count()).isEqualTo(documentCountAfter+1);
+        dR.deleteById(annotation.getDocID());
+        dR.deleteById(docID);
+    }
+
+
 }
