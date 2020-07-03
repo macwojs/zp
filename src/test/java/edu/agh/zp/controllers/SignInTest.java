@@ -48,6 +48,7 @@ public class SignInTest {
 
     @Test
     public void badLoginCredentialsTest() throws Exception {
+
         mockMvc.perform(get("/").with(anonymous())).andExpect(unauthenticated());
         mockMvc.perform(post("/signin")
                 .param("email","user@zp.pl")

@@ -205,6 +205,15 @@ public class CitizenController {
 			if (voting.getCloseVoting().before(java.sql.Time.valueOf(time)) || !voting.getVotingDate().equals(java.sql.Date.valueOf(date))) {
 				ModelAndView model = new ModelAndView();
 				model.setViewName("error/timeOut.html");
+				model.addObject("error", "Głosowanie już się zakończyło");
+				model.addObject("type", "/obywatel/wyboryReferenda");
+				logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - timeout", voting, optCurUser.get()));
+				return model;
+			}
+			if (voting.getOpenVoting().after(java.sql.Time.valueOf(time))) {
+				ModelAndView model = new ModelAndView();
+				model.setViewName("error/timeOut.html");
+				model.addObject("error", "Głosowanie jeszcze się nie rozpoczęło");
 				model.addObject("type", "/obywatel/wyboryReferenda");
 				logR.save(Log.failedAddVoteCitizen("Failure to add citizen vote - timeout", voting, optCurUser.get()));
 				return model;

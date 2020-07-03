@@ -181,6 +181,7 @@ public class ParlamentController {
 
 			if ( voting.getCloseVoting().before(java.sql.Time.valueOf(time)) ) {
 				model.setViewName("error/timeOut.html");
+				model.addObject("error", "Głosowanie już się zakończyło");
 				if (voting.getVotingType().equals(VotingEntity.TypeOfVoting.SEJM))
 					logR.save(Log.failedAddVoteParlam("Failure to add Sejm vote - time out", citizen.get()));
 				else
@@ -190,6 +191,7 @@ public class ParlamentController {
 			}
 
 			if ( voting.getOpenVoting().after(java.sql.Time.valueOf(time)) ) {
+				model.addObject("error", "Głosowanie jeszcze się nie rozpoczęło");
 				logR.save(Log.failedAddVoteParlam("Failure to add Senat vote - access after voting time", citizen.get()));
 				throw new ResponseStatusException( HttpStatus.FORBIDDEN, "Voting has ended." );
 			}

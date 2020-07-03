@@ -52,13 +52,20 @@ public class IndexController {
 		Date dateYesterday = new Date((cal.getTime()).getTime());
 		Page< VotingEntity > referendum;
 		referendum = votingRepository.findAllByVotingTypeAndVotingDateAfter( VotingEntity.TypeOfVoting.REFERENDUM, dateYesterday, PageRequest.of(0, 1, Sort.by("votingDate").ascending()) );
-		modelAndView.addObject( "ref", referendum.getContent().get( 0 ) );
+		if(referendum.getContent().size() != 0) {
+			modelAndView.addObject("ref", referendum.getContent().get(0));
+		}else{
+			modelAndView.addObject("ref", new VotingEntity());
+		}
 		String pattern = "dd MMMMM yyyy";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
 		System.out.println( dateYesterday );
-		String formattedDate = simpleDateFormat.format( referendum.getContent().get( 0 ).getVotingDate() );
-		modelAndView.addObject( "refDate", formattedDate );
-
+		if(referendum.getContent().size() != 0) {
+			String formattedDate = simpleDateFormat.format(referendum.getContent().get(0).getVotingDate());
+			modelAndView.addObject("refDate", formattedDate);
+		}else{
+			modelAndView.addObject("refDate", "");
+		}
 		//Obsluga porzadku obrad
 		java.util.Date date = new java.util.Date( );
 		Date dateSQL = new Date( date.getTime( ) );

@@ -217,7 +217,7 @@ public class AddVoteInCitizenVotings {
                 .with(user("user@zp.pl").roles("USER"))
                 .with(csrf()))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(containsString("Głosowanie już się zakończyło")));
+                .andExpect(content().string(containsString("Głosowanie jeszcze się nie rozpoczęło")));
 
         Optional<VotingControlEntity> votingControlAfter = votingControlSession.findByCitizenIDAndVotingID(user.orElseThrow(), referendum);
         assertThat(votingControlAfter.isPresent()).isEqualTo(false);

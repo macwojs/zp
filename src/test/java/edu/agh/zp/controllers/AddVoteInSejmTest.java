@@ -208,14 +208,14 @@ public class AddVoteInSejmTest {
 
     @Test
     void votingAfterClosing() throws Exception {
-        TimeProvider.useFixedClockAt(NEWNOW);
-
         Long docID = addDocumentSejm(mockMvc, dR);
 
         LocalDate votingDate = TimeProvider.now().toLocalDate();
         LocalTime openTime = TimeProvider.now().toLocalTime().plusMinutes(5).plusSeconds(5);
         LocalTime closeTime = openTime.plusMinutes(5);
         VotingEntity voting = addVotingInSejmCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
+
+        TimeProvider.useFixedClockAt(NEWNOW);
 
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);
@@ -226,8 +226,8 @@ public class AddVoteInSejmTest {
                 .param("votingRadio", "3")
                 .with(user("posel2@zp.pl").roles("POSEL"))
                 .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Głosowanie już się zakończyło")));
+                .andExpect(status().isForbidden())
+                .andExpect(status().reason(containsString("Voting has ended")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(posel.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);

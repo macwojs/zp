@@ -301,6 +301,7 @@ public class UstawyController {
 				}
 				DocumentEntity doc = document_temp.get();
 				setObjects(model,doc);
+
 				return model;
 			}
 
@@ -317,7 +318,9 @@ public class UstawyController {
 				logRepository.save(new Log(Log.Operation.ADD, "Add document successfully", Log.ElementType.DOCUMENT, citizen.get(), Log.Status.SUCCESS));
 			}
 		}
-		return index(id);
+
+
+		return new ModelAndView("redirect:/ustawy/"+id);
 	}
 
 	//	ADDITIONAL METHODS

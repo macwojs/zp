@@ -209,7 +209,6 @@ public class AddVoteInSenatTest {
 
     @Test
     void votingAfterClosing() throws Exception {
-        TimeProvider.useFixedClockAt(NEWNOW);
         Long docID = addDocumentSenat(mockMvc, dR);
 
         LocalDate votingDate = TimeProvider.now().toLocalDate();
@@ -217,6 +216,7 @@ public class AddVoteInSenatTest {
         LocalTime closeTime = openTime.plusMinutes(5);
         VotingEntity voting = addVotingInSenatCorrectly(mockMvc, vR, docID, votingDate, openTime.toString(), closeTime.toString());
 
+        TimeProvider.useFixedClockAt(NEWNOW);
         CountDownLatch time = new CountDownLatch(1);
         time.await(1, TimeUnit.SECONDS);
         // 3 - za 5 wstrzymaj sie 4 - przeciw
@@ -226,8 +226,8 @@ public class AddVoteInSenatTest {
                 .param("votingRadio", "3")
                 .with(user("senator2@zp.pl").roles("SENATOR"))
                 .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Głosowanie już się zakończyło")));
+                .andExpect(status().isForbidden())
+                .andExpect(status().reason(containsString("Voting has ended")));
 
         Optional<VoteEntity> vote = voteR.findByCitizenID_CitizenIDAndVotingID_VotingID(senator.getCitizenID(), voting.getVotingID());
         assertThat(vote.isEmpty()).isEqualTo(true);
