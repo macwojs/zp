@@ -105,7 +105,7 @@ public class SejmController {
 		}
 		Date dateSQL = new Date( date.getTime( ) );
 		List< Long > statusID = Arrays.asList( 1L, 5L, 6L, 8L, 9L );
-		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
+		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDInOrderByOpenVoting( dateSQL, statusID );
 		String pattern = "dd MMMMM yyyy";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
 		String formattedDate = simpleDateFormat.format( date );
