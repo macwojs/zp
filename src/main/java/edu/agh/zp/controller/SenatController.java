@@ -104,7 +104,7 @@ public class SenatController {
 		}
 		Date dateSQL = new Date( date.getTime( ) );
 		List< Long > statusID = Collections.singletonList( 2L );
-		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn( dateSQL, statusID );
+		List< VotingEntity > votings = votingRepository.findByVotingDateAndDocumentIDDocStatusIDDocStatusIDInOrderByOpenVoting( dateSQL, statusID );
 		String pattern = "dd MMMMM yyyy";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat( pattern, new Locale( "pl", "PL" ) );
 		System.out.println( date );

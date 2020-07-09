@@ -28,4 +28,5 @@ public interface VotingRepository extends JpaRepository<VotingEntity, Long> {
     Page< VotingEntity > findAllByVotingTypeAndVotingDateAfter( VotingEntity.TypeOfVoting votingType, Date date, Pageable page);
 
     List<VotingEntity> findByVotingDateAndDocumentIDDocStatusIDDocStatusIDIn(Date date, List< Long > status);
+    List<VotingEntity> findByVotingDateAndDocumentIDDocStatusIDDocStatusIDInOrderByOpenVoting(Date date, List< Long > status);
 }
