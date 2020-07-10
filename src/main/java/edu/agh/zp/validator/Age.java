@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target( ElementType.FIELD )
 @Retention( RetentionPolicy.RUNTIME )
-@Constraint( validatedBy = PeselValidator.class )
+@Constraint( validatedBy = AgeValidator.class )
 public @interface Age {
 	String message() default "Musisz być pełnoletni żeby się zarestrować.";
 	Class<?>[] groups() default {};

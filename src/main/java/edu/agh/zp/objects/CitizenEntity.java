@@ -1,5 +1,6 @@
 package edu.agh.zp.objects;
 
+import edu.agh.zp.validator.Age;
 import edu.agh.zp.validator.ID;
 import edu.agh.zp.validator.Password;
 import edu.agh.zp.validator.Pesel;
@@ -60,6 +61,7 @@ public class CitizenEntity implements Serializable {
     @NotNull
     @NotBlank (message = "Musisz podać pesel.")
     @Pesel
+    //@Age
     @Size(min = 11, max =11, message = "Pesel musi posiadać 11 cyfr.")
     @Column(name="pesel",length = 11)
     private String pesel;
