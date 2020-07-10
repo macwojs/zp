@@ -9,6 +9,8 @@ public class AgeValidator implements ConstraintValidator< Age, String > {
 	@Override
 	public boolean isValid( String s, ConstraintValidatorContext constraintValidatorContext ) {
 
+        if(s.length()<11)
+            return false;
 		int p3 = Character.getNumericValue( s.charAt( 2 ) );
 
 		if (p3>1) {
